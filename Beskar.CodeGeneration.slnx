@@ -1,1 +1,3 @@
-<Solution />
+<Solution>
+  <Project Path="Beskar.CodeGeneration.Extensions/Beskar.CodeGeneration.Extensions.csproj" />
+</Solution>
