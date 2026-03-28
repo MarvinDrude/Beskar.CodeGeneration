@@ -12,4 +12,5 @@ public sealed class AllValueAttribute(
    double d,
    char c,
    Type t,
-   EnumTarget e) : Attribute;
+   EnumTarget e) 
+   : Attribute;

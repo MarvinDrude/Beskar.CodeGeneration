@@ -81,6 +81,14 @@ public static class TypedConstantArrayExtensions
          return constant.GetNumberValuesOrDefault(defaultValue);
       }
 
+      public decimal[] DecimalArrayValues => constant.GetDecimalValuesOrDefault();
+      
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public decimal[] GetDecimalValuesOrDefault(decimal defaultValue = 0.0m)
+      {
+         return constant.GetNumberValuesOrDefault(defaultValue);
+      }
+      
       public uint[] UIntArrayValues => constant.GetUIntValuesOrDefault();
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -103,6 +111,14 @@ public static class TypedConstantArrayExtensions
       public string?[] GetEnumFullNameValuesOrDefault(string? defaultValue = null)
       {
          return constant.MapArray(x => x.GetEnumFullNameValueOrDefault(defaultValue));
+      }
+      
+      public IFieldSymbol?[] EnumFieldArrayValues => constant.GetEnumFieldValues();
+
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public IFieldSymbol?[] GetEnumFieldValues()
+      {
+         return constant.MapArray(x => x.GetEnumFieldSymbol());
       }
       
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

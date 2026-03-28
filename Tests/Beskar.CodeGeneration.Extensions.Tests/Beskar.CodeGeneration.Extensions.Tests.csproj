@@ -2,6 +2,7 @@
 
    <PropertyGroup>
       <ImplicitUsings>disable</ImplicitUsings>
+      <NoWarn>CS9113</NoWarn>
    </PropertyGroup>
 
    <ItemGroup>
