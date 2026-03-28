@@ -9,6 +9,11 @@ public static class TypedConstantExtensions
 {
    extension(TypedConstant constant)
    {
+      public bool IsError => constant.Kind == TypedConstantKind.Error;
+      public bool IsPrimitive => constant.Kind == TypedConstantKind.Primitive;
+      public bool IsEnum => constant.Kind == TypedConstantKind.Enum;
+      public bool IsType => constant.Kind == TypedConstantKind.Type;
+      
       public string? StringValue => constant.GetStringValueOrDefault();
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31,7 +36,9 @@ public static class TypedConstantExtensions
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public ITypeSymbol? GetTypeValue()
       {
-         return constant.Value as ITypeSymbol;
+         return constant.IsType 
+            ? constant.Value as ITypeSymbol
+            : null;
       }
 
       public string? EnumFullNameValue => constant.GetEnumFullNameValueOrDefault();
@@ -41,6 +48,30 @@ public static class TypedConstantExtensions
       {
          return constant is { Kind: TypedConstantKind.Enum }
             ? constant.ToCSharpString() : defaultValue;
+      }
+
+      public IFieldSymbol? EnumMember => constant.GetEnumFieldSymbol();
+      
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public IFieldSymbol? GetEnumFieldSymbol()
+      {
+         if (constant is not { Kind: TypedConstantKind.Enum, 
+                Type: INamedTypeSymbol enumType, Value: not null })
+         {
+            return null;
+         }
+
+         return enumType.GetMembers()
+            .OfType<IFieldSymbol>()
+            .FirstOrDefault(f => f.HasConstantValue && Equals(f.ConstantValue, constant.Value));
+      }
+      
+      public char CharValue => constant.GetCharValueOrDefault();
+
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      public char GetCharValueOrDefault(char defaultValue = '\0')
+      {
+         return constant.Value is char charValue ? charValue : defaultValue;
       }
       
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

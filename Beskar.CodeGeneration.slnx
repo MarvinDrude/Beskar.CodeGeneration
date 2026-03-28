@@ -1,3 +1,7 @@
 <Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/Beskar.CodeGeneration.Extensions.Tests/Beskar.CodeGeneration.Extensions.Tests.csproj" />
+    <Project Path="Tests/Beskar.CodeGeneration.Tests.Utils/Beskar.CodeGeneration.Tests.Utils.csproj" />
+  </Folder>
   <Project Path="Beskar.CodeGeneration.Extensions/Beskar.CodeGeneration.Extensions.csproj" />
 </Solution>
