@@ -160,6 +160,13 @@ public static class AttributeDataConstructorExtensions
             ? attribute.ConstructorArguments[index].GetDoubleValuesOrDefault(defaultValue)
             : [];
       }
+      
+      public char[] GetParameterCharArrayValues(int index, char defaultValue = '\0')
+      {
+         return attribute.ConstructorArguments.Length > index
+            ? attribute.ConstructorArguments[index].GetCharValuesOrDefault(defaultValue)
+            : [];
+      }
 
       public uint[] GetParameterUIntArrayValues(int index, uint defaultValue = 0)
       {

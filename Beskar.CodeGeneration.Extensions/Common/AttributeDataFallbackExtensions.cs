@@ -138,6 +138,24 @@ public static class AttributeDataFallbackExtensions
          return named.Length > 0 ? named : attribute.GetParameterLongArrayValues(index, defaultValue);
       }
       
+      public float[] DetermineFloatArrayValues(string name, int index, float defaultValue = 0.0f)
+      {
+         var named = attribute.GetNamedFloatArrayValuesOrDefault(name, defaultValue);
+         return named.Length > 0 ? named : attribute.GetParameterFloatArrayValues(index, defaultValue);
+      }
+
+      public double[] DetermineDoubleArrayValues(string name, int index, double defaultValue = 0.0)
+      {
+         var named = attribute.GetNamedDoubleArrayValuesOrDefault(name, defaultValue);
+         return named.Length > 0 ? named : attribute.GetParameterDoubleArrayValues(index, defaultValue);
+      }
+      
+      public char[] DetermineCharArrayValues(string name, int index, char defaultValue = '\0')
+      {
+         var named = attribute.GetNamedCharArrayValuesOrDefault(name, defaultValue);
+         return named.Length > 0 ? named : attribute.GetParameterCharArrayValues(index, defaultValue);
+      }
+      
       public string?[] DetermineEnumFullNameArrayValues(string name, int index, string? defaultValue = null)
       {
          var named = attribute.GetNamedEnumFullNameArrayValuesOrDefault(name, defaultValue);

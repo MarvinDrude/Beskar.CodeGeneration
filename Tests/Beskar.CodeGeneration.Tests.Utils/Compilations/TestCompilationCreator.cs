@@ -12,12 +12,16 @@ public sealed class TestCompilationCreator
 
    private LanguageVersion _languageVersionSyntaxTrees = LanguageVersion.Preview; 
    private int _fileNameIncrement = 1;
-   
+
+   private bool _enableNullable = true;
    private string _assemblyName = "TestAssembly";
    private CSharpCompilationOptions _compOptions = new (OutputKind.DynamicallyLinkedLibrary);
    
    public TestCompilationResult Create(CancellationToken ct = default)
    {
+      _compOptions = _compOptions.WithNullableContextOptions(_enableNullable 
+         ? NullableContextOptions.Enable : NullableContextOptions.Disable);
+      
       var syntaxTreeOptions = new CSharpParseOptions(
          _languageVersionSyntaxTrees, DocumentationMode.Diagnose);
       var syntaxTrees = _sourceTexts.Select(t => CSharpSyntaxTree.ParseText(
@@ -105,6 +109,12 @@ public sealed class TestCompilationCreator
          SuppressDiagnostic(id);
       }
       
+      return this;
+   }
+   
+   public TestCompilationCreator EnableNullable(bool enableNullable)
+   {
+      _enableNullable = enableNullable;
       return this;
    }
    

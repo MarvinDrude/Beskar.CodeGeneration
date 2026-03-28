@@ -15,7 +15,6 @@ public sealed class DetermineValueAttribute(
    long longValue = 1,
    float floatValue = 1.0f,
    double doubleValue = 1.0d,
-   decimal decimalValue = 1.0m,
    uint uintValue = 1,
    ulong ulongValue = 1) 
    : Attribute
@@ -26,7 +25,25 @@ public sealed class DetermineValueAttribute(
    
    public Type? TypeValue { get; init; } = typeValue;
    
-   
+   public int IntValue { get; init; } = intValue;
+
+   public char CharValue { get; init; } = charValue;
+
+   public EnumTest EnumValue { get; init; } = enumValue;
+
+   public byte ByteValue { get; init; } = byteValue;
+
+   public short ShortValue { get; init; } = shortValue;
+
+   public long LongValue { get; init; } = longValue;
+
+   public float FloatValue { get; init; } = floatValue;
+
+   public double DoubleValue { get; init; } = doubleValue;
+
+   public uint UintValue { get; init; } = uintValue;
+
+   public ulong UlongValue { get; init; } = ulongValue;
 }
 
 public enum EnumTest

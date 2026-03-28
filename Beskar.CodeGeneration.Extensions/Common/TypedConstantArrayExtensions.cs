@@ -124,7 +124,7 @@ public static class TypedConstantArrayExtensions
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       private T[] MapArray<T>(Func<TypedConstant, T> selector)
       {
-         return constant.IsArray
+         return constant is { IsArray: true, IsNull: false }
             ? constant.Values.Select(selector).ToArray()
             : [];
       }
