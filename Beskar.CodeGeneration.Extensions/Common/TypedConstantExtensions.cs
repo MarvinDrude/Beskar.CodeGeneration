@@ -19,6 +19,7 @@ public static class TypedConstantExtensions
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public string? GetStringValueOrDefault(string? defaultValue = null)
       {
+         if (constant.IsNull) return defaultValue;
          return constant.Value as string ?? defaultValue;
       }
 

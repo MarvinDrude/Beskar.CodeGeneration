@@ -1,4 +1,11 @@
 <Solution>
+  <Folder Name="/Bundles/" />
+  <Folder Name="/Generators/">
+    <Project Path="Generators/Beskar.CodeGeneration.TypeIdGenerator/Beskar.CodeGeneration.TypeIdGenerator.csproj" />
+  </Folder>
+  <Folder Name="/Markers/">
+    <Project Path="Markers/Beskar.CodeGeneration.TypeIdGenerator.Marker/Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="Tests/Beskar.CodeGeneration.Extensions.Tests/Beskar.CodeGeneration.Extensions.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.Tests.Utils/Beskar.CodeGeneration.Tests.Utils.csproj" />
