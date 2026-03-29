@@ -7,7 +7,7 @@ namespace Beskar.CodeGeneration.TypeIdGenerator.Marker.Internal;
 
 [StructLayout(LayoutKind.Sequential)]
 [DebuggerDisplay("{DebuggerView,nq}")]
-internal readonly record struct ExampleNumberId(long Value)
+internal readonly partial record struct ExampleNumberId(long Value)
    : IComparable<ExampleNumberId>, ISpanParsable<ExampleNumberId>, ITypeSafeIdentifier<long>, ISpanFormattable
 {
    // Static constant like fields

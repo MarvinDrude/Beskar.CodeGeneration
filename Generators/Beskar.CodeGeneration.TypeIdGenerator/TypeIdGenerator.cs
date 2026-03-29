@@ -6,6 +6,12 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
 {
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
-      throw new NotImplementedException();
+      var assemblyNameProvider = context.CompilationProvider
+         .Select(static (c, _) => c.AssemblyName?
+            .Replace(" ", string.Empty)
+            .Replace(".", string.Empty)
+            .Trim() ?? "UnknownAssembly");
+      
+      
    }
 }

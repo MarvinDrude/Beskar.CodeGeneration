@@ -18,4 +18,7 @@
    <ItemGroup>
      <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
    </ItemGroup>
+   <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\"/>
+   </ItemGroup>
 </Project>
