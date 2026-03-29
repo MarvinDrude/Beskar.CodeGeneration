@@ -15,4 +15,7 @@
       <EmbedUntrackedSources>true</EmbedUntrackedSources>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
    </PropertyGroup>
+   <ItemGroup>
+     <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
+   </ItemGroup>
 </Project>

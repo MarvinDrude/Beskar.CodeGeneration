@@ -6,4 +6,12 @@
       <Nullable>enable</Nullable>
    </PropertyGroup>
 
+   <ItemGroup>
+     <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <Folder Include="Transformers\" />
+   </ItemGroup>
+
 </Project>

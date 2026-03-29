@@ -5,7 +5,9 @@ public sealed class TypeSafeIdAttribute(
    bool isOverrideString = true,
    bool addImplicitConversions = true,
    bool addExplicitConversions = true,
-   bool isSpanParsable = true)
+   bool isSpanParsable = true,
+   bool addJsonConverter = true)
+   : Attribute
 {
    public bool IsOverrideString { get; init; } = isOverrideString;
    
@@ -14,4 +16,6 @@ public sealed class TypeSafeIdAttribute(
    public bool AddExplicitConversions { get; init; } = addExplicitConversions;
    
    public bool IsSpanParsable { get; init; } = isSpanParsable;
+   
+   public bool AddJsonConverter { get; init; } = addJsonConverter;
 }

@@ -1,20 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
    <PropertyGroup>
-      <TargetFramework>net10.0</TargetFramework>
-      <ImplicitUsings>enable</ImplicitUsings>
-      <Nullable>enable</Nullable>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <NoWarn>CS9113</NoWarn>
    </PropertyGroup>
 
    <ItemGroup>
-     <Folder Include="Common\" />
-     <Folder Include="Constants\" />
-     <Folder Include="Scenarios\" />
+      <PackageReference Include="Basic.Reference.Assemblies.Net100" />
+      <PackageReference Include="TUnit" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <Folder Include="Scenarios\Simple\" />
    </ItemGroup>
 
    <ItemGroup>
      <ProjectReference Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\Beskar.CodeGeneration.TypeIdGenerator.csproj" />
      <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
+     <ProjectReference Include="..\Beskar.CodeGeneration.Tests.Utils\Beskar.CodeGeneration.Tests.Utils.csproj" />
    </ItemGroup>
 
 </Project>

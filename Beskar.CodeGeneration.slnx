@@ -1,4 +1,13 @@
 <Solution>
+  <Folder Name="/Additional Solution Items/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE.md" />
+    <File Path="NuGet.Config" />
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/Bundles/">
     <Project Path="Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/Beskar.CodeGeneration.TypeIdGenerator.Bundle.csproj" />
   </Folder>
