@@ -11,6 +11,15 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
             .Replace(" ", string.Empty)
             .Replace(".", string.Empty)
             .Trim() ?? "UnknownAssembly");
+
+      var maybeSpecProvider = context.SyntaxProvider
+         .ForAttributeWithMetadataName(
+            AttributeTypeIdFullName,
+            predicate: static (_, _) => true,
+            transform: Transform);
+      
+      var combined = maybeSpecProvider
+         .Combine(assemblyNameProvider);
       
       
    }

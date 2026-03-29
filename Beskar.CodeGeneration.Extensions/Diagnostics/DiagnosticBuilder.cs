@@ -24,6 +24,12 @@ public sealed class DiagnosticBuilder<T>(
          .Build();
    }
 
+   public static MaybeSpec<T> CreateEmpty()
+   {
+      using var builder = Create(0);
+      return builder.Build();
+   }
+
    public DiagnosticBuilder<T> Add(string diagnosticId, params ReadOnlySpan<string> arguments)
    {
       _diagnostics.Add(new DiagnosticSpec(diagnosticId, [.. arguments]));
