@@ -8,7 +8,7 @@ namespace Beskar.CodeGeneration.TypeIdGenerator.Marker.Internal;
 [StructLayout(LayoutKind.Sequential)]
 [DebuggerDisplay("{DebuggerView,nq}")]
 internal readonly record struct ExampleNumberId(long Value)
-   : IComparable<ExampleNumberId>, ISpanParsable<ExampleNumberId>, ITypeSafeIdentifier<long>
+   : IComparable<ExampleNumberId>, ISpanParsable<ExampleNumberId>, ITypeSafeIdentifier<long>, ISpanFormattable
 {
    // Static constant like fields
    public static ExampleNumberId Empty { get; } = new (0); 
@@ -97,4 +97,11 @@ internal readonly record struct ExampleNumberId(long Value)
    {
       return other is ExampleNumberId id && Value == id.Value;
    }
+   
+   // Span formattable
+   public string ToString(string? format, IFormatProvider? formatProvider)
+      => Value.ToString(format, formatProvider);
+
+   public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+      => Value.TryFormat(destination, out charsWritten, format, provider);
 }

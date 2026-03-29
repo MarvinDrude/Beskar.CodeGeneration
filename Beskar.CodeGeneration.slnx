@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/Bundles/" />
+  <Folder Name="/Bundles/">
+    <Project Path="Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/Beskar.CodeGeneration.TypeIdGenerator.Bundle.csproj" />
+  </Folder>
   <Folder Name="/Generators/">
     <Project Path="Generators/Beskar.CodeGeneration.TypeIdGenerator/Beskar.CodeGeneration.TypeIdGenerator.csproj" />
   </Folder>
@@ -9,6 +11,7 @@
   <Folder Name="/Tests/">
     <Project Path="Tests/Beskar.CodeGeneration.Extensions.Tests/Beskar.CodeGeneration.Extensions.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.Tests.Utils/Beskar.CodeGeneration.Tests.Utils.csproj" />
+    <Project Path="Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests.csproj" />
   </Folder>
   <Project Path="Beskar.CodeGeneration.Extensions/Beskar.CodeGeneration.Extensions.csproj" />
 </Solution>
