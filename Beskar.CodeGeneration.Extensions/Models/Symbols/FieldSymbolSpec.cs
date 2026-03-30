@@ -59,7 +59,7 @@ public sealed record FieldSymbolSpec
 
 public record struct FieldSymbolLoadFlags
 {
-   internal PackedBools8 Flags;
+   private PackedBools8 Flags;
    
    public bool Type
    {
