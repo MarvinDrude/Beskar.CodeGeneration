@@ -1,6 +1,7 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
 using Me.Memory.Buffers.Dynamic;
 using Me.Memory.Collections;
+using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
@@ -61,6 +62,19 @@ public sealed record NamedTypeSymbolSpec
          LoadedFlags.TypeArguments = true;
       }
    }
+   
+   private readonly SequenceArray<NullableAnnotation>? _typeArgumentNullableAnnotations;
+   public SequenceArray<NullableAnnotation> TypeArgumentNullableAnnotations
+   {
+      get => LoadedFlags.TypeArgumentNullableAnnotations 
+         ? _typeArgumentNullableAnnotations ?? throw new InvalidOperationException("Type argument nullable annotations should be loaded but is null.")
+         : throw new InvalidOperationException("Type argument nullable annotations are not loaded.");
+      init
+      {
+         _typeArgumentNullableAnnotations = value;
+         LoadedFlags.TypeArgumentNullableAnnotations = true;
+      }
+   }
 }
 
 public record struct NamedTypeSymbolLoadFlags
@@ -83,5 +97,11 @@ public record struct NamedTypeSymbolLoadFlags
    {
       get => Flags.Get(2);
       set => Flags.Set(2, value);
+   }
+ 
+   public bool TypeArgumentNullableAnnotations
+   {
+      get => Flags.Get(3);
+      set => Flags.Set(3, value);
    }
 }

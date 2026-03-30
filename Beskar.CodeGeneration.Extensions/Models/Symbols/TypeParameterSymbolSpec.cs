@@ -1,4 +1,6 @@
-﻿using Me.Memory.Buffers.Dynamic;
+﻿using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
+using Me.Memory.Buffers.Dynamic;
+using Me.Memory.Collections;
 
 namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
@@ -7,6 +9,9 @@ public sealed record TypeParameterSymbolSpec
    public required int Ordinal { get; init; }
    public PackedBools8 Flags { get; init; }
 
+   private TypeParameterSymbolLoadFlags _loadedFlags;
+   private ref TypeParameterSymbolLoadFlags LoadedFlags => ref _loadedFlags;
+   
    public bool AllowsRefLikeType
    {
       get => Flags.Get(0);
@@ -41,5 +46,29 @@ public sealed record TypeParameterSymbolSpec
    {
       get => Flags.Get(5);
       set => Flags.Set(5, value);
+   }
+   
+   private readonly SequenceArray<TypeSymbolArchetype>? _constraintTypes;
+   public SequenceArray<TypeSymbolArchetype> ConstraintTypes
+   {
+      get => LoadedFlags.ConstraintTypes 
+         ? _constraintTypes ?? throw new InvalidOperationException("Constraint types should be loaded but is null.")
+         : throw new InvalidOperationException("Constraint types are not loaded.");
+      init
+      {
+         _constraintTypes = value;
+         LoadedFlags.ConstraintTypes = true;
+      }
+   }
+}
+
+public record struct TypeParameterSymbolLoadFlags
+{
+   private PackedBools8 Flags;
+
+   public bool ConstraintTypes
+   {
+      get => Flags.Get(0);
+      set => Flags.Set(0, value);
    }
 }

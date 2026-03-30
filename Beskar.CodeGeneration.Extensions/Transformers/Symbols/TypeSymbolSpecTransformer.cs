@@ -11,6 +11,7 @@ public static class TypeSymbolSpecTransformer
       {
          Kind  = typeSymbol.TypeKind,
          SpecialType = typeSymbol.SpecialType,
+         NullableAnnotation = typeSymbol.NullableAnnotation,
          
          HasBaseType = typeSymbol.BaseType is not null,
          IsReadOnly = typeSymbol.IsReadOnly,
