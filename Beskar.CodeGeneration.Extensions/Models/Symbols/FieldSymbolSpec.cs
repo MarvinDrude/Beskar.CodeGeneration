@@ -9,7 +9,9 @@ public sealed record FieldSymbolSpec
    public required RefKind RefKind { get; init; }
    
    public PackedBools8 Flags { get; init; }
-   public PackedBools8 LoadedFlags { get; init; }
+   
+   private FieldSymbolLoadFlags _loadedFlags;
+   private ref FieldSymbolLoadFlags LoadedFlags => ref _loadedFlags;
    
    public bool HasConstantValue
    {
@@ -44,20 +46,24 @@ public sealed record FieldSymbolSpec
    private readonly TypeSymbolArchetype? _type;
    public TypeSymbolArchetype Type
    {
-      get => IsTypeLoaded 
+      get => LoadedFlags.Type 
          ? _type ?? throw new InvalidOperationException("Type should be loaded but is null.") 
          : throw new InvalidOperationException("Type is not loaded.");
       init
       {
          _type = value;
-         IsTypeLoaded = true;
+         LoadedFlags.Type = true;
       }
    }
+}
 
-   // Load flags
-   private bool IsTypeLoaded
+public record struct FieldSymbolLoadFlags
+{
+   internal PackedBools8 Flags;
+   
+   public bool Type
    {
-      get => LoadedFlags.Get(0);
-      init => LoadedFlags.Set(0, value);
+      get => Flags.Get(0);
+      set => Flags.Set(0, value);
    }
 }
