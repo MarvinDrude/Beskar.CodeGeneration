@@ -13,6 +13,9 @@ public sealed record SymbolSpec
    public required Accessibility Accessibility { get; init; }
    
    public PackedBools8 Flags { get; init; }
+   
+   private SymbolLoadFlags _loadedFlags;
+   private ref SymbolLoadFlags LoadedFlags => ref _loadedFlags;
 
    public bool IsStatic
    {
@@ -55,4 +58,8 @@ public sealed record SymbolSpec
       get => Flags.Get(6);
       set => Flags.Set(6, value);
    }
+}
+
+public record struct SymbolLoadFlags
+{
 }

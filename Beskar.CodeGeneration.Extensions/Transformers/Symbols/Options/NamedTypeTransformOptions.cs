@@ -1,0 +1,31 @@
+﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+
+namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
+
+public sealed class NamedTypeTransformOptions 
+   : SymbolBaseTransformOptions<NamedTypeSymbolLoadFlags>
+{
+   public static NamedTypeTransformOptions Minimal => new()
+   {
+      Depth = 1,
+      Load = new NamedTypeSymbolLoadFlags()
+      {
+         Methods = false,
+         TypeArgumentNullableAnnotations = false,
+         TypeArguments = false,
+         TypeParameters = false
+      }
+   };
+
+   public static NamedTypeTransformOptions Full => new()
+   {
+      Depth = 1,
+      Load = new NamedTypeSymbolLoadFlags()
+      {
+         Methods = true,
+         TypeArgumentNullableAnnotations = true,
+         TypeArguments = true,
+         TypeParameters = true
+      }
+   };
+}

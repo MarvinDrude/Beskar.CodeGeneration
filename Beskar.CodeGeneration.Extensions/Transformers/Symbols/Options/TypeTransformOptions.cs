@@ -1,0 +1,29 @@
+﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+
+namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
+
+public sealed class TypeTransformOptions 
+   : SymbolBaseTransformOptions<TypeSymbolLoadFlags>
+{
+   public static TypeTransformOptions Minimal => new()
+   {
+      Depth = 1,
+      Load = new TypeSymbolLoadFlags()
+      {
+         AllInterfaces = false,
+         BaseType = false,
+         Interfaces = false
+      }
+   };
+
+   public static TypeTransformOptions Full => new()
+   {
+      Depth = 1,
+      Load = new TypeSymbolLoadFlags()
+      {
+         AllInterfaces = true,
+         BaseType = true,
+         Interfaces = true
+      }
+   };
+}

@@ -1,11 +1,16 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
+using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
 
 public static class SymbolSpecTransformer
 {
-   public static SymbolSpec Transform<TSymbol>(TSymbol symbol)
+   public static SymbolSpec Transform<TSymbol>(
+      TSymbol symbol,
+      int depth = 1,
+      ArchetypeTransformOptions? options = null)
       where TSymbol : ISymbol
    {
       return new SymbolSpec()
