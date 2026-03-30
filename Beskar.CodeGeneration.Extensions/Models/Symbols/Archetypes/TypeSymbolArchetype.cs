@@ -2,4 +2,5 @@
 
 public readonly record struct TypeSymbolArchetype(
    SymbolSpec Symbol,
-   TypeSymbolSpec Type);
+   TypeSymbolSpec Type,
+   NamedTypeSymbolSpec? NamedType);

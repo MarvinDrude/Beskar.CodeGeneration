@@ -8,6 +8,10 @@
     <File Path="NuGet.Config" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/Benchmarks/">
+    <Project Path="Benchmarks/Beskar.Benchmark.Common/Beskar.Benchmark.Common.csproj" />
+    <Project Path="Benchmarks/Beskar.Language.Benchmarks/Beskar.Language.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/Bundles/">
     <Project Path="Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/Beskar.CodeGeneration.TypeIdGenerator.Bundle.csproj" />
   </Folder>

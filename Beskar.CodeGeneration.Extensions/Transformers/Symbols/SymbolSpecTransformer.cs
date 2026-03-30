@@ -5,7 +5,8 @@ namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
 
 public static class SymbolSpecTransformer
 {
-   public static SymbolSpec Transform(ISymbol symbol)
+   public static SymbolSpec Transform<TSymbol>(TSymbol symbol)
+      where TSymbol : ISymbol
    {
       return new SymbolSpec()
       {

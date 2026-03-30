@@ -55,9 +55,9 @@ public sealed record FieldSymbolSpec
    }
 
    // Load flags
-   internal bool IsTypeLoaded
+   private bool IsTypeLoaded
    {
       get => LoadedFlags.Get(0);
-      set => LoadedFlags.Set(0, value);
+      init => LoadedFlags.Set(0, value);
    }
 }
