@@ -1,6 +1,10 @@
 ﻿using Beskar.CodeGeneration.Extensions.Common;
+using Beskar.CodeGeneration.Extensions.Common.Symbols;
 using Beskar.CodeGeneration.Extensions.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Diagnostics;
+using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
+using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Beskar.CodeGeneration.TypeIdGenerator.Models;
 using Microsoft.CodeAnalysis;
 
@@ -26,10 +30,13 @@ public sealed partial class TypeIdGenerator
       
       using var builder = DiagnosticBuilder<TypeSafeIdSpec>.Create(8);
       var attributeSpec = GetAttributeSpec(attribute);
+
+      var namedInfo = symbol.CreateNamedArchetype(_transformOptions);
+      ct.ThrowIfCancellationRequested();
       
       
       
-      return builder.Build(new TypeSafeIdSpec(attributeSpec));
+      return builder.Build(new TypeSafeIdSpec(attributeSpec, namedInfo));
    }
    
    private static TypeSafeIdAttributeSpec GetAttributeSpec(AttributeData data)
@@ -40,5 +47,41 @@ public sealed partial class TypeIdGenerator
          data.DetermineBoolValue("AddExplicitConversions", 2),
          data.DetermineBoolValue("IsSpanParsable", 3),
          data.DetermineBoolValue("AddJsonConverter", 4));
+   }
+
+   private static readonly ArchetypeTransformOptions _transformOptions = CreateTransformOptions();
+   private static ArchetypeTransformOptions CreateTransformOptions()
+   {
+      var options = new ArchetypeTransformOptions
+      {
+         NamedTypes =
+         {
+            MethodFilter = static (method) => 
+               method.MethodKind is MethodKind.Constructor 
+                  && method.Parameters.Length == 1,
+            Load = new NamedTypeSymbolLoadFlags()
+            {
+               Methods = true,
+            }
+         },
+         Methods = new MethodTransformOptions()
+         {
+            Depth = 2,
+            Load = new MethodSymbolLoadFlags()
+            {
+               Parameters = true,
+            }
+         },
+         Parameters = new ParameterTransformOptions()
+         {
+            Depth = 3,
+            Load = new ParameterSymbolLoadFlags()
+            {
+               Type = true,
+            }
+         }
+      };
+
+      return options;
    }
 }

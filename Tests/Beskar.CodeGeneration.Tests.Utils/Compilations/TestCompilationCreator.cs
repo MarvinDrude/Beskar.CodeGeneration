@@ -92,6 +92,14 @@ public sealed class TestCompilationCreator
       _references.AddRange(references);
       return this;
    }
+
+   public TestCompilationCreator WithReferenceByType<T>()
+   {
+      var location = typeof(T).Assembly.Location;
+      _references.Add(MetadataReference.CreateFromFile(location));
+      
+      return this;
+   }
    
    public TestCompilationCreator SuppressDiagnostic(string diagnosticId)
    {

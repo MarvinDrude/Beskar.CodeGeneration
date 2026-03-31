@@ -11,10 +11,6 @@
    </ItemGroup>
 
    <ItemGroup>
-     <Folder Include="Scenarios\Simple\" />
-   </ItemGroup>
-
-   <ItemGroup>
      <ProjectReference Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\Beskar.CodeGeneration.TypeIdGenerator.csproj" />
      <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
      <ProjectReference Include="..\Beskar.CodeGeneration.Tests.Utils\Beskar.CodeGeneration.Tests.Utils.csproj" />

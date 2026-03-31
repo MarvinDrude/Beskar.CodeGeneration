@@ -10,7 +10,7 @@ public static class NamedTypeSymbolExtensions
    extension<TSymbol>(TSymbol named)
       where TSymbol : INamedTypeSymbol
    {
-      public NamedTypeSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
+      public NamedTypeSymbolArchetype CreateNamedArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
          return NamedTypeSymbolArchetypeTransformer.Transform(named, options: options);

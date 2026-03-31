@@ -42,6 +42,8 @@ public static class NamedTypeSymbolSpecTransformer
          ];
       }
       
+      
+      
       if (options.NamedTypes.Load.TypeParameters)
       {
          spec.TypeParameters = [.. 

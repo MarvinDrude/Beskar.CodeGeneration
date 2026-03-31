@@ -18,6 +18,8 @@ public sealed class NamedTypeTransformOptions
          TypeArguments = false,
          TypeParameters = false,
          Attributes = false,
+         Properties = false,
+         Fields = false,
       }
    };
 
@@ -31,6 +33,8 @@ public sealed class NamedTypeTransformOptions
          TypeArguments = true,
          TypeParameters = true,
          Attributes = true,
+         Properties = true,
+         Fields = true,
       }
    };
 }

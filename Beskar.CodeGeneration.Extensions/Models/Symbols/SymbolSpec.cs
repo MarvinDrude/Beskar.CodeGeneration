@@ -1,10 +1,12 @@
-﻿using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
+﻿using System.Diagnostics;
+using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
 using Me.Memory.Buffers.Dynamic;
 using Me.Memory.Collections;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
+[DebuggerDisplay("{FullName, nq}")]
 public sealed record SymbolSpec
 {
    public required string Name { get; init; }

@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
+﻿using System.Diagnostics;
+using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
 using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
 using Me.Memory.Buffers.Dynamic;
 using Me.Memory.Collections;
@@ -6,6 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
+[DebuggerDisplay("NamedType, Arity: {Arity, nq}")]
 public sealed record NamedTypeSymbolSpec
 {
    public required int Arity { get; init; }
@@ -124,5 +126,17 @@ public record struct NamedTypeSymbolLoadFlags
    {
       get => Flags.Get(4);
       set => Flags.Set(4, value);
+   }
+   
+   public bool Properties
+   {
+      get => Flags.Get(5);
+      set => Flags.Set(5, value);
+   }
+   
+   public bool Fields
+   {
+      get => Flags.Get(6);
+      set => Flags.Set(6, value);
    }
 }

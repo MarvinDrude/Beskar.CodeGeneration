@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
+﻿using System.Diagnostics;
+using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
 using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
 using Me.Memory.Buffers.Dynamic;
 using Me.Memory.Collections;
@@ -6,6 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
+[DebuggerDisplay("Type-Kind: {Kind, nq}")]
 public sealed record TypeSymbolSpec
 {
    public required TypeKind Kind { get; init; }

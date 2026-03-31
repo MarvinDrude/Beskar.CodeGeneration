@@ -21,6 +21,7 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
       var combined = maybeSpecProvider
          .Combine(assemblyNameProvider);
       
-      
+      context.RegisterSourceOutput(combined, static (ctx, source) 
+         => Render(ctx, source.Right, source.Left));
    }
 }
