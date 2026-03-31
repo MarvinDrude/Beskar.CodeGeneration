@@ -33,6 +33,11 @@ public sealed partial class TypeIdGenerator
 
       var namedInfo = symbol.CreateNamedArchetype(_transformOptions);
       ct.ThrowIfCancellationRequested();
+
+      if (namedInfo.NamedType.Methods.Span is not [var constructor])
+      {
+         return builder.Add(InvalidTargetDiagnosticId).Build();
+      }
       
       
       

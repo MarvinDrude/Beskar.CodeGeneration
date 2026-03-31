@@ -14,4 +14,8 @@
      <ProjectReference Include="..\..\Beskar.CodeGeneration.Extensions\Beskar.CodeGeneration.Extensions.csproj" />
    </ItemGroup>
 
+   <ItemGroup>
+     <Folder Include="Rendering\" />
+   </ItemGroup>
+
 </Project>
