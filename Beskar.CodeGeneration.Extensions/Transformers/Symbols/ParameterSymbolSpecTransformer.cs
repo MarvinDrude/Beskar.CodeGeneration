@@ -27,6 +27,11 @@ public static class ParameterSymbolSpecTransformer
          IsOptional = parameterSymbol.IsOptional
       };
 
+      if (options.Parameters.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(parameterSymbol.GetAttributes());
+      }
+
       if (depth > options.Parameters.Depth)
       {
          return spec;

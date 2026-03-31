@@ -12,7 +12,8 @@ public sealed class PropertyTransformOptions
       {
          Type = false,
          Getter = false,
-         Setter = false
+         Setter = false,
+         Attributes = false,
       }
    };
    
@@ -23,7 +24,8 @@ public sealed class PropertyTransformOptions
       {
          Type = true,
          Getter = true,
-         Setter = true
+         Setter = true,
+         Attributes = true,
       }
    };
 }

@@ -25,6 +25,11 @@ public static class FieldSymbolSpecTransformer
          IsConst = fieldSymbol.IsConst,
       };
 
+      if (options.Fields.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(fieldSymbol.GetAttributes());
+      }
+
       if (depth > options.Fields.Depth)
       {
          return spec;

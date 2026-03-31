@@ -30,6 +30,11 @@ public static class TypeSymbolSpecTransformer
          IsUnmanagedType = typeSymbol.IsUnmanagedType,
       };
 
+      if (options.Types.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(typeSymbol.GetAttributes());
+      }
+
       if (depth > options.Types.Depth)
       {
          return spec;

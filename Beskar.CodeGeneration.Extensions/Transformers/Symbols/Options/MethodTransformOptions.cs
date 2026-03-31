@@ -14,7 +14,8 @@ public sealed class MethodTransformOptions
       Load = new MethodSymbolLoadFlags()
       {
          Parameters = false,
-         ReturnType = false
+         ReturnType = false,
+         Attributes = false,
       }
    };
    
@@ -24,7 +25,8 @@ public sealed class MethodTransformOptions
       Load = new MethodSymbolLoadFlags()
       {
          Parameters = true,
-         ReturnType = true
+         ReturnType = true,
+         Attributes = true,
       }
    };
 }

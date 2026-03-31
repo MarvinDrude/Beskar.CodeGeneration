@@ -14,7 +14,7 @@ public static class SymbolSpecTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
-      return new SymbolSpec()
+      var spec = new SymbolSpec()
       {
          Accessibility = symbol.DeclaredAccessibility,
          Kind = symbol.Kind,
@@ -32,5 +32,12 @@ public static class SymbolSpecTransformer
          IsOverride = symbol.IsOverride,
          IsImplicitlyDeclared = symbol.IsImplicitlyDeclared,
       };
+
+      if (options.Symbols.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(symbol.GetAttributes());
+      }
+      
+      return spec;
    }
 }

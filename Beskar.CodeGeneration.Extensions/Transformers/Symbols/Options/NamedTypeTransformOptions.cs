@@ -16,7 +16,8 @@ public sealed class NamedTypeTransformOptions
          Methods = false,
          TypeArgumentNullableAnnotations = false,
          TypeArguments = false,
-         TypeParameters = false
+         TypeParameters = false,
+         Attributes = false,
       }
    };
 
@@ -28,7 +29,8 @@ public sealed class NamedTypeTransformOptions
          Methods = true,
          TypeArgumentNullableAnnotations = true,
          TypeArguments = true,
-         TypeParameters = true
+         TypeParameters = true,
+         Attributes = true,
       }
    };
 }

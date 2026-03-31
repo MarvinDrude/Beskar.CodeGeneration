@@ -24,6 +24,11 @@ public static class PropertySymbolSpecTransformer
          IsIndexer = propertySymbol.IsIndexer,
          IsRequired = propertySymbol.IsRequired,
       };
+      
+      if (options.Properties.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(propertySymbol.GetAttributes());
+      }
 
       if (depth > options.Properties.Depth)
       {

@@ -10,7 +10,7 @@ public sealed class SymbolTransformOptions
       Depth = 1,
       Load = new SymbolLoadFlags()
       {
-
+         Attributes = false,
       }
    };
    
@@ -19,7 +19,7 @@ public sealed class SymbolTransformOptions
       Depth = int.MaxValue,
       Load = new SymbolLoadFlags()
       {
-
+         Attributes = false, // it's a duplication often
       }
    };
 }

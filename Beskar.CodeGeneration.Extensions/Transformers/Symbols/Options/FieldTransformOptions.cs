@@ -11,7 +11,8 @@ public sealed class FieldTransformOptions
       Depth = 1,
       Load = new FieldSymbolLoadFlags()
       {
-         Type = false
+         Type = false,
+         Attributes = false,
       }
    };
 
@@ -20,7 +21,8 @@ public sealed class FieldTransformOptions
       Depth = 1,
       Load = new FieldSymbolLoadFlags()
       {
-         Type = true
+         Type = true,
+         Attributes = true,
       }
    };
 }

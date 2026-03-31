@@ -15,7 +15,5 @@ public static class NamedTypeSymbolExtensions
          options ??= new ArchetypeTransformOptions();
          return NamedTypeSymbolArchetypeTransformer.Transform(named, options: options);
       }
-      
-      
    }
 }

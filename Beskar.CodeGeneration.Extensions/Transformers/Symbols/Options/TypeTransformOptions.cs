@@ -12,7 +12,8 @@ public sealed class TypeTransformOptions
       {
          AllInterfaces = false,
          BaseType = false,
-         Interfaces = false
+         Interfaces = false,
+         Attributes = false,
       }
    };
 
@@ -23,7 +24,8 @@ public sealed class TypeTransformOptions
       {
          AllInterfaces = true,
          BaseType = true,
-         Interfaces = true
+         Interfaces = true,
+         Attributes = true,
       }
    };
 }

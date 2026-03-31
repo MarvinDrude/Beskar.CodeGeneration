@@ -11,6 +11,7 @@ public sealed class ParameterTransformOptions
       Load = new ParameterSymbolLoadFlags()
       {
          Type = false,
+         Attributes = false,
       }
    };
    
@@ -20,6 +21,7 @@ public sealed class ParameterTransformOptions
       Load = new ParameterSymbolLoadFlags()
       {
          Type = true,
+         Attributes = true,
       }
    };
 }

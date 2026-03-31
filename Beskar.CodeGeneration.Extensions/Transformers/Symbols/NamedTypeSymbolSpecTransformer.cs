@@ -20,6 +20,11 @@ public static class NamedTypeSymbolSpecTransformer
          IsFileLocal = namedTypeSymbol.IsFileLocal,
          Arity = namedTypeSymbol.Arity,
       };
+      
+      if (options.NamedTypes.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(namedTypeSymbol.GetAttributes());
+      }
 
       if (depth > options.NamedTypes.Depth)
       {

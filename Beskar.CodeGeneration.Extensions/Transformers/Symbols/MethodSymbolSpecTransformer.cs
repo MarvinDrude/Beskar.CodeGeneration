@@ -26,6 +26,11 @@ public static class MethodSymbolSpecTransformer
          ReturnsByRefReadonly = methodSymbol.ReturnsByRefReadonly,
       };
 
+      if (options.Methods.Load.Attributes)
+      {
+         spec.Attributes = options.GetAttributes(methodSymbol.GetAttributes());
+      }
+
       if (depth > options.Methods.Depth)
       {
          return spec;

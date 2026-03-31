@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
+﻿using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
+using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
 using Me.Memory.Buffers.Dynamic;
 using Me.Memory.Collections;
 using Microsoft.CodeAnalysis;
@@ -76,6 +77,19 @@ public sealed record NamedTypeSymbolSpec
          LoadedFlags.TypeArgumentNullableAnnotations = true;
       }
    }
+   
+   private SequenceArray<IAttributeSpec>? _attributes;
+   public SequenceArray<IAttributeSpec> Attributes
+   {
+      get => LoadedFlags.Attributes 
+         ? _attributes ?? throw new InvalidOperationException("Attributes should be loaded but is null.")
+         : throw new InvalidOperationException("Attributes are not loaded.");
+      set
+      {
+         _attributes = value;
+         LoadedFlags.Attributes = true;
+      }
+   }
 }
 
 public record struct NamedTypeSymbolLoadFlags
@@ -104,5 +118,11 @@ public record struct NamedTypeSymbolLoadFlags
    {
       get => Flags.Get(3);
       set => Flags.Set(3, value);
+   }
+   
+   public bool Attributes
+   {
+      get => Flags.Get(4);
+      set => Flags.Set(4, value);
    }
 }

@@ -10,7 +10,7 @@ public sealed class TypeParameterTransformOptions
       Depth = 1,
       Load = new TypeParameterSymbolLoadFlags()
       {
-         ConstraintTypes = false
+         ConstraintTypes = false,
       }
    };
 
