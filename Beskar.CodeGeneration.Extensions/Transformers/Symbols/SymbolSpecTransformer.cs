@@ -22,6 +22,7 @@ public static class SymbolSpecTransformer
          Name = symbol.Name,
          MetadataName = symbol.MetadataName,
          FullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+         NameSpace = symbol.ContainingNamespace?.ToDisplayString(),
          
          IsStatic = symbol.IsStatic,
          IsAbstract = symbol.IsAbstract,

@@ -7,6 +7,7 @@ namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 
 public sealed record NamedTypeSymbolSpec
 {
+   public required int Arity { get; init; }
    public PackedBools8 Flags { get; init; }
    
    private NamedTypeSymbolLoadFlags _loadedFlags;

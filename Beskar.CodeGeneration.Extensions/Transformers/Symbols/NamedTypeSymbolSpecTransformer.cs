@@ -17,7 +17,8 @@ public static class NamedTypeSymbolSpecTransformer
       var spec = new NamedTypeSymbolSpec()
       {
          IsEnum = namedTypeSymbol.TypeKind == TypeKind.Enum,
-         IsFileLocal = namedTypeSymbol.IsFileLocal
+         IsFileLocal = namedTypeSymbol.IsFileLocal,
+         Arity = namedTypeSymbol.Arity,
       };
 
       if (depth > options.NamedTypes.Depth)

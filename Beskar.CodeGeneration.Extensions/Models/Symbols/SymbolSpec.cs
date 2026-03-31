@@ -9,6 +9,8 @@ public sealed record SymbolSpec
    public required string MetadataName { get; init; }
    public required string FullName { get; init; }
    
+   public string? NameSpace { get; init; }
+   
    public required SymbolKind Kind { get; init; }
    public required Accessibility Accessibility { get; init; }
    
