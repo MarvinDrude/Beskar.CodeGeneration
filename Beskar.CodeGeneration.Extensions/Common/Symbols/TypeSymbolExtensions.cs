@@ -1,0 +1,66 @@
+﻿using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
+using Microsoft.CodeAnalysis;
+
+namespace Beskar.CodeGeneration.Extensions.Common.Symbols;
+
+public static class TypeSymbolExtensions
+{
+   extension<TSymbol>(TSymbol type)
+      where TSymbol : ITypeSymbol
+   {
+      public TypeSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
+      {
+         options ??= new ArchetypeTransformOptions();
+         return TypeSymbolArchetypeTransformer.Transform(type, options: options);
+      }
+
+      public bool IsVoidTask => type.IsInSystemTasksNamespace 
+         && type is INamedTypeSymbol { Arity: 0, Name: "Task" };
+      public bool IsGenericTask => type.IsInSystemTasksNamespace 
+         && type is INamedTypeSymbol { Arity: 1, Name: "Task" };
+      public bool IsVoidValueTask => type.IsInSystemTasksNamespace 
+         && type is INamedTypeSymbol { Arity: 0, Name: "ValueTask" };
+      public bool IsGenericValueTask => type.IsInSystemTasksNamespace 
+         && type is INamedTypeSymbol { Arity: 1, Name: "ValueTask" };
+      public bool IsAnyTaskType => type.IsInSystemTasksNamespace 
+         && type is INamedTypeSymbol { Name: "Task" or "ValueTask" };
+
+      public bool IsInSystemTasksNamespace => type is
+      {
+         ContainingNamespace:
+         {
+            Name: "Tasks",
+            ContainingNamespace:
+            {
+               Name: "Threading",
+               ContainingNamespace:
+               {
+                  Name: "System",
+                  ContainingNamespace.IsGlobalNamespace: true
+               }
+            }
+         }
+      };
+      
+      public string TypeAsString => type switch
+      {
+         { IsRecord: true, TypeKind: TypeKind.Struct } => "record struct",
+         { IsRecord: true } => "record",
+         { TypeKind: TypeKind.Interface } => "interface",
+         { TypeKind: TypeKind.Struct } => "struct",
+         { TypeKind: TypeKind.Enum } => "enum",
+         { TypeKind: TypeKind.Delegate } => "delegate",
+         
+         _ => "class"
+      };
+      
+      public bool IsStruct => type.TypeKind == TypeKind.Struct;
+      public bool IsEnum => type.TypeKind == TypeKind.Enum;
+      public bool IsDelegate => type.TypeKind == TypeKind.Delegate;
+      public bool IsInterface => type.TypeKind == TypeKind.Interface;
+      public bool IsRecord => type.IsRecord;
+      public bool IsClass => type.TypeKind == TypeKind.Class;
+   }
+}
