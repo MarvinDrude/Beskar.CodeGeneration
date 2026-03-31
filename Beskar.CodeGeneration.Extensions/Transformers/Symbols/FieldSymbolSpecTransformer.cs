@@ -1,7 +1,6 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
-using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
@@ -26,12 +25,16 @@ public static class FieldSymbolSpecTransformer
          IsConst = fieldSymbol.IsConst,
       };
 
-      if (depth > options.Fields.Depth) 
+      if (depth > options.Fields.Depth)
+      {
          return spec;
-      
+      }
+
       if (options.Fields.Load.Type)
+      {
          spec.Type = TypeSymbolArchetypeTransformer.Transform(
-            fieldSymbol.Type, );
+            fieldSymbol.Type, depth + 1, options);
+      }
       
       return spec;
    }

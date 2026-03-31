@@ -1,6 +1,6 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
-using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
@@ -12,7 +12,9 @@ public static class TypeSymbolSpecTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
-      return new TypeSymbolSpec()
+      options ??= new ArchetypeTransformOptions();
+      
+      var spec = new TypeSymbolSpec()
       {
          Kind  = typeSymbol.TypeKind,
          SpecialType = typeSymbol.SpecialType,
@@ -27,5 +29,37 @@ public static class TypeSymbolSpecTransformer
          IsValueType = typeSymbol.IsValueType,
          IsUnmanagedType = typeSymbol.IsUnmanagedType,
       };
+
+      if (depth > options.Types.Depth)
+      {
+         return spec;
+      }
+      
+      if (options.Types.Load.BaseType)
+      {
+         spec.BaseType = typeSymbol.BaseType is not null 
+            ? NamedTypeSymbolArchetypeTransformer.Transform(typeSymbol.BaseType, depth + 1, options)
+            : null;
+      }
+
+      if (options.Types.Load.Interfaces)
+      {
+         spec.Interfaces = [.. 
+            typeSymbol
+               .Interfaces
+               .Select(i => NamedTypeSymbolArchetypeTransformer.Transform(i, depth + 1, options))
+         ];
+      }
+
+      if (options.Types.Load.AllInterfaces)
+      {
+         spec.AllInterfaces = [.. 
+            typeSymbol
+               .AllInterfaces
+               .Select(i => NamedTypeSymbolArchetypeTransformer.Transform(i, depth + 1, options))
+         ];
+      }
+      
+      return spec;
    }
 }

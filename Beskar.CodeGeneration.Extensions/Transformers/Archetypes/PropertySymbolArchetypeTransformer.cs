@@ -12,6 +12,8 @@ public static class PropertySymbolArchetypeTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
+      options ??= new ArchetypeTransformOptions();
+      
       var symbolSpec = SymbolSpecTransformer.Transform(propertySymbol, depth, options);
       var propertySpec = PropertySymbolSpecTransformer.Transform(propertySymbol, depth, options);
       

@@ -54,20 +54,20 @@ public sealed record MethodSymbolSpec
       get => LoadedFlags.ReturnType 
          ? field 
          : throw new InvalidOperationException("Return type is not loaded.");
-      init
+      set
       {
          field = value;
          LoadedFlags.ReturnType = true;
       }
    }
 
-   private readonly SequenceArray<ParameterSymbolArchetype>? _parameters;
+   private SequenceArray<ParameterSymbolArchetype>? _parameters;
    public SequenceArray<ParameterSymbolArchetype> Parameters
    {
       get => LoadedFlags.Parameters 
          ? _parameters ?? throw new InvalidOperationException("Parameters should be loaded but is null.") 
          : throw new InvalidOperationException("Parameters are not loaded.");
-      init
+      set
       {
          _parameters = value;
          LoadedFlags.Parameters = true;

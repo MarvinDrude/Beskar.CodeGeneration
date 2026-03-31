@@ -1,6 +1,6 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
-using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
@@ -12,7 +12,9 @@ public static class MethodSymbolSpecTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
-      return new MethodSymbolSpec()
+      options ??= new ArchetypeTransformOptions();
+      
+      var spec = new MethodSymbolSpec()
       {
          MethodKind = methodSymbol.MethodKind,
          
@@ -23,5 +25,25 @@ public static class MethodSymbolSpecTransformer
          ReturnsByRef = methodSymbol.ReturnsByRef,
          ReturnsByRefReadonly = methodSymbol.ReturnsByRefReadonly,
       };
+
+      if (depth > options.Methods.Depth)
+      {
+         return spec;
+      }
+
+      if (options.Methods.Load.ReturnType)
+      {
+         spec.ReturnType = TypeSymbolArchetypeTransformer.Transform(methodSymbol.ReturnType, depth + 1, options);
+      }
+
+      if (options.Methods.Load.Parameters)
+      {
+         spec.Parameters =
+            [.. methodSymbol.Parameters
+               .Where(x => options.Methods.ParameterFilter is null || options.Methods.ParameterFilter(x))
+               .Select(x => ParameterSymbolArchetypeTransformer.Transform(x, depth + 1, options))];
+      }
+      
+      return spec;
    }
 }

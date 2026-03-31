@@ -12,6 +12,8 @@ public static class FieldSymbolArchetypeTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
+      options ??= new ArchetypeTransformOptions();
+      
       var symbolSpec = SymbolSpecTransformer.Transform(fieldSymbol, depth, options);
       var fieldSpec = FieldSymbolSpecTransformer.Transform(fieldSymbol, depth, options);
       

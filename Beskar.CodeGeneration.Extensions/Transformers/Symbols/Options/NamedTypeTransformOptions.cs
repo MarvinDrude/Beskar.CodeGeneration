@@ -1,10 +1,13 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 
 public sealed class NamedTypeTransformOptions 
    : SymbolBaseTransformOptions<NamedTypeSymbolLoadFlags>
 {
+   public Func<IMethodSymbol, bool>? MethodFilter { get; set; }
+   
    public static NamedTypeTransformOptions Minimal => new()
    {
       Depth = 1,

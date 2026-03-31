@@ -10,13 +10,13 @@ public sealed class ArchetypeTransformOptions
    
    public PropertyTransformOptions Properties { get; set; } = PropertyTransformOptions.Minimal;
    
-   public NamedTypeTransformOptions NamedType { get; set; } = NamedTypeTransformOptions.Minimal;
+   public NamedTypeTransformOptions NamedTypes { get; set; } = NamedTypeTransformOptions.Minimal;
    
    public TypeParameterTransformOptions TypeParameters { get; set; } = TypeParameterTransformOptions.Minimal;
    
-   public TypeTransformOptions Type { get; set; } = TypeTransformOptions.Minimal;
+   public TypeTransformOptions Types { get; set; } = TypeTransformOptions.Minimal;
    
-   public SymbolTransformOptions Symbol { get; set; } = SymbolTransformOptions.Minimal;
+   public SymbolTransformOptions Symbols { get; set; } = SymbolTransformOptions.Minimal;
    
    public ParameterTransformOptions Parameters { get; set; } = ParameterTransformOptions.Minimal;
 }

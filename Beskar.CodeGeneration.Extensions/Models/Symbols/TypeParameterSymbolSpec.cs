@@ -48,13 +48,13 @@ public sealed record TypeParameterSymbolSpec
       set => Flags.Set(5, value);
    }
    
-   private readonly SequenceArray<TypeSymbolArchetype>? _constraintTypes;
+   private SequenceArray<TypeSymbolArchetype>? _constraintTypes;
    public SequenceArray<TypeSymbolArchetype> ConstraintTypes
    {
       get => LoadedFlags.ConstraintTypes 
          ? _constraintTypes ?? throw new InvalidOperationException("Constraint types should be loaded but is null.")
          : throw new InvalidOperationException("Constraint types are not loaded.");
-      init
+      set
       {
          _constraintTypes = value;
          LoadedFlags.ConstraintTypes = true;

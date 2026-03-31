@@ -12,6 +12,8 @@ public static class MethodSymbolArchetypeTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
+      options ??= new ArchetypeTransformOptions();
+      
       var symbolSpec = SymbolSpecTransformer.Transform(methodSymbol, depth, options);
       var methodSpec = MethodSymbolSpecTransformer.Transform(methodSymbol, depth, options);
       

@@ -24,52 +24,52 @@ public sealed record NamedTypeSymbolSpec
       set => Flags.Set(1, value);
    }
    
-   private readonly SequenceArray<MethodSymbolArchetype>? _methods;
+   private SequenceArray<MethodSymbolArchetype>? _methods;
    public SequenceArray<MethodSymbolArchetype> Methods
    {
       get => LoadedFlags.Methods 
          ? _methods ?? throw new InvalidOperationException("Methods should be loaded but is null.")
          : throw new InvalidOperationException("Methods are not loaded.");
-      init
+      set
       {
          _methods = value;
          LoadedFlags.Methods = true;
       }
    }
    
-   private readonly SequenceArray<TypeParameterArchetype>? _typeParameters;
+   private SequenceArray<TypeParameterArchetype>? _typeParameters;
    public SequenceArray<TypeParameterArchetype> TypeParameters
    {
       get => LoadedFlags.TypeParameters 
          ? _typeParameters ?? throw new InvalidOperationException("Type parameters should be loaded but is null.")
          : throw new InvalidOperationException("Type parameters are not loaded.");
-      init
+      set
       {
          _typeParameters = value;
          LoadedFlags.TypeParameters = true;
       }
    }
    
-   private readonly SequenceArray<TypeSymbolArchetype>? _typeArguments;
+   private SequenceArray<TypeSymbolArchetype>? _typeArguments;
    public SequenceArray<TypeSymbolArchetype> TypeArguments
    {
       get => LoadedFlags.TypeArguments 
          ? _typeArguments ?? throw new InvalidOperationException("Type arguments should be loaded but is null.")
          : throw new InvalidOperationException("Type arguments are not loaded.");
-      init
+      set
       {
          _typeArguments = value;
          LoadedFlags.TypeArguments = true;
       }
    }
    
-   private readonly SequenceArray<NullableAnnotation>? _typeArgumentNullableAnnotations;
+   private SequenceArray<NullableAnnotation>? _typeArgumentNullableAnnotations;
    public SequenceArray<NullableAnnotation> TypeArgumentNullableAnnotations
    {
       get => LoadedFlags.TypeArgumentNullableAnnotations 
          ? _typeArgumentNullableAnnotations ?? throw new InvalidOperationException("Type argument nullable annotations should be loaded but is null.")
          : throw new InvalidOperationException("Type argument nullable annotations are not loaded.");
-      init
+      set
       {
          _typeArgumentNullableAnnotations = value;
          LoadedFlags.TypeArgumentNullableAnnotations = true;

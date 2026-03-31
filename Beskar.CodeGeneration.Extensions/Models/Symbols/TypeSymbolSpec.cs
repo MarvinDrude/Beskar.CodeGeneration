@@ -64,41 +64,40 @@ public sealed record TypeSymbolSpec
       set => Flags.Set(7, value);
    }
    
-   private readonly SequenceArray<NamedTypeSymbolArchetype>? _allInterfaces;
+   private SequenceArray<NamedTypeSymbolArchetype>? _allInterfaces;
    public SequenceArray<NamedTypeSymbolArchetype> AllInterfaces
    {
       get => LoadedFlags.AllInterfaces 
          ? _allInterfaces ?? throw new InvalidOperationException("AllInterfaces should be loaded but is null.") 
          : throw new InvalidOperationException("AllInterfaces is not loaded.");
-      init
+      set
       {
          _allInterfaces = value;
          LoadedFlags.AllInterfaces = true;
       }
    }
    
-   private readonly SequenceArray<NamedTypeSymbolArchetype>? _interfaces;
+   private SequenceArray<NamedTypeSymbolArchetype>? _interfaces;
    public SequenceArray<NamedTypeSymbolArchetype> Interfaces
    {
       get => LoadedFlags.Interfaces 
          ? _interfaces ?? throw new InvalidOperationException("Interfaces should be loaded but is null.") 
          : throw new InvalidOperationException("Interfaces is not loaded.");
-      init
+      set
       {
          _interfaces = value;
          LoadedFlags.Interfaces = true;
       }
    }
-   
-   private readonly NamedTypeSymbolArchetype? _baseType;
-   public NamedTypeSymbolArchetype BaseType
+
+   public NamedTypeSymbolArchetype? BaseType
    {
       get => LoadedFlags.BaseType 
-         ? _baseType ?? throw new InvalidOperationException("BaseType should be loaded but is null.") 
+         ? field 
          : throw new InvalidOperationException("BaseType is not loaded.");
-      init
+      set
       {
-         _baseType = value;
+         field = value;
          LoadedFlags.BaseType = true;
       }
    }

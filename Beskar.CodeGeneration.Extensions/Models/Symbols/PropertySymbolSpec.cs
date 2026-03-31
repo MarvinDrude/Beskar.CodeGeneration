@@ -42,13 +42,13 @@ public sealed record PropertySymbolSpec
       set => Flags.Set(4, value);
    }
    
-   private readonly TypeSymbolArchetype? _type;
+   private TypeSymbolArchetype? _type;
    public TypeSymbolArchetype Type
    {
       get => LoadedFlags.Type 
          ? _type ?? throw new InvalidOperationException("Type should be loaded but is null.") 
          : throw new InvalidOperationException("Type is not loaded.");
-      init
+      set
       {
          _type = value;
          LoadedFlags.Type = true;
@@ -60,7 +60,7 @@ public sealed record PropertySymbolSpec
       get => LoadedFlags.Getter 
          ? field ?? throw new InvalidOperationException("Getter should be loaded but is null.") 
          : throw new InvalidOperationException("Getter is not loaded.");
-      init
+      set
       {
          field = value;
          LoadedFlags.Getter = true;
@@ -72,7 +72,7 @@ public sealed record PropertySymbolSpec
       get => LoadedFlags.Setter 
          ? field ?? throw new InvalidOperationException("Setter should be loaded but is null.") 
          : throw new InvalidOperationException("Setter is not loaded.");
-      init
+      set
       {
          field = value;
          LoadedFlags.Setter = true;

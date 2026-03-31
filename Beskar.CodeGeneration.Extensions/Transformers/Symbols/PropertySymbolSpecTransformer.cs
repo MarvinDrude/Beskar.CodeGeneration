@@ -1,6 +1,6 @@
 ﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+using Beskar.CodeGeneration.Extensions.Transformers.Archetypes;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
-using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols;
@@ -12,7 +12,9 @@ public static class PropertySymbolSpecTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
-      return new PropertySymbolSpec()
+      options ??= new ArchetypeTransformOptions();
+      
+      var spec = new PropertySymbolSpec()
       {
          RefKind = propertySymbol.RefKind,
          
@@ -22,5 +24,31 @@ public static class PropertySymbolSpecTransformer
          IsIndexer = propertySymbol.IsIndexer,
          IsRequired = propertySymbol.IsRequired,
       };
+
+      if (depth > options.Properties.Depth)
+      {
+         return spec;
+      }
+
+      if (options.Properties.Load.Type)
+      {
+         spec.Type = TypeSymbolArchetypeTransformer.Transform(propertySymbol.Type, depth + 1, options);
+      }
+
+      if (options.Properties.Load.Getter)
+      {
+         spec.Getter = propertySymbol.GetMethod is not null 
+            ? MethodSymbolArchetypeTransformer.Transform(propertySymbol.GetMethod, depth + 1, options)
+            : null;
+      }
+
+      if (options.Properties.Load.Setter)
+      {
+         spec.Setter = propertySymbol.SetMethod is not null 
+            ? MethodSymbolArchetypeTransformer.Transform(propertySymbol.SetMethod, depth + 1, options)
+            : null;
+      }
+      
+      return spec;
    }
 }

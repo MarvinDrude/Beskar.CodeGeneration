@@ -12,6 +12,8 @@ public static class ParameterSymbolArchetypeTransformer
       int depth = 1,
       ArchetypeTransformOptions? options = null)
    {
+      options ??= new ArchetypeTransformOptions();
+      
       var symbolSpec = SymbolSpecTransformer.Transform(parameterSymbol, depth, options);
       var parameterSpec = ParameterSymbolSpecTransformer.Transform(parameterSymbol, depth, options);
       

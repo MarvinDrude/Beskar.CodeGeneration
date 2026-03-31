@@ -45,13 +45,13 @@ public sealed record ParameterSymbolSpec
       set => Flags.Set(4, value);
    }
 
-   private readonly TypeSymbolArchetype? _type;
+   private TypeSymbolArchetype? _type;
    public TypeSymbolArchetype Type
    {
       get => LoadedFlags.Type 
          ? _type ?? throw new InvalidOperationException("Type should be loaded but is null.") 
          : throw new InvalidOperationException("Type is not loaded.");
-      init
+      set
       {
          _type = value;
          LoadedFlags.Type = true;
