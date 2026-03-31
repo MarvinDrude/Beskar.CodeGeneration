@@ -1,0 +1,16 @@
+﻿using Beskar.CodeGeneration.Extensions.Models.Symbols;
+
+namespace Beskar.CodeGeneration.Extensions.Common.Specs;
+
+public static class SymbolSpecExtensions
+{
+   extension(SymbolSpec spec)
+   {
+      public string GeneratedFilePath => $"{spec.NameSpace ?? "Global"}.{spec.Name}.g.cs";
+      
+      public bool IsGuid => spec is { Name: "Guid", IsInSystemNamespace: true };
+      
+      public bool IsInSystemNamespace => spec.NameSpace is "System";
+      public bool IsInSystemTasksNamespace => spec.NameSpace is "System.Threading.Tasks";
+   }
+}

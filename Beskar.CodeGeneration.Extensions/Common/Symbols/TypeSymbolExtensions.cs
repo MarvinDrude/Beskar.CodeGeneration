@@ -44,6 +44,15 @@ public static class TypeSymbolExtensions
          }
       };
       
+      public bool IsInSystemNamespace => type is
+      {
+         ContainingNamespace:
+         {
+            Name: "System",
+            ContainingNamespace.IsGlobalNamespace: true
+         }
+      };
+      
       public string TypeAsString => type switch
       {
          { IsRecord: true, TypeKind: TypeKind.Struct } => "record struct",
@@ -62,5 +71,16 @@ public static class TypeSymbolExtensions
       public bool IsInterface => type.TypeKind == TypeKind.Interface;
       public bool IsRecord => type.IsRecord;
       public bool IsClass => type.TypeKind == TypeKind.Class;
+
+      public bool IsNumber => type.SpecialType.IsNumber;
+      public bool IsFloatingNumber => type.SpecialType.IsFloatingNumber;
+      public bool IsAnyNumber => type.SpecialType.IsAnyNumber;
+      
+      public bool IsString => type.SpecialType == SpecialType.System_String;
+      public bool IsBoolean => type.SpecialType == SpecialType.System_Boolean;
+      public bool IsChar => type.SpecialType == SpecialType.System_Char;
+      public bool IsObject => type.SpecialType == SpecialType.System_Object;
+      
+      public bool IsGuid => type.Name == "Guid" && type.IsInSystemNamespace;
    }
 }

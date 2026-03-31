@@ -4,6 +4,9 @@ namespace Beskar.CodeGeneration.TypeIdGenerator;
 
 public sealed partial class TypeIdGenerator : IIncrementalGenerator
 {
+   public const string GeneratorName = "TypeIdGenerator";
+   public const string GeneratorVersion = "1.0.0";
+   
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
       var assemblyNameProvider = context.CompilationProvider

@@ -12,4 +12,9 @@ public sealed partial class TypeIdGenerator
       category: "TypeIdGenerator",
       defaultSeverity: DiagnosticSeverity.Error,
       isEnabledByDefault: true);
+
+   private static readonly Dictionary<string, DiagnosticDescriptor> Diagnostics = new()
+   {
+      [InvalidTargetDiagnosticId] = InvalidTargetRule
+   };
 }

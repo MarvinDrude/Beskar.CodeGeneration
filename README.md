@@ -5,6 +5,9 @@ Beskar.CodeGeneration is a suite of tools designed to streamline the development
 features, it provides a robust infrastructure for symbol analysis, metadata extraction,
 and type-safe code generation.
 
+> **Note:** I use these mainly just for me and my private projects, but feel free to use them as well.
+> Since I already build my generators with .NET 10, it will only work if your IDE supports it.
+
 ## Introduction
 
 Developing Source Generators often involves repetitive tasks like manual attribute parsing,
@@ -23,4 +26,4 @@ that process by:
 | Package | NuGet | Documentation | Description |
 | :--- | :--- | :--- | :--- |
 | **Beskar.CodeGeneration.Extensions** | [![NuGet](https://img.shields.io/nuget/v/Beskar.CodeGeneration.Extensions)](https://www.nuget.org/packages/Beskar.CodeGeneration.Extensions) | [README](./Beskar.CodeGeneration.Extensions/README.md) | Core utilities, symbol transformers, and attribute helpers. |
-| **Beskar.CodeGeneration.TypeIdGenerator** | [![NuGet](https://img.shields.io/nuget/v/Beskar.CodeGeneration.TypeIdGenerator)](https://www.nuget.org/packages/Beskar.CodeGeneration.TypeIdGenerator.Bundle) | [README](./Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/README.md) | A ready-to-use generator for creating type-safe identifiers (e.g., `UserId`). |
+| **Beskar.CodeGeneration.TypeIdGenerator** | [![NuGet](https://img.shields.io/nuget/v/Beskar.CodeGeneration.TypeIdGenerator)](https://www.nuget.org/packages/Beskar.CodeGeneration.TypeIdGenerator) | [README](./Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/README.md) | A ready-to-use generator for creating type-safe identifiers (e.g., `UserId`). |
