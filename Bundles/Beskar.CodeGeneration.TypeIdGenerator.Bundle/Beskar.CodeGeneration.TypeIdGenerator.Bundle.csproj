@@ -8,9 +8,9 @@
       <PackageReadmeFile>README.md</PackageReadmeFile>
       <PublishRepositoryUrl>true</PublishRepositoryUrl>
       <RepositoryUrl>https://github.com/MarvinDrude/Beskar.CodeGeneration</RepositoryUrl>
-      <AssemblyVersion>1.0.4</AssemblyVersion>
-      <FileVersion>1.0.4</FileVersion>
-      <Version>1.0.4</Version>
+      <AssemblyVersion>1.0.6</AssemblyVersion>
+      <FileVersion>1.0.6</FileVersion>
+      <Version>1.0.6</Version>
       <IncludeSymbols>true</IncludeSymbols>
       <IncludeSource>true</IncludeSource>
       <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -18,6 +18,7 @@
       
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <IncludeBuildOutput>true</IncludeBuildOutput>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
    </PropertyGroup>
    <ItemGroup>
       <ProjectReference 
@@ -31,7 +32,14 @@
          PackagePath="analyzers/dotnet/cs" />
    </ItemGroup>
    <ItemGroup>
+      <PackageReference Include="Me.Memory" />
+   </ItemGroup>
+   <ItemGroup>
       <None Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.TypeIdGenerator.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="true" />
+      <None Include="$(OutputPath)\Me.Memory.dll"
             Pack="true"
             PackagePath="analyzers/dotnet/cs"
             Visible="true" />
