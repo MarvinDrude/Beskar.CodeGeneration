@@ -3,4 +3,4 @@
 namespace Beskar.CodeGeneration.TypeIdGenerator.Tests.Scenarios.Simple;
 
 [TypeSafeId]
-public readonly record struct ExampleIntId(int Value);
+public readonly partial record struct ExampleIntId(int Value);

@@ -14,6 +14,8 @@ public sealed class SimpleTests
          .WithReferenceByType<TypeSafeIdAttribute>()
          .AddSourceGenerator(new TypeIdGenerator())
          .Create();
+      
+      var debugReport = result.GetDebugReport();
       var compilation = result.Compilation;
 
       await Assert.That(result.Diagnostics).IsEmpty();

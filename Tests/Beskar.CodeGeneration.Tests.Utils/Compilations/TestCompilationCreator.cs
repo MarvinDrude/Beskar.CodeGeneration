@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using Me.Memory.Code;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -31,22 +32,31 @@ public sealed class TestCompilationCreator
       
       Compilation compilation = CSharpCompilation.Create(
          _assemblyName, syntaxTrees, references, _compOptions);
+      
       ImmutableArray<Diagnostic> generatorDiagnostics = [];
+      ImmutableArray<SyntaxTree> generatedSyntaxTrees = [];
       
       if (_sourcesGenerators.Count > 0)
       {
-         GeneratorDriver driver = CSharpGeneratorDriver.Create(_sourcesGenerators.ToArray());
-         driver.RunGeneratorsAndUpdateCompilation(compilation, out var output, out var diagnostics, ct);
-
-         compilation = output;
-         generatorDiagnostics = diagnostics;
+         GeneratorDriver driver = CSharpGeneratorDriver.Create(
+            _sourcesGenerators.Select(g => g.AsSourceGenerator()).ToArray(),
+            parseOptions: syntaxTreeOptions);
+         
+         driver = driver.RunGenerators(compilation, cancellationToken: ct);
+         
+         var genResult = driver.GetRunResult();
+         generatedSyntaxTrees = genResult.GeneratedTrees;
+         generatorDiagnostics = genResult.Diagnostics;
+         
+         compilation = compilation.AddSyntaxTrees(generatedSyntaxTrees);
       }
       
       return new TestCompilationResult()
       {
          Compilation = compilation,
          GeneratedDiagnostics = generatorDiagnostics,
-         Diagnostics = compilation.GetDiagnostics(ct)
+         Diagnostics = compilation.GetDiagnostics(ct),
+         GeneratedSyntaxTrees = generatedSyntaxTrees
       };
    }
 
@@ -169,6 +179,8 @@ public sealed class TestCompilationResult
    public ImmutableArray<Diagnostic> Diagnostics { get; set; }
    public ImmutableArray<Diagnostic> GeneratedDiagnostics { get; set; }
 
+   public ImmutableArray<SyntaxTree> GeneratedSyntaxTrees { get; set; } = [];
+
    public Diagnostic[] Errors => field ??= GetDiagnostics(DiagnosticSeverity.Error).ToArray();
    public Diagnostic[] GeneratedErrors => field ??= GetGeneratedDiagnostics(DiagnosticSeverity.Error).ToArray();
    
@@ -177,4 +189,49 @@ public sealed class TestCompilationResult
 
    public IEnumerable<Diagnostic> GetGeneratedDiagnostics(DiagnosticSeverity severity)
       => GeneratedDiagnostics.Where(d => d.Severity == severity);
+
+   public string GetDebugReport()
+   {
+      var writer = new CodeTextWriter(
+         stackalloc char[512], stackalloc char[128]);
+
+      try
+      {
+         var allDiagnostics = Diagnostics.Concat(GeneratedDiagnostics).ToArray();
+         
+         if (allDiagnostics.Length == 0)
+         {
+            return "No diagnostics";
+         }
+
+         foreach (var diagnostic in allDiagnostics)
+         {
+            var location = diagnostic.Location;
+            var lineSpan = location.GetLineSpan();
+            
+            var fileName = lineSpan.Path ?? "Unknown";
+            var startLine = lineSpan.StartLinePosition.Line;
+            var startChar = lineSpan.StartLinePosition.Character;
+            
+            writer.WriteLineInterpolated($"[{diagnostic.Id}] {diagnostic.GetMessage()} ({fileName}:{startLine}:{startChar})");
+
+            if (location.SourceTree is { } tree)
+            {
+               var sourceText = location.SourceTree.GetText();
+               var lineContent = sourceText.Lines[startLine].ToString();
+               
+               writer.WriteLine($"Source:");
+               writer.WriteLineInterpolated($" > {lineContent}");
+            }
+
+            writer.WriteLine(new string('-', 40));
+         }
+         
+         return writer.WrittenSpan.ToString();
+      }
+      finally
+      {
+         writer.Dispose();
+      }
+   }
 }

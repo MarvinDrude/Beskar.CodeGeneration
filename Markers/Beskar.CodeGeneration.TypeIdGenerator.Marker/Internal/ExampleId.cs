@@ -28,6 +28,11 @@ internal readonly partial record struct ExampleNumberId(long Value)
       return Value == other.Value;
    }
    
+   public bool Equals(ITypeSafeIdentifier<long>? other)
+   {
+      return other is ExampleNumberId id && Value == id.Value;
+   }
+   
    public override int GetHashCode()
    {
       return Value.GetHashCode();
@@ -35,6 +40,16 @@ internal readonly partial record struct ExampleNumberId(long Value)
    
    // Comparable interface
    public int CompareTo(ExampleNumberId other) => Value.CompareTo(other.Value);
+   
+   public int CompareTo(ITypeSafeIdentifier<long>? other)
+   {
+      return other switch 
+      { 
+         null => 1, 
+         ExampleNumberId id => Value.CompareTo(id.Value), 
+         _ => throw new ArgumentException($"Object must be of type ExampleNumberId.") 
+      }; 
+   }
    
    // Compare operators
    public static bool operator <(ExampleNumberId left, ExampleNumberId right) => left.Value < right.Value; 
@@ -80,22 +95,6 @@ internal readonly partial record struct ExampleNumberId(long Value)
       
       result = default;
       return false;
-   }
-   
-   // Type safe identifier interface
-   public int CompareTo(ITypeSafeIdentifier<long>? other)
-   {
-      return other switch 
-      { 
-         null => 1, 
-         ExampleNumberId id => Value.CompareTo(id.Value), 
-         _ => throw new ArgumentException($"Object must be of type ExampleNumberId.") 
-      }; 
-   }
-   
-   public bool Equals(ITypeSafeIdentifier<long>? other)
-   {
-      return other is ExampleNumberId id && Value == id.Value;
    }
    
    // Span formattable
