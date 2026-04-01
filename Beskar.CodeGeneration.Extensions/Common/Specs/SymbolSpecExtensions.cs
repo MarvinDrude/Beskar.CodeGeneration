@@ -6,7 +6,7 @@ public static class SymbolSpecExtensions
 {
    extension(SymbolSpec spec)
    {
-      public string GeneratedFilePath => $"{spec.NameSpace ?? "Global"}.{spec.Name}.g.cs";
+      public string GeneratedFilePath => $"{(spec.NameSpace is not { Length: > 0 } ? "Global" : spec.NameSpace)}.{spec.Name}.g.cs";
       
       public bool IsGuid => spec is { Name: "Guid", IsInSystemNamespace: true };
       
