@@ -20,7 +20,5 @@ public sealed class SimpleTests
 
       await Assert.That(result.Diagnostics).IsEmpty();
       await Assert.That(result.GeneratedDiagnostics).IsEmpty();
-
-      
    }
 }

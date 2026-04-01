@@ -5,6 +5,12 @@ namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 public sealed class PropertyTransformOptions 
    : SymbolBaseTransformOptions<PropertySymbolLoadFlags>
 {
+   public PropertyTransformOptions WithDepth(int depth)
+   {
+      Depth = depth;
+      return this;
+   }
+   
    public static PropertyTransformOptions Minimal => new()
    {
       Depth = 1,

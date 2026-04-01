@@ -42,7 +42,7 @@ public static class TypeSymbolSpecTransformer
       
       if (options.Types.Load.BaseType)
       {
-         spec.BaseType = typeSymbol.BaseType is not null 
+         spec.BaseType = typeSymbol.BaseType is { SpecialType: not SpecialType.System_Object and not SpecialType.System_ValueType }
             ? NamedTypeSymbolArchetypeTransformer.Transform(typeSymbol.BaseType, depth + 1, options)
             : null;
       }

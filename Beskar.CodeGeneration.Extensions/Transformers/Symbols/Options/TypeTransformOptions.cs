@@ -5,6 +5,12 @@ namespace Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 public sealed class TypeTransformOptions 
    : SymbolBaseTransformOptions<TypeSymbolLoadFlags>
 {
+   public TypeTransformOptions WithDepth(int depth)
+   {
+      Depth = depth;
+      return this;
+   }
+   
    public static TypeTransformOptions Minimal => new()
    {
       Depth = 1,

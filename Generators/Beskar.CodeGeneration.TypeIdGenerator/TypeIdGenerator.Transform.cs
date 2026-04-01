@@ -39,7 +39,12 @@ public sealed partial class TypeIdGenerator
          return builder.Add(InvalidTargetDiagnosticId).Build();
       }
       
-      if (constructor.Method.Parameters.Array.Length != 1)
+      if (constructor.Method.Parameters.Array is not [var parameter])
+      {
+         return builder.Add(InvalidTargetDiagnosticId).Build();
+      }
+
+      if (parameter.Symbol.Name != "Value")
       {
          return builder.Add(InvalidTargetDiagnosticId).Build();
       }

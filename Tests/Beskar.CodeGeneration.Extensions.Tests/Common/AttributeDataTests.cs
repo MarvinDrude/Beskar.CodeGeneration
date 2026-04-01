@@ -135,8 +135,9 @@ public sealed class AttributeDataTests
       
       var enumValues = attribute.DetermineEnumFullNameArrayValues("EnumValues", 8);
       var expectedEnumBase = "Beskar.CodeGeneration.Extensions.Tests.Scenarios.Common.AttributeData.EnumTest";
-      
-      await Assert.That(enumValues).IsEquivalentTo([$"{expectedEnumBase}.Test", $"{expectedEnumBase}.Test2"]);
+
+      string?[] enumEquals = [$"{expectedEnumBase}.Test", $"{expectedEnumBase}.Test2"];
+      await Assert.That(enumValues).IsEquivalentTo(enumEquals);
    }
 
    [Test]

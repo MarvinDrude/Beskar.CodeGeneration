@@ -8,6 +8,12 @@ public sealed class NamedTypeTransformOptions
 {
    public Func<IMethodSymbol, bool>? MethodFilter { get; set; }
    
+   public NamedTypeTransformOptions WithDepth(int depth)
+   {
+      Depth = depth;
+      return this;
+   }
+   
    public static NamedTypeTransformOptions Minimal => new()
    {
       Depth = 1,

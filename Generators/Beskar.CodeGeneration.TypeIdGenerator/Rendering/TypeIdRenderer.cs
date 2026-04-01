@@ -72,9 +72,11 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       writer.DownIndent();
       writer.WriteLine();
 
+      var lastParameter = _isGuid ? "" : ", provider";
+      
       writer.WriteLine("public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)");
       writer.UpIndent();
-      writer.WriteLineInterpolated($" => {_parameterName}.TryFormat(destination, out charsWritten, format, provider);");
+      writer.WriteLineInterpolated($" => {_parameterName}.TryFormat(destination, out charsWritten, format{lastParameter});");
       writer.DownIndent();
    }
    
@@ -124,7 +126,7 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       }
       
       writer.WriteLine("// Explicit nullable to non-nullable conversions");
-      writer.WriteLineInterpolated($"public static explicit operator {_structName}({_underlyingType}? value) => value.HasValue ? new ExampleNumberId(value.Value) : Empty;");
+      writer.WriteLineInterpolated($"public static explicit operator {_structName}({_underlyingType}? value) => value.HasValue ? new {_structName}(value.Value) : Empty;");
       writer.WriteLineInterpolated($"public static explicit operator {_underlyingType}({_structName}? id) => id ?? Empty;");
       writer.WriteLine();
    }
@@ -185,7 +187,7 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       writer.WriteLine("// Equals and GetHashCode");
       
       writer.WriteLineInterpolated($"public bool Equals({_structName} other) => {_parameterName}.Equals(other.{_parameterName});");
-      writer.WriteLineInterpolated($"public bool Equals(ITypeSafeIdentifier<{_underlyingType}> other) => other is {_structName} id && {_parameterName}.Equals(id.{_parameterName});");
+      writer.WriteLineInterpolated($"public bool Equals(ITypeSafeIdentifier<{_underlyingType}>? other) => other is {_structName} id && {_parameterName}.Equals(id.{_parameterName});");
       writer.WriteLineInterpolated($"public override int GetHashCode() => {_parameterName}.GetHashCode();");
       writer.WriteLine();
    }
@@ -201,6 +203,7 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       }
       
       writer.WriteLineInterpolated($"internal string DebuggerView => {expression};");
+      writer.WriteLine();
    }
 
    private void WriteCheckProperties(ref CodeTextWriter writer)
@@ -271,14 +274,15 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
    private void InitializeFields()
    {
       var named = Spec.NamedTargetArchetype;
-      _isGuid = named.Symbol.IsGuid;
-      _isAnyNumber = named.Type.SpecialType.IsAnyNumber;
       _structName = named.Symbol.Name;
       
       var parameter = named.NamedType.Methods.Array[0].Method.Parameters.Array[0];
       _underlyingType = parameter.Parameter.Type.Symbol.FullName;
       _parameterName = parameter.Symbol.Name;
 
+      _isGuid = parameter.Parameter.Type.Symbol.IsGuid;
+      _isAnyNumber = parameter.Parameter.Type.Type.SpecialType.IsAnyNumber;
+      
       _attributeSpec = Spec.AttributeSpec;
    }
 }

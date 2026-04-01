@@ -7,6 +7,12 @@ public sealed class MethodTransformOptions
    : SymbolBaseTransformOptions<MethodSymbolLoadFlags>
 {
    public Func<IParameterSymbol, bool>? ParameterFilter { get; set; }
+ 
+   public MethodTransformOptions WithDepth(int depth)
+   {
+      Depth = depth;
+      return this;
+   }
    
    public static MethodTransformOptions Minimal => new()
    {

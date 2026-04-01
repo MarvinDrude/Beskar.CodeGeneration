@@ -7,16 +7,14 @@ namespace Beskar.CodeGeneration.TypeIdGenerator.Marker.Internal;
 
 [StructLayout(LayoutKind.Sequential)]
 [DebuggerDisplay("{DebuggerView,nq}")]
-internal readonly partial record struct ExampleNumberId(long Value)
-   : IComparable<ExampleNumberId>, ISpanParsable<ExampleNumberId>, ITypeSafeIdentifier<long>, ISpanFormattable
+internal readonly partial record struct ExampleNumberId(Guid Value)
+   : IComparable<ExampleNumberId>, ISpanParsable<ExampleNumberId>, ITypeSafeIdentifier<Guid>, ISpanFormattable
 {
    // Static constant like fields
-   public static ExampleNumberId Empty { get; } = new (0); 
-   public static ExampleNumberId MaxValue { get; } = new (long.MaxValue); 
+   public static ExampleNumberId Empty { get; } = new (Guid.Empty);
 
    // Check properties
-   public bool IsEmpty => Value == 0;
-   public bool IsMaxValue => Value == long.MaxValue;
+   public bool IsEmpty => Value.Equals(Guid.Empty);
    public bool HasValue => !IsEmpty;
    
    // Stringify and debugger view
@@ -28,7 +26,7 @@ internal readonly partial record struct ExampleNumberId(long Value)
       return Value == other.Value;
    }
    
-   public bool Equals(ITypeSafeIdentifier<long>? other)
+   public bool Equals(ITypeSafeIdentifier<Guid>? other)
    {
       return other is ExampleNumberId id && Value == id.Value;
    }
@@ -41,7 +39,7 @@ internal readonly partial record struct ExampleNumberId(long Value)
    // Comparable interface
    public int CompareTo(ExampleNumberId other) => Value.CompareTo(other.Value);
    
-   public int CompareTo(ITypeSafeIdentifier<long>? other)
+   public int CompareTo(ITypeSafeIdentifier<Guid>? other)
    {
       return other switch 
       { 
@@ -58,20 +56,20 @@ internal readonly partial record struct ExampleNumberId(long Value)
    public static bool operator >=(ExampleNumberId left, ExampleNumberId right) => left.Value >= right.Value; 
    
    // Implicit non-nullable conversions
-   public static implicit operator long(ExampleNumberId id) => id.Value;
-   public static implicit operator ExampleNumberId(long value) => new(value);
+   public static implicit operator Guid(ExampleNumberId id) => id.Value;
+   public static implicit operator ExampleNumberId(Guid value) => new(value);
    
    // Implicit nullable conversions
-   public static implicit operator long?(ExampleNumberId? id) => id?.Value;
-   public static implicit operator ExampleNumberId?(long? value) => value.HasValue ? new ExampleNumberId(value.Value) : null;
+   public static implicit operator Guid?(ExampleNumberId? id) => id?.Value;
+   public static implicit operator ExampleNumberId?(Guid? value) => value.HasValue ? new ExampleNumberId(value.Value) : null;
    
    // Implicit non-nullable to nullable conversions
-   public static implicit operator long?(ExampleNumberId id) => id.Value;
-   public static implicit operator ExampleNumberId?(long value) => new ExampleNumberId(value);
+   public static implicit operator Guid?(ExampleNumberId id) => id.Value;
+   public static implicit operator ExampleNumberId?(Guid value) => new ExampleNumberId(value);
    
    // Explicit nullable to non-nullable conversions
-   public static explicit operator long(ExampleNumberId? id) => id ?? Empty;
-   public static explicit operator ExampleNumberId(long? value) => value.HasValue ? new ExampleNumberId(value.Value) : Empty;
+   public static explicit operator Guid(ExampleNumberId? id) => id ?? Empty;
+   public static explicit operator ExampleNumberId(Guid? value) => value.HasValue ? new ExampleNumberId(value.Value) : Empty;
    
    // Span parsable interface
    public static ExampleNumberId Parse(string s, IFormatProvider? provider)
@@ -82,12 +80,12 @@ internal readonly partial record struct ExampleNumberId(long Value)
 
    public static ExampleNumberId Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
    {
-      return new ExampleNumberId(long.Parse(s, provider));
+      return new ExampleNumberId(Guid.Parse(s, provider));
    }
 
    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out ExampleNumberId result)
    {
-      if (long.TryParse(s, provider, out var value))
+      if (Guid.TryParse(s, provider, out var value))
       {
          result = new ExampleNumberId(value);
          return true;
@@ -102,5 +100,5 @@ internal readonly partial record struct ExampleNumberId(long Value)
       => Value.ToString(format, formatProvider);
 
    public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
-      => Value.TryFormat(destination, out charsWritten, format, provider);
+      => Value.TryFormat(destination, out charsWritten, format);
 }
