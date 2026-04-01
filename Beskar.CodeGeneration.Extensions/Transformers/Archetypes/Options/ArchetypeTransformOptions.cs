@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
+﻿using System.Diagnostics.CodeAnalysis;
+using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
 using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
 using Me.Memory.Collections;
 using Microsoft.CodeAnalysis;
@@ -24,6 +25,7 @@ public sealed class ArchetypeTransformOptions
    public ParameterTransformOptions Parameters { get; set; } = ParameterTransformOptions.Minimal;
 
    private readonly Dictionary<string, Func<AttributeData, IAttributeSpec>> _attributeFactories = [];
+   private readonly Dictionary<Type, object> _symbolCaches = [];
 
    public bool IsAttributeRelevant(string? fullName)
    {
@@ -51,5 +53,29 @@ public sealed class ArchetypeTransformOptions
    {
       _attributeFactories.Add(fullName, data => factory(data));
       return this;
+   }
+   
+   public bool TryGetCached<TSymbol, T>(TSymbol symbol, [MaybeNullWhen(false)] out T archetype)
+      where TSymbol : ISymbol
+   {
+      return GetSymbolCache<T>().TryGetValue(symbol, out archetype);
+   }
+
+   public void AddToCache<TSymbol, T>(TSymbol symbol, T archetype)
+      where TSymbol : ISymbol
+   {
+      GetSymbolCache<T>()[symbol] = archetype;
+   }
+
+   private Dictionary<ISymbol, T> GetSymbolCache<T>()
+   {
+      var type = typeof(T);
+      if (!_symbolCaches.TryGetValue(type, out var cache))
+      {
+         cache = new Dictionary<ISymbol, T>(SymbolEqualityComparer.Default);
+         _symbolCaches[type] = cache;
+      }
+      
+      return (Dictionary<ISymbol, T>)cache;
    }
 }

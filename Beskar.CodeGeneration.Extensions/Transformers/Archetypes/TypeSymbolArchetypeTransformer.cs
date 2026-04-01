@@ -14,15 +14,27 @@ public static class TypeSymbolArchetypeTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      if (options.TryGetCached(typeSymbol, out TypeSymbolArchetype cached))
+      {
+         return cached;
+      }
+      
       var symbolSpec = SymbolSpecTransformer.Transform(typeSymbol, depth, options);
       var typeSpec = TypeSymbolSpecTransformer.Transform(typeSymbol, depth, options);
 
+      TypeSymbolArchetype archetype;
+      
       if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
       {
          var namedSpec = NamedTypeSymbolSpecTransformer.Transform(namedTypeSymbol, depth, options);
-         return new TypeSymbolArchetype(symbolSpec, typeSpec, namedSpec);
+         archetype = new TypeSymbolArchetype(symbolSpec, typeSpec, namedSpec);
+      }
+      else
+      {
+         archetype = new TypeSymbolArchetype(symbolSpec, typeSpec, null);
       }
       
-      return new TypeSymbolArchetype(symbolSpec, typeSpec, null);
+      options.AddToCache(typeSymbol, archetype);
+      return archetype;
    }
 }

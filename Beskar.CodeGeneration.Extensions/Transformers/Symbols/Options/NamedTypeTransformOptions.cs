@@ -8,6 +8,10 @@ public sealed class NamedTypeTransformOptions
 {
    public Func<IMethodSymbol, bool>? MethodFilter { get; set; }
    
+   public Func<IPropertySymbol, bool>? PropertyFilter { get; set; }
+   
+   public Func<IFieldSymbol, bool>? FieldFilter { get; set; }
+   
    public NamedTypeTransformOptions WithDepth(int depth)
    {
       Depth = depth;

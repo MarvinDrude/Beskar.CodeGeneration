@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Beskar.CodeGeneration.Extensions.Common.Symbols;
+using Beskar.CodeGeneration.Extensions.Interfaces.Specs;
 using Beskar.CodeGeneration.Extensions.Models.Symbols.Archetypes;
 using Beskar.CodeGeneration.Extensions.Tests.Constants;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
@@ -24,6 +25,9 @@ public sealed class EqualityTests
          "Beskar.CodeGeneration.Extensions.Tests.Scenarios.Common.Archetypes.NamedTypeExample");
       await Assert.That(classSymbol).IsNotNull();
       if (classSymbol == null) return;
+
+      _fullOptions.RegisterAttribute("global::Beskar.CodeGeneration.Extensions.Tests.Scenarios.Common.Archetypes.ExampleAttribute", 
+         data => new TestAttributeSpec() { Name = data.AttributeClass?.Name ?? "" });
       
       var a = classSymbol.CreateNamedArchetype(_fullOptions);
       var b = classSymbol.CreateNamedArchetype(_fullOptions);
@@ -33,13 +37,23 @@ public sealed class EqualityTests
 
    private readonly ArchetypeTransformOptions _fullOptions = new ()
    {
-      Methods = MethodTransformOptions.Full.WithDepth(int.MaxValue),
-      Fields = FieldTransformOptions.Full.WithDepth(int.MaxValue),
-      Properties = PropertyTransformOptions.Full.WithDepth(int.MaxValue),
-      TypeParameters = TypeParameterTransformOptions.Full.WithDepth(int.MaxValue),
-      Types = TypeTransformOptions.Full.WithDepth(int.MaxValue),
-      NamedTypes = NamedTypeTransformOptions.Full.WithDepth(3),
-      Symbols = SymbolTransformOptions.Full.WithDepth(int.MaxValue),
-      Parameters = ParameterTransformOptions.Full.WithDepth(int.MaxValue),
+      Methods = MethodTransformOptions.Full.WithDepth(5),
+      Fields = FieldTransformOptions.Full.WithDepth(5),
+      Properties = PropertyTransformOptions.Full.WithDepth(5),
+      TypeParameters = TypeParameterTransformOptions.Full.WithDepth(5),
+      Types = TypeTransformOptions.Full.WithDepth(5),
+      NamedTypes = NamedTypeTransformOptions.Full.WithDepth(5),
+      Symbols = SymbolTransformOptions.Full.WithDepth(5),
+      Parameters = ParameterTransformOptions.Full.WithDepth(5),
    };
+}
+
+sealed class TestAttributeSpec : IAttributeSpec
+{
+   public required string Name { get; init; }
+   
+   public bool Equals(IAttributeSpec? other)
+   {
+      return other is TestAttributeSpec spec && Name == spec.Name;
+   }
 }

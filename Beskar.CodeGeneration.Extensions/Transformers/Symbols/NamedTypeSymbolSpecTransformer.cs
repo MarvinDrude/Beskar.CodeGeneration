@@ -42,7 +42,27 @@ public static class NamedTypeSymbolSpecTransformer
          ];
       }
       
-      
+      if (options.NamedTypes.Load.Fields)
+      {
+         spec.Fields = [.. 
+            namedTypeSymbol
+               .GetMembers()
+               .OfType<IFieldSymbol>()
+               .Where(m => options.NamedTypes.FieldFilter is null || options.NamedTypes.FieldFilter(m))
+               .Select(m => FieldSymbolArchetypeTransformer.Transform(m, depth + 1, options))
+         ];
+      }
+
+      if (options.NamedTypes.Load.Properties)
+      {
+         spec.Properties = [.. 
+            namedTypeSymbol
+               .GetMembers()
+               .OfType<IPropertySymbol>()
+               .Where(m => options.NamedTypes.PropertyFilter is null || options.NamedTypes.PropertyFilter(m))
+               .Select(m => PropertySymbolArchetypeTransformer.Transform(m, depth + 1, options))
+         ];
+      }
       
       if (options.NamedTypes.Load.TypeParameters)
       {

@@ -11,21 +11,21 @@ namespace Beskar.CodeGeneration.Extensions.Models.Symbols;
 public sealed record NamedTypeSymbolSpec
 {
    public required int Arity { get; init; }
-   public PackedBools8 Flags { get; init; }
+   private PackedBools8 _flags;
    
    private NamedTypeSymbolLoadFlags _loadedFlags;
    private ref NamedTypeSymbolLoadFlags LoadedFlags => ref _loadedFlags;
    
    public bool IsFileLocal
    {
-      get => Flags.Get(0);
-      set => Flags.Set(0, value);
+      get => _flags.Get(0);
+      set => _flags.Set(0, value);
    }
 
    public bool IsEnum
    {
-      get => Flags.Get(1);
-      set => Flags.Set(1, value);
+      get => _flags.Get(1);
+      set => _flags.Set(1, value);
    }
    
    private SequenceArray<MethodSymbolArchetype>? _methods;
@@ -38,6 +38,32 @@ public sealed record NamedTypeSymbolSpec
       {
          _methods = value;
          LoadedFlags.Methods = true;
+      }
+   }
+   
+   private SequenceArray<PropertySymbolArchetype>? _properties;
+   public SequenceArray<PropertySymbolArchetype> Properties
+   {
+      get => LoadedFlags.Properties 
+         ? _properties ?? throw new InvalidOperationException("Properties should be loaded but is null.")
+         : throw new InvalidOperationException("Properties are not loaded.");
+      set
+      {
+         _properties = value;
+         LoadedFlags.Properties = true;
+      }
+   }
+   
+   private SequenceArray<FieldSymbolArchetype>? _fields;
+   public SequenceArray<FieldSymbolArchetype> Fields
+   {
+      get => LoadedFlags.Fields 
+         ? _fields ?? throw new InvalidOperationException("Fields should be loaded but is null.")
+         : throw new InvalidOperationException("Fields are not loaded.");
+      set
+      {
+         _fields = value;
+         LoadedFlags.Fields = true;
       }
    }
    

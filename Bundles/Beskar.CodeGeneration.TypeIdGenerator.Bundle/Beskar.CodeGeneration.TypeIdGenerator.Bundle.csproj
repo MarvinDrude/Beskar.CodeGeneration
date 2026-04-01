@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
    <PropertyGroup>
       <Title>Beskar.CodeGeneration.TypeIdGenerator</Title>
+      <PackageId>Beskar.CodeGeneration.TypeIdGenerator</PackageId>
       <Description>Generates implementation of record struct type safe ids.</Description>
       <Authors>Marvin Drude</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -14,9 +15,30 @@
       <IncludeSource>true</IncludeSource>
       <EmbedUntrackedSources>true</EmbedUntrackedSources>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+      
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <IncludeBuildOutput>true</IncludeBuildOutput>
    </PropertyGroup>
    <ItemGroup>
-     <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
+      <ProjectReference 
+         Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj"
+         Pack="true" />
+      <ProjectReference 
+         Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\Beskar.CodeGeneration.TypeIdGenerator.csproj"
+         OutputItemType="Analyzer"
+         ReferenceOutputAssembly="false"
+         Pack="true"
+         PackagePath="analyzers/dotnet/cs" />
+   </ItemGroup>
+   <ItemGroup>
+      <None Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.TypeIdGenerator.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="true" />
+      <None Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.TypeIdGenerator.Marker.dll"
+            Pack="true"
+            PackagePath="lib\$(TargetFramework)"
+            Visible="true" />
    </ItemGroup>
    <ItemGroup>
       <None Include="README.md" Pack="true" PackagePath="\"/>

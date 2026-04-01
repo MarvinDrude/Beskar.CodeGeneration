@@ -14,10 +14,18 @@ public static class NamedTypeSymbolArchetypeTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      if (options.TryGetCached(namedTypeSymbol, out NamedTypeSymbolArchetype cached))
+      {
+         return cached;
+      }
+      
       var symbolSpec = SymbolSpecTransformer.Transform(namedTypeSymbol, depth, options);
       var typeSpec = TypeSymbolSpecTransformer.Transform(namedTypeSymbol, depth, options);
       var namedSpec = NamedTypeSymbolSpecTransformer.Transform(namedTypeSymbol, depth, options);
       
-      return new NamedTypeSymbolArchetype(symbolSpec, typeSpec, namedSpec);
+      var archetype = new NamedTypeSymbolArchetype(symbolSpec, typeSpec, namedSpec);
+      options.AddToCache(namedTypeSymbol, archetype);
+      
+      return archetype;
    }
 }

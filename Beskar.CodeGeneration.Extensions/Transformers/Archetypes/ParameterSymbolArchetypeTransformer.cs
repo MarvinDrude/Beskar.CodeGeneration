@@ -14,9 +14,17 @@ public static class ParameterSymbolArchetypeTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      if (options.TryGetCached(parameterSymbol, out ParameterSymbolArchetype cached))
+      {
+         return cached;
+      }
+      
       var symbolSpec = SymbolSpecTransformer.Transform(parameterSymbol, depth, options);
       var parameterSpec = ParameterSymbolSpecTransformer.Transform(parameterSymbol, depth, options);
       
-      return new ParameterSymbolArchetype(symbolSpec, parameterSpec);
+      var archetype = new ParameterSymbolArchetype(symbolSpec, parameterSpec);
+      options.AddToCache(parameterSymbol, archetype);
+      
+      return archetype;
    }
 }

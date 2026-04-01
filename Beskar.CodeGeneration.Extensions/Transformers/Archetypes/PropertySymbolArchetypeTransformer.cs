@@ -14,9 +14,17 @@ public static class PropertySymbolArchetypeTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      if (options.TryGetCached(propertySymbol, out PropertySymbolArchetype cached))
+      {
+         return cached;
+      }
+      
       var symbolSpec = SymbolSpecTransformer.Transform(propertySymbol, depth, options);
       var propertySpec = PropertySymbolSpecTransformer.Transform(propertySymbol, depth, options);
       
-      return new PropertySymbolArchetype(symbolSpec, propertySpec);
+      var archetype = new PropertySymbolArchetype(symbolSpec, propertySpec);
+      options.AddToCache(propertySymbol, archetype);
+      
+      return archetype;
    }
 }

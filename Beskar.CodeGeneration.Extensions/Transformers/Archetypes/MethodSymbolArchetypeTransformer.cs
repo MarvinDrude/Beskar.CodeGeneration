@@ -14,9 +14,17 @@ public static class MethodSymbolArchetypeTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      if (options.TryGetCached(methodSymbol, out MethodSymbolArchetype cached))
+      {
+         return cached;
+      }
+      
       var symbolSpec = SymbolSpecTransformer.Transform(methodSymbol, depth, options);
       var methodSpec = MethodSymbolSpecTransformer.Transform(methodSymbol, depth, options);
       
-      return new MethodSymbolArchetype(symbolSpec, methodSpec);
+      var archetype = new MethodSymbolArchetype(symbolSpec, methodSpec);
+      options.AddToCache(methodSymbol, archetype);
+      
+      return archetype;
    }
 }

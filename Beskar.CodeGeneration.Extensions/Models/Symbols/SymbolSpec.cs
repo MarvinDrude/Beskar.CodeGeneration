@@ -18,51 +18,51 @@ public sealed record SymbolSpec
    public required SymbolKind Kind { get; init; }
    public required Accessibility Accessibility { get; init; }
    
-   public PackedBools8 Flags { get; init; }
+   private PackedBools8 _flags;
    
    private SymbolLoadFlags _loadedFlags;
    private ref SymbolLoadFlags LoadedFlags => ref _loadedFlags;
 
    public bool IsStatic
    {
-      get => Flags.Get(0);
-      set => Flags.Set(0, value);
+      get => _flags.Get(0);
+      set => _flags.Set(0, value);
    }
 
    public bool IsAbstract
    {
-      get => Flags.Get(1);
-      set => Flags.Set(1, value);
+      get => _flags.Get(1);
+      set => _flags.Set(1, value);
    }
 
    public bool IsVirtual
    {
-      get => Flags.Get(2);
-      set => Flags.Set(2, value);
+      get => _flags.Get(2);
+      set => _flags.Set(2, value);
    }
 
    public bool IsSealed
    {
-      get => Flags.Get(3);
-      set => Flags.Set(3, value);
+      get => _flags.Get(3);
+      set => _flags.Set(3, value);
    }
 
    public bool IsOverride
    {
-      get => Flags.Get(4);
-      set => Flags.Set(4, value);
+      get => _flags.Get(4);
+      set => _flags.Set(4, value);
    }
    
    public bool IsImplicitlyDeclared
    {
-      get => Flags.Get(5);
-      set => Flags.Set(5, value);
+      get => _flags.Get(5);
+      set => _flags.Set(5, value);
    }
    
    public bool IsExtern
    {
-      get => Flags.Get(6);
-      set => Flags.Set(6, value);
+      get => _flags.Get(6);
+      set => _flags.Set(6, value);
    }
    
    private SequenceArray<IAttributeSpec>? _attributes;
