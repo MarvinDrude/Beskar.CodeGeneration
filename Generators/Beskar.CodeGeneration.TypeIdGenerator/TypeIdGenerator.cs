@@ -2,10 +2,11 @@
 
 namespace Beskar.CodeGeneration.TypeIdGenerator;
 
+[Generator]
 public sealed partial class TypeIdGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "TypeIdGenerator";
-   public const string GeneratorVersion = "1.0.0";
+   public const string GeneratorVersion = "1.0.2";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
@@ -26,5 +27,10 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
       
       context.RegisterSourceOutput(combined, static (ctx, source) 
          => Render(ctx, source.Right, source.Left));
+      
+      context.RegisterPostInitializationOutput(static ctx =>
+      {
+         ctx.AddSource($"{GeneratorName}.g.cs", $"// Version {GeneratorVersion}");
+      });
    }
 }
