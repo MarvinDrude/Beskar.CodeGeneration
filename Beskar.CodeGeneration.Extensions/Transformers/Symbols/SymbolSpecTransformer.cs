@@ -14,6 +14,12 @@ public static class SymbolSpecTransformer
    {
       options ??= new ArchetypeTransformOptions();
       
+      var nameSpace = symbol.ContainingNamespace?.ToDisplayString();
+      if (nameSpace == "<global namespace>")
+      {
+         nameSpace = null;
+      }
+      
       var spec = new SymbolSpec()
       {
          Accessibility = symbol.DeclaredAccessibility,
@@ -22,7 +28,7 @@ public static class SymbolSpecTransformer
          Name = symbol.Name,
          MetadataName = symbol.MetadataName,
          FullName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-         NameSpace = symbol.ContainingNamespace?.ToDisplayString(),
+         NameSpace = nameSpace,
          
          IsStatic = symbol.IsStatic,
          IsAbstract = symbol.IsAbstract,
