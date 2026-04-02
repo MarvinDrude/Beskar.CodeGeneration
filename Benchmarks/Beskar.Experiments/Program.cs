@@ -16,11 +16,11 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
    
 // Json Provider example - can create own providers like DB or Third party api
 var provider = (JsonTranslationProvider)serviceProvider.GetRequiredService<ITranslationProvider>();
-provider.Initialize("Translations");
+provider.Initialize("Translations"); // folder path
 await provider.PopulateCache(CancellationToken.None); // can be called again if file changed at runtime
 
 var translation = serviceProvider.GetRequiredService<TranslationFacade>();
-Console.WriteLine(translation.TestGroup.Test);
+Console.WriteLine(translation.TestGroup.Test); // calls the translation provider in the background
 Console.WriteLine(translation.RegisterGroup.Description);
 
 return;
