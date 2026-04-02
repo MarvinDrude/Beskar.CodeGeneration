@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Microsoft.CodeAnalysis;
 
@@ -20,6 +21,7 @@ public static class AttributeDataExtensions
          return false;
       }
       
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? GetNamedStringValueOrDefault(string name, string? defaultValue = null)
       {
          return attribute.TryGetNamedArgument(name, out var constant)
@@ -41,6 +43,7 @@ public static class AttributeDataExtensions
             : null;
       }
       
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? GetNamedEnumFullNameOrDefault(string name, string? defaultValue = null)
       {
          return attribute.TryGetNamedArgument(name, out var constant)

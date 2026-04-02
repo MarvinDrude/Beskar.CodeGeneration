@@ -32,7 +32,7 @@ public static class TypeSymbolSpecTransformer
 
       if (options.Types.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(typeSymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(typeSymbol, typeSymbol.GetAttributes());
       }
 
       if (depth > options.Types.Depth)

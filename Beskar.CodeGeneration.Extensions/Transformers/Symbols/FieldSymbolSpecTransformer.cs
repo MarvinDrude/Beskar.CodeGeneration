@@ -27,7 +27,7 @@ public static class FieldSymbolSpecTransformer
 
       if (options.Fields.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(fieldSymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(fieldSymbol, fieldSymbol.GetAttributes());
       }
 
       if (depth > options.Fields.Depth)

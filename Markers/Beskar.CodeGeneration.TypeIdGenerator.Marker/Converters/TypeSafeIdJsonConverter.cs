@@ -30,6 +30,6 @@ public sealed class TypeSafeIdJsonConverter<T, TUnderlying> : JsonConverter<T>
 
    public override void WriteAsPropertyName(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
    {
-      writer.WriteStringValue(value.Value.ToString());
+      writer.WritePropertyName(value.Value.ToString() ?? throw new InvalidOperationException("Empty property name."));
    }
 }

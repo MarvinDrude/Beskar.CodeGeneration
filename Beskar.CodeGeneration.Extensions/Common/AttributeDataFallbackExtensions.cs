@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Common;
@@ -7,6 +8,7 @@ public static class AttributeDataFallbackExtensions
 {
    extension(AttributeData attribute)
    {
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? DetermineStringValue(string name, int index, string? defaultValue = null)
       {
          return attribute.GetNamedStringValueOrDefault(name, defaultValue)
@@ -33,6 +35,7 @@ public static class AttributeDataFallbackExtensions
             : attribute.GetParameterCharValue(index, defaultValue);
       }
       
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? DetermineEnumFullName(string name, int index, string? defaultValue = null)
       {
          return attribute.GetNamedEnumFullNameOrDefault(name, defaultValue)

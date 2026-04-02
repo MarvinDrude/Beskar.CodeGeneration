@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <ImplicitUsings>disable</ImplicitUsings>
+      <NoWarn>CS9113</NoWarn>
+   </PropertyGroup>
+
+   <ItemGroup>
+      <PackageReference Include="Basic.Reference.Assemblies.Net100" />
+      <PackageReference Include="TUnit" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <ProjectReference Include="..\..\Generators\Beskar.CodeGeneration.LanguageGenerator\Beskar.CodeGeneration.LanguageGenerator.csproj" />
+      <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.LanguageGenerator.Marker\Beskar.CodeGeneration.LanguageGenerator.Marker.csproj" />
+      <ProjectReference Include="..\Beskar.CodeGeneration.Tests.Utils\Beskar.CodeGeneration.Tests.Utils.csproj" />
+   </ItemGroup>
+
+</Project>

@@ -23,7 +23,7 @@ public static class NamedTypeSymbolSpecTransformer
       
       if (options.NamedTypes.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(namedTypeSymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(namedTypeSymbol, namedTypeSymbol.GetAttributes());
       }
 
       if (depth > options.NamedTypes.Depth)

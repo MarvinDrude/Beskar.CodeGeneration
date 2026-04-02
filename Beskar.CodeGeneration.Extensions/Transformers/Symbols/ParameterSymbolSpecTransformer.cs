@@ -29,7 +29,7 @@ public static class ParameterSymbolSpecTransformer
 
       if (options.Parameters.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(parameterSymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(parameterSymbol, parameterSymbol.GetAttributes());
       }
 
       if (depth > options.Parameters.Depth)

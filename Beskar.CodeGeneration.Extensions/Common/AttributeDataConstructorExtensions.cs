@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.Extensions.Common;
@@ -7,6 +8,7 @@ public static class AttributeDataConstructorExtensions
 {
    extension(AttributeData attribute)
    {
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? GetParameterStringValue(int index, string? defaultValue = null)
       {
          return attribute.ConstructorArguments.Length > index
@@ -133,6 +135,7 @@ public static class AttributeDataConstructorExtensions
             : [];
       }
       
+      [return: NotNullIfNotNull(nameof(defaultValue))]
       public string? GetParameterEnumFullName(int index, string? defaultValue = null)
       {
          return attribute.ConstructorArguments.Length > index
