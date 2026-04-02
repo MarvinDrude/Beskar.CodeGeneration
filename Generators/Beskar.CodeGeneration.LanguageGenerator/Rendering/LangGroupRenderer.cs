@@ -57,8 +57,6 @@ public sealed class LangGroupRenderer(SourceProductionContext ctx)
       }
       
       writer.CloseBody();
-      
-      
       writer.CloseBody();
       writer.WriteLine();
    }

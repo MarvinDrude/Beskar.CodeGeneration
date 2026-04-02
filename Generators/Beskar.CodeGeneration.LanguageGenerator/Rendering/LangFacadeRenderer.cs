@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using Beskar.CodeGeneration.Extensions.Rendering;
+﻿using Beskar.CodeGeneration.Extensions.Rendering;
 using Beskar.CodeGeneration.LanguageGenerator.Models;
 using Me.Memory.Code;
 using Microsoft.CodeAnalysis;
@@ -57,6 +56,9 @@ public sealed class LangFacadeRenderer(SourceProductionContext ctx)
          }
          
          writer.CloseBody();
+         writer.WriteLine();
+         
+         WriteDefaultValues(ref writer);
          return writer.WrittenSpan.ToString();
       }
       finally
@@ -64,9 +66,60 @@ public sealed class LangFacadeRenderer(SourceProductionContext ctx)
          writer.Dispose();
       }
    }
+
+   private void WriteDefaultValues(ref CodeTextWriter writer)
+   {
+      writer.WriteLineInterpolated($"public static partial class LangKey");
+      writer.OpenBody();
+
+      writer.WriteLineInterpolated($"public static string GetDefaultValue(string fullKey)");
+      writer.OpenBody();
+
+      writer.WriteLine("return fullKey switch");
+      writer.OpenBody();
+      foreach (var spec in Specs)
+      {
+         foreach (ref var fieldArchetype in spec.EnumTypeArchetype.NamedType.Fields)
+         {
+            if (fieldArchetype.Field.Attributes.Array is not [LanguageKeySpec attr])
+            {
+               continue;
+            }
+
+            writer.WriteLineInterpolated($"LangKey.{spec.GroupName}.{fieldArchetype.Symbol.Name} => \"{attr.DefaultValue}\",");
+         }
+      }
+      
+      writer.WriteLine("_ => fullKey");
+      writer.CloseBodySemicolon();
+      writer.CloseBody();
+      writer.WriteLine();
+
+      writer.WriteLine("public static readonly ImmutableArray<string> AllKeys = ImmutableArray.CreateRange([");
+      writer.UpIndent();
+      
+      foreach (var spec in Specs)
+      {
+         foreach (ref var fieldArchetype in spec.EnumTypeArchetype.NamedType.Fields)
+         {
+            if (fieldArchetype.Field.Attributes.Array is not [LanguageKeySpec attr])
+            {
+               continue;
+            }
+
+            writer.WriteLineInterpolated($"LangKey.{spec.GroupName}.{fieldArchetype.Symbol.Name},");
+         }
+      }
+      
+      writer.DownIndent();
+      writer.WriteLine("]);");
+         
+      writer.CloseBody();
+   }
    
    private void WriteUsings(ref CodeTextWriter writer)
    {
+      writer.WriteUsing("System.Collections.Immutable");
       writer.WriteUsing("Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces");
       writer.WriteLine();
    }

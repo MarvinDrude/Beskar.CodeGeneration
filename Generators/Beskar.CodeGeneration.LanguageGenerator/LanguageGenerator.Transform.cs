@@ -29,7 +29,7 @@ public sealed partial class LanguageGenerator
       using var builder = DiagnosticBuilder<LanguageEnumSpec>.Create(8);
 
       var archetype = symbol.CreateNamedArchetype(_transformOptions);
-      var groupName = attribute.DetermineStringValue("GroupName", 0, symbol.Name);
+      var groupName = attribute.DetermineStringValue("GroupName", 0) ?? symbol.Name;
 
       if (archetype.Type.Kind is not TypeKind.Enum)
       {
@@ -43,8 +43,8 @@ public sealed partial class LanguageGenerator
 
    private static LanguageKeySpec TransformKeyAttribute(ISymbol symbol, AttributeData data)
    {
-      var keyName = data.DetermineStringValue("KeyName", 0, symbol.Name);
-      var defaultValue = data.DetermineStringValue("DefaultValue", 1, symbol.Name);
+      var keyName = data.DetermineStringValue("KeyName", 0) ?? symbol.Name;
+      var defaultValue = data.DetermineStringValue("DefaultValue", 1) ?? symbol.Name;
       
       return new LanguageKeySpec()
       {
