@@ -254,6 +254,11 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       writer.WriteLine("[StructLayout(LayoutKind.Sequential)]");
       writer.WriteLine("[DebuggerDisplay(\"{DebuggerView,nq}\")]");
 
+      if (_attributeSpec is { AddJsonConverter: true, IsSpanParsable: true })
+      {
+         writer.WriteLineInterpolated($"[JsonConverter(typeof(TypeSafeIdJsonConverter<{_structName}, {_underlyingType}>))]");
+      }
+      
       writer.WriteLineInterpolated($"{access} readonly partial record struct {_structName}");
       writer.UpIndent();
       
@@ -267,7 +272,9 @@ public sealed class TypeIdRenderer(SourceProductionContext ctx)
       writer.WriteUsing("System.Diagnostics");
       writer.WriteUsing("System.Diagnostics.CodeAnalysis");
       writer.WriteUsing("System.Runtime.InteropServices");
+      writer.WriteUsing("System.Text.Json.Serialization");
       writer.WriteUsing("Beskar.CodeGeneration.TypeIdGenerator.Marker.Interfaces");
+      writer.WriteUsing("Beskar.CodeGeneration.TypeIdGenerator.Marker.Converters");
       writer.WriteLine();
    }
 
