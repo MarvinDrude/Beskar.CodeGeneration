@@ -12,6 +12,6 @@ public enum TestGroup
 [TranslationGroup]
 public enum LoginGroup
 {
-   [TranslationKey("TitleOverwrite", defaultValue: "Welcome here Login")]
+   [TranslationKey("TitleOverwrite", defaultValue: "'@Welcome here \"Login-\"")]
    Title = 1
 }

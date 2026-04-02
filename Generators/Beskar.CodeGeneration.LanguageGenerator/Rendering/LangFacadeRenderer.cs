@@ -2,6 +2,7 @@
 using Beskar.CodeGeneration.LanguageGenerator.Models;
 using Me.Memory.Code;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Beskar.CodeGeneration.LanguageGenerator.Rendering;
 
@@ -86,7 +87,8 @@ public sealed class LangFacadeRenderer(SourceProductionContext ctx)
                continue;
             }
 
-            writer.WriteLineInterpolated($"LangKey.{spec.GroupName}.{fieldArchetype.Symbol.Name} => \"{attr.DefaultValue}\",");
+            var escapedValue = SymbolDisplay.FormatLiteral(attr.DefaultValue, true);
+            writer.WriteLineInterpolated($"LangKey.{spec.GroupName}.{fieldArchetype.Symbol.Name} => {escapedValue},");
          }
       }
       

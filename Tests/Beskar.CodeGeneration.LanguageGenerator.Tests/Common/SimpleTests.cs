@@ -14,7 +14,7 @@ public class SimpleTests
          .WithReferenceByType<TranslationGroupAttribute>()
          .AddSourceGenerator(new LanguageGenerator())
          .Create();
-      
+
       var debugReport = result.GetDebugReport();
       var compilation = result.Compilation;
 

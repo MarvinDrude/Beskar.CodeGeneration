@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
 
 namespace Beskar.CodeGeneration.LanguageGenerator.Marker.Common;
@@ -9,7 +10,7 @@ public abstract class TranslationBaseProvider(IEnumerable<ILanguageDetector> det
    public string CurrentLanguageTwoLetterCode => GetCurrentLanguageCode(true);
    public string CurrentLanguageCode => GetCurrentLanguageCode(false);
 
-   private readonly Dictionary<string, TranslationKeyValueStore> _languageCache = [];
+   private readonly ConcurrentDictionary<string, TranslationKeyValueStore> _languageCache = [];
    private readonly ILanguageDetector[] _detectors = detectors.OrderByDescending(d => d.Priority).ToArray();
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37,12 +38,12 @@ public abstract class TranslationBaseProvider(IEnumerable<ILanguageDetector> det
 
    protected void AddToCache(string languageCode, Dictionary<string, string> keyValues)
    {
-      _languageCache.Add(languageCode, new TranslationKeyValueStore { KeyValues = keyValues });
+      _languageCache[languageCode] = new TranslationKeyValueStore { KeyValues = keyValues };
    }
    
    protected void AddToCache(string languageCode, TranslationKeyValueStore store)
    {
-      _languageCache.Add(languageCode, store);
+      _languageCache[languageCode] = store;
    }
    
    private string GetCurrentLanguageCode(bool isTwoLetterCode)
