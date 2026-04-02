@@ -27,7 +27,7 @@ public static class PropertySymbolSpecTransformer
       
       if (options.Properties.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(propertySymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(propertySymbol, propertySymbol.GetAttributes());
       }
 
       if (depth > options.Properties.Depth)

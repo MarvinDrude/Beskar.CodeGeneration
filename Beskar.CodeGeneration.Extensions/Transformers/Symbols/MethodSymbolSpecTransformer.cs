@@ -28,7 +28,7 @@ public static class MethodSymbolSpecTransformer
 
       if (options.Methods.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(methodSymbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(methodSymbol, methodSymbol.GetAttributes());
       }
 
       if (depth > options.Methods.Depth)

@@ -24,7 +24,7 @@ public sealed class ArchetypeTransformOptions
    
    public ParameterTransformOptions Parameters { get; set; } = ParameterTransformOptions.Minimal;
 
-   private readonly Dictionary<string, Func<AttributeData, IAttributeSpec>> _attributeFactories = [];
+   private readonly Dictionary<string, Func<ISymbol, AttributeData, IAttributeSpec>> _attributeFactories = [];
    private readonly Dictionary<Type, object> _symbolCaches = [];
 
    public bool IsAttributeRelevant(string? fullName)
@@ -32,26 +32,26 @@ public sealed class ArchetypeTransformOptions
       return fullName is not null && _attributeFactories.ContainsKey(fullName);
    }
    
-   public Func<AttributeData, IAttributeSpec> GetAttributeFactory(string fullName)
+   public Func<ISymbol, AttributeData, IAttributeSpec> GetAttributeFactory(string fullName)
    {
       return _attributeFactories.GetValueOrDefault(fullName)
          ?? throw new InvalidOperationException("Attribute factory not found");
    }
 
-   public SequenceArray<IAttributeSpec> GetAttributes(IEnumerable<AttributeData> attributes)
+   public SequenceArray<IAttributeSpec> GetAttributes(ISymbol symbol, IEnumerable<AttributeData> attributes)
    {
       return [.. 
          attributes
             .Select(x => new { FullName = x.AttributeClass?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), Data = x })
             .Where(x => IsAttributeRelevant(x.FullName))
-            .Select(x => GetAttributeFactory(x.FullName ?? string.Empty)(x.Data))
+            .Select(x => GetAttributeFactory(x.FullName ?? string.Empty)(symbol, x.Data))
       ];
    }
    
-   public ArchetypeTransformOptions RegisterAttribute<T>(string fullName, Func<AttributeData, T> factory)
+   public ArchetypeTransformOptions RegisterAttribute<T>(string fullName, Func<ISymbol, AttributeData, T> factory)
       where T : IAttributeSpec
    {
-      _attributeFactories.Add(fullName, data => factory(data));
+      _attributeFactories.Add(fullName, (symbol, data) => factory(symbol, data));
       return this;
    }
    

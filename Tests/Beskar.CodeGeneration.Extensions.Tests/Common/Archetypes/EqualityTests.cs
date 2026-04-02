@@ -27,7 +27,7 @@ public sealed class EqualityTests
       if (classSymbol == null) return;
 
       _fullOptions.RegisterAttribute("global::Beskar.CodeGeneration.Extensions.Tests.Scenarios.Common.Archetypes.ExampleAttribute", 
-         data => new TestAttributeSpec() { Name = data.AttributeClass?.Name ?? "" });
+         (_, data) => new TestAttributeSpec() { Name = data.AttributeClass?.Name ?? "" });
       
       var a = classSymbol.CreateNamedArchetype(_fullOptions);
       var b = classSymbol.CreateNamedArchetype(_fullOptions);

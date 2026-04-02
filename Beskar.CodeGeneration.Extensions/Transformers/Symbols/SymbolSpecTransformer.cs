@@ -41,7 +41,7 @@ public static class SymbolSpecTransformer
 
       if (options.Symbols.Load.Attributes)
       {
-         spec.Attributes = options.GetAttributes(symbol.GetAttributes());
+         spec.Attributes = options.GetAttributes(symbol, symbol.GetAttributes());
       }
       
       return spec;
