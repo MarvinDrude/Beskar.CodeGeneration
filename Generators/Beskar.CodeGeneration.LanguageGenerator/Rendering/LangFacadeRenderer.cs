@@ -95,7 +95,7 @@ public sealed class LangFacadeRenderer(SourceProductionContext ctx)
       writer.CloseBody();
       writer.WriteLine();
 
-      writer.WriteLine("public static readonly ImmutableArray<string> AllKeys = ImmutableArray.CreateRange([");
+      writer.WriteLine("public static readonly ImmutableArray<string> AllKeys = ImmutableArray.CreateRange<string>([");
       writer.UpIndent();
       
       foreach (var spec in Specs)
