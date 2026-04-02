@@ -1,4 +1,5 @@
 ﻿using Beskar.CodeGeneration.Extensions.Common;
+using Beskar.CodeGeneration.Extensions.Common.Symbols;
 using Beskar.CodeGeneration.Extensions.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Symbols;
@@ -27,11 +28,17 @@ public sealed partial class LanguageGenerator
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<LanguageEnumSpec>.Create(8);
 
-      
+      var archetype = symbol.CreateNamedArchetype(_transformOptions);
+      var groupName = attribute.DetermineStringValue("GroupName", 0, symbol.Name);
+
+      if (archetype.Type.Kind is not TypeKind.Enum)
+      {
+         return builder.Add(InvalidTargetDiagnosticId).Build();
+      }
       
       return builder.Build(new LanguageEnumSpec(
-         attribute.GroupName,
-         attribute.EnumTypeArchetype));
+         groupName,
+         archetype));
    }
 
    private static LanguageKeySpec TransformKeyAttribute(ISymbol symbol, AttributeData data)

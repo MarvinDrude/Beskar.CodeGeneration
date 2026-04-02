@@ -2,8 +2,8 @@
 
 [AttributeUsage(AttributeTargets.Enum)]
 public sealed class TranslationGroupAttribute(
-   string groupName)
+   string? groupName = null)
    : Attribute
 {
-   public string GroupName { get; init; } = groupName;
+   public string? GroupName { get; init; } = groupName;
 }

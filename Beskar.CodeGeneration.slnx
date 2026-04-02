@@ -28,6 +28,7 @@
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="Tests/Beskar.CodeGeneration.Extensions.Tests/Beskar.CodeGeneration.Extensions.Tests.csproj" />
+    <Project Path="Tests/Beskar.CodeGeneration.LanguageGenerator.Tests/Beskar.CodeGeneration.LanguageGenerator.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.Tests.Utils/Beskar.CodeGeneration.Tests.Utils.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests.csproj" />
   </Folder>
