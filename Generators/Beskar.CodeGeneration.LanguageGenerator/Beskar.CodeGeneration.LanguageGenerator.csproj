@@ -8,8 +8,8 @@
    </PropertyGroup>
 
    <PropertyGroup>
-      <Title>Beskar.CodeGeneration.LanguageGenerator</Title>
-      <PackageId>Beskar.CodeGeneration.LanguageGenerator</PackageId>
+      <Title>Beskar.CodeGeneration.LanguageGenerator.Generator</Title>
+      <PackageId>Beskar.CodeGeneration.LanguageGenerator.Generator</PackageId>
       <Description>Generate easy to use language group / key interaction for code.</Description>
       <Authors>Marvin Drude</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -33,16 +33,17 @@
    </ItemGroup>
 
    <ItemGroup>
-      <PackageReference Include="Me.Memory" />
+      <PackageReference Include="Me.Memory" GeneratePathProperty="true" />
       <PackageReference Include="Microsoft.CodeAnalysis.Common" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
    </ItemGroup>
    <PropertyGroup>
       <GetCustomStaticAssetsTargets>$(GetCustomStaticAssetsTargets);GetDependencyTargetPaths</GetCustomStaticAssetsTargets>
+      <GetCustomSymbols>true</GetCustomSymbols>
    </PropertyGroup>
    <Target Name="GetDependencyTargetPaths">
       <ItemGroup>
-         <None Include="$(PkgMe_Memory)\lib\$(TargetFramework)\*.dll"
+         <None Include="$(PkgMe_Memory)\lib\$(TargetFramework)\Me.Memory.dll"
                Pack="true"
                PackagePath="analyzers/dotnet/cs"
                Visible="false" />

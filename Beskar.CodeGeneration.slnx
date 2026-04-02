@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/Benchmarks/">
     <Project Path="Benchmarks/Beskar.Benchmark.Common/Beskar.Benchmark.Common.csproj" />
+    <Project Path="Benchmarks/Beskar.Experiments/Beskar.Experiments.csproj" />
     <Project Path="Benchmarks/Beskar.Language.Benchmarks/Beskar.Language.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/Bundles/">
