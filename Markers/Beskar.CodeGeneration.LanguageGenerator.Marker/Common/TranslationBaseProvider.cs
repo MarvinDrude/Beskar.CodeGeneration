@@ -21,9 +21,11 @@ public abstract class TranslationBaseProvider(IEnumerable<ILanguageDetector> det
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public string Get(scoped in ReadOnlySpan<char> fullKeySpan)
    {
-      var store = _languageCache.GetValueOrDefault(CurrentLanguageCode)
-         ?? _languageCache.GetValueOrDefault(CurrentLanguageTwoLetterCode)
-         ?? throw new InvalidOperationException("Language cache not populated");
+      var store = _languageCache.GetValueOrDefault(CurrentLanguageCode);
+      store ??= _languageCache.GetValueOrDefault(CurrentLanguageTwoLetterCode);
+      
+      if (store is null) 
+         return fullKeySpan.ToString();
 
       var alternateLookup = store.KeyValues.GetAlternateLookup<ReadOnlySpan<char>>();
       
