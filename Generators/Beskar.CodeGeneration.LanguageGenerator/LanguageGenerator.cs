@@ -24,9 +24,15 @@ public sealed partial class LanguageGenerator : IIncrementalGenerator
       
       var combined = maybeLanguageEnumSpecProvider
          .Combine(assemblyNameProvider);
+
+      var collected = assemblyNameProvider
+         .Combine(maybeLanguageEnumSpecProvider.Collect());
       
       context.RegisterSourceOutput(combined, static (ctx, source) 
          => Render(ctx, source.Right, source.Left));
+      
+      context.RegisterSourceOutput(collected, static (ctx, source) 
+         => RenderExtensions(ctx, source.Left, source.Right));
       
       context.RegisterPostInitializationOutput(static ctx =>
       {
