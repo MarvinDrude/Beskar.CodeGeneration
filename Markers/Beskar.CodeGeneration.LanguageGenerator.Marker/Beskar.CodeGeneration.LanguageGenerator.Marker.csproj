@@ -7,17 +7,17 @@
    </PropertyGroup>
 
    <PropertyGroup>
-      <Title>Beskar.CodeGeneration.TypeIdGenerator.Marker</Title>
-      <PackageId>Beskar.CodeGeneration.TypeIdGenerator.Marker</PackageId>
-      <Description>Generates implementation of record struct type safe ids.</Description>
+      <Title>Beskar.CodeGeneration.LanguageGenerator.Marker</Title>
+      <PackageId>Beskar.CodeGeneration.LanguageGenerator.Marker</PackageId>
+      <Description>Generate easy to use language group / key interaction for code.</Description>
       <Authors>Marvin Drude</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageReadmeFile>README.md</PackageReadmeFile>
       <PublishRepositoryUrl>true</PublishRepositoryUrl>
       <RepositoryUrl>https://github.com/MarvinDrude/Beskar.CodeGeneration</RepositoryUrl>
-      <AssemblyVersion>1.1.0</AssemblyVersion>
-      <FileVersion>1.1.0</FileVersion>
-      <Version>1.1.0</Version>
+      <AssemblyVersion>1.0.0</AssemblyVersion>
+      <FileVersion>1.0.0</FileVersion>
+      <Version>1.0.0</Version>
       <IncludeSymbols>true</IncludeSymbols>
       <IncludeSource>true</IncludeSource>
       <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -29,5 +29,5 @@
    <ItemGroup>
       <None Include="README.md" Pack="true" PackagePath="\"/>
    </ItemGroup>
-   
+
 </Project>

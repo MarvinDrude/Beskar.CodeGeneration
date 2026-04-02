@@ -15,12 +15,15 @@
     <Project Path="Benchmarks/Beskar.Language.Benchmarks/Beskar.Language.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/Bundles/">
+    <Project Path="Bundles/Beskar.CodeGeneration.LanguageGenerator.Bundle/Beskar.CodeGeneration.LanguageGenerator.Bundle.csproj" />
     <Project Path="Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/Beskar.CodeGeneration.TypeIdGenerator.Bundle.csproj" />
   </Folder>
   <Folder Name="/Generators/">
+    <Project Path="Generators/Beskar.CodeGeneration.LanguageGenerator/Beskar.CodeGeneration.LanguageGenerator.csproj" />
     <Project Path="Generators/Beskar.CodeGeneration.TypeIdGenerator/Beskar.CodeGeneration.TypeIdGenerator.csproj" />
   </Folder>
   <Folder Name="/Markers/">
+    <Project Path="Markers/Beskar.CodeGeneration.LanguageGenerator.Marker/Beskar.CodeGeneration.LanguageGenerator.Marker.csproj" />
     <Project Path="Markers/Beskar.CodeGeneration.TypeIdGenerator.Marker/Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
   </Folder>
   <Folder Name="/Tests/">
