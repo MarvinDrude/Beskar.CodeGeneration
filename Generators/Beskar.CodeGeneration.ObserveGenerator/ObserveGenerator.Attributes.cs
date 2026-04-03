@@ -16,6 +16,9 @@ public sealed partial class ObserveGenerator
    
    private const string InstrumentAttributeName = "ObserveInstrumentAttribute";
    private const string InstrumentAttributeFullName = $"{AttributeNameSpace}.{InstrumentAttributeName}";
+   
+   private const string ObserveAttributeName = "ObserveAttribute";
+   private const string ObserveAttributeFullName = $"{AttributeNameSpace}.{ObserveAttributeName}";
 
    private static ObserveMeterSpec? GetMeterAttribute(ISymbol symbol, ImmutableArray<AttributeData> attributes)
    {
