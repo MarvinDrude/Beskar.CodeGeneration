@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Common;
+﻿using System.Collections.Immutable;
+using Beskar.CodeGeneration.Extensions.Common;
 using Beskar.CodeGeneration.Extensions.Common.Specs;
 using Beskar.CodeGeneration.Extensions.Models.Diagnostics;
 using Beskar.CodeGeneration.ObserveGenerator.Models;
@@ -9,7 +10,7 @@ namespace Beskar.CodeGeneration.ObserveGenerator;
 
 public sealed partial class ObserveGenerator
 {
-   public static void Render(
+   private static void Render(
       SourceProductionContext context,
       string assemblyName,
       MaybeSpec<ObserveSpec> maybeSpec)
@@ -29,5 +30,22 @@ public sealed partial class ObserveGenerator
       };
       
       renderer.Render(maybeSpec.Value.NamedTypeArchetype.Symbol.GeneratedFilePath);
+   }
+   
+   private static void RenderExtensions(
+      SourceProductionContext context,
+      string assemblyName,
+      ImmutableArray<ObserveSpec> specs)
+   {
+      var ct = context.CancellationToken;
+      ct.ThrowIfCancellationRequested();
+      
+      var renderer = new ExtensionRenderer(context)
+      {
+         Specs = specs,
+         Namespace = assemblyName
+      };
+      
+      renderer.Render($"{assemblyName}.ObserveExtensions.g.cs");
    }
 }

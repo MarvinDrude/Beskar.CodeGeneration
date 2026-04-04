@@ -6,7 +6,7 @@ namespace Beskar.CodeGeneration.ObserveGenerator;
 public sealed partial class ObserveGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "ObserveGenerator";
-   public const string GeneratorVersion = "1.1.2";
+   public const string GeneratorVersion = "1.1.3";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
@@ -25,8 +25,18 @@ public sealed partial class ObserveGenerator : IIncrementalGenerator
       var combined = maybeSpecProvider
          .Combine(assemblyNameProvider);
       
+      var collected = assemblyNameProvider
+         .Combine(maybeSpecProvider
+            .Where(static x => x.HasValue)
+            .Select(static (x, _) => x.Value)
+            .Collect()
+         );
+      
       context.RegisterSourceOutput(combined, static (ctx, source) 
          => Render(ctx, source.Right, source.Left));
+      
+      context.RegisterSourceOutput(collected, static (ctx, source) 
+         => RenderExtensions(ctx, source.Left, source.Right));
       
       context.RegisterPostInitializationOutput(static ctx =>
       {

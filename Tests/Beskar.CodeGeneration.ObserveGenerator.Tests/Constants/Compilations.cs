@@ -7,7 +7,7 @@ public class Compilations
 {
    public static TestCompilationCreator Create() =>
       new TestCompilationCreator()
-         .WithAssemblyName("Test-Assembly")
+         .WithAssemblyName("Test.Assembly")
          .WithReferences(Net100.References.All)
          .SuppressDiagnostics("CS1591", "CS9113");
 }

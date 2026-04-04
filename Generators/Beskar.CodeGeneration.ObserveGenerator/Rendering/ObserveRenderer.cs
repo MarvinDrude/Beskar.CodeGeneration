@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.Extensions.Rendering;
+﻿using Beskar.CodeGeneration.Extensions.Common.Archetypes;
+using Beskar.CodeGeneration.Extensions.Rendering;
 using Beskar.CodeGeneration.ObserveGenerator.Models;
 using Me.Memory.Code;
 using Microsoft.CodeAnalysis;
@@ -44,7 +45,31 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
 
    private void WriteClass(ref CodeTextWriter writer)
    {
+      var spec = Spec.NamedTypeArchetype;
       
+      writer.WriteLineInterpolated($"{spec.GetClassStructModifiers(true)} {_className}");
+      writer.OpenBody();
+
+      if (Spec.ActivitySpec is not null)
+      {
+         writer.WriteLineInterpolated($"private static readonly ActivitySource ActivitySource = {_className}Instrumentation.ActivitySource;");
+      }
+
+      if (Spec.MeterSpec is not null)
+      {
+         writer.WriteLineInterpolated($"private static readonly Meter MeterSource = {_className}Instrumentation.MeterSource;");
+      }
+      
+      writer.WriteLine();
+      
+      foreach (var instrument in Spec.InsrumentSpecs)
+      {
+         var (type, method) = GetInstrumentationNames(instrument);
+         writer.WriteLineInterpolated($"private static readonly {type}<{instrument.TypeFullName}> {instrument.PropertyName} = {_className}Instrumentation.{instrument.PropertyName};");
+      }
+      
+      writer.CloseBody();
+      writer.WriteLine();
    }
    
    private void WriteInstrumentation(ref CodeTextWriter writer)
@@ -55,7 +80,7 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
       if (Spec.ActivitySpec is { } activity)
       {
          var activityName = SymbolDisplay.FormatLiteral(activity.Name, true);
-         writer.WriteLineInterpolated($"public static readonly ActivitySource = new({activityName}, \"{activity.Version}\");");
+         writer.WriteLineInterpolated($"public static readonly ActivitySource ActivitySource = new({activityName}, \"{activity.Version}\");");
       }
 
       if (Spec.MeterSpec is { } meter)
@@ -68,7 +93,13 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
 
       foreach (var instrument in Spec.InsrumentSpecs)
       {
-         writer.WriteLineInterpolated($"public static readonly Instrument {instrument.Name} = new({instrument.Name});");
+         var (type, method) = GetInstrumentationNames(instrument);
+         
+         var instrumentName = SymbolDisplay.FormatLiteral(instrument.Name, true);
+         var instrumentDescription = instrument.Description is null ? "null" : SymbolDisplay.FormatLiteral(instrument.Description, true);
+         var instrumentUnit = instrument.Unit is null ? "null" : SymbolDisplay.FormatLiteral(instrument.Unit, true);
+         
+         writer.WriteLineInterpolated($"public static readonly {type}<{instrument.TypeFullName}> {instrument.PropertyName} = MeterSource.{method}<{instrument.TypeFullName}>({instrumentName}, {instrumentUnit}, {instrumentDescription});");
       }
       
       writer.CloseBody();
@@ -88,7 +119,6 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
    
    private void WriteUsings(ref CodeTextWriter writer)
    {
-      writer.WriteUsing("System");
       writer.WriteUsing("System.Diagnostics");
       writer.WriteUsing("System.Diagnostics.Metrics");
       writer.WriteLine();

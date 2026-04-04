@@ -4,7 +4,10 @@ using Beskar.CodeGeneration.LanguageGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Detectors;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Providers;
+using Beskar.CodeGeneration.ObserveGenerator.Marker.Attributes;
+using Beskar.CodeGeneration.ObserveGenerator.Marker.Enums;
 using Beskar.Languages;
+using BeskarExperiments.ObserveExtensions;
 using Microsoft.Extensions.DependencyInjection;
 
 Console.WriteLine("Hello World!");
@@ -24,6 +27,12 @@ await provider.PopulateCache(CancellationToken.None); // can be called again if 
 var translation = serviceProvider.GetRequiredService<TranslationFacade>();
 Console.WriteLine(translation.TestGroup.Test); // calls the translation provider in the background
 Console.WriteLine(translation.RegisterGroup.Description);
+
+Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedMeterNames));
+Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedSourceNames));
+
+var test = new Test();
+test.TestMethod();
 
 return;
 
@@ -45,64 +54,38 @@ public enum RegisterGroup
    Description = 2,
 }
 
-
+[Observe]
 [ObserveActivity("Test.Activities", "1.0.0")]
 [ObserveMeter("Test.Meters", "1.0.0")]
-[ObserveInstrument("Counter", Kind: InstrumentKind.Counter)]
-[ObserveInstrument("Histogram", Kind: InstrumentKind.Histogram)]
-[ObserveInstrument("Gauge", Kind: InstrumentKind.Gauge)]
-[ObserveInstrument("TestTest", Kind: InstrumentKind.UpDownCounter)]
+[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
 public partial class Test
 {
-   private static ActivitySource ActivitySource = TestInstrumentation.ActivitySource;
-   private static Meter MeterSource = TestInstrumentation.MeterSource;
-   
-   private static Counter<ulong> Counter = TestInstrumentation.Counter;
-   private static Histogram<double> Histogram = TestInstrumentation.Histogram;
-   private static Gauge<double> Gauge = TestInstrumentation.Gauge;
-   private static UpDownCounter<long> TestTest = TestInstrumentation.TestTest;
-   
    public void TestMethod()
    {
       using var activity = ActivitySource.StartActivity();
-
+      
       Counter.Add(1);
+      Histogram.Record(20d);
    }
 }
 
-internal static class TestInstrumentation
+[Observe]
+[ObserveActivity]
+[ObserveMeter]
+[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+public partial class TestTwo
 {
-   public static readonly ActivitySource ActivitySource = new("Test.Activities", "1.0.0");
-   public static readonly Meter MeterSource = new("Test.Meters", "1.0.0");
-   
-   public static readonly Counter<ulong> Counter = MeterSource.CreateCounter<ulong>("test_counter", "Test counter", "test");
-   public static readonly Histogram<double> Histogram = MeterSource.CreateHistogram<double>("test_histogram", "Test histogram", "test");
-   public static readonly Gauge<double> Gauge = MeterSource.CreateGauge<double>("test_gauge", "Test gauge", "test");
-   public static readonly UpDownCounter<long> TestTest = MeterSource.CreateUpDownCounter<long>("test_updowncounter", "Test updowncounter", "test");
-}
-
-[AttributeUsage(AttributeTargets.Class)]
-public sealed class ObserveActivityAttribute(
-   string? Name = null, string? Version = null)
-   : Attribute;
-   
-[AttributeUsage(AttributeTargets.Class)]
-public sealed class ObserveMeterAttribute(
-   string? Name = null, string? Version = null)
-   : Attribute;
-
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class ObserveInstrumentAttribute(
-   string PropertyName,
-   string? Unit = null,
-   string? Description = null,
-   InstrumentKind Kind = InstrumentKind.Counter)
-   : Attribute;
-
-public enum InstrumentKind
-{
-   Counter = 1,
-   Histogram = 2,
-   Gauge = 3,
-   UpDownCounter = 4,
+   public void TestMethod()
+   {
+      using var activity = ActivitySource.StartActivity();
+      
+      Counter.Add(1);
+      Histogram.Record(20d);
+   }
 }

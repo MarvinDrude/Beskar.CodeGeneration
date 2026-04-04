@@ -2,7 +2,7 @@
 
 namespace Beskar.CodeGeneration.ObserveGenerator.Marker.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public sealed class ObserveInstrumentAttribute(
    string propertyName,
    InstrumentKind kind,
