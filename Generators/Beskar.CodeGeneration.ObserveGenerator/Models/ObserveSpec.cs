@@ -7,4 +7,4 @@ public readonly record struct ObserveSpec(
    NamedTypeSymbolArchetype NamedTypeArchetype,
    ObserveActivitySpec? ActivitySpec,
    ObserveMeterSpec? MeterSpec,
-   SequenceArray<ObserveInstrumentSpec> InsrumentSpecs);
+   SequenceArray<ObserveInstrumentSpec> InstrumentSpecs);

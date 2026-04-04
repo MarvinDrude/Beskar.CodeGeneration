@@ -47,7 +47,7 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
    {
       var spec = Spec.NamedTypeArchetype;
       
-      writer.WriteLineInterpolated($"{spec.GetClassStructModifiers(true)} {_className}");
+      writer.WriteLineInterpolated($"{spec.GetClassStructModifiersString(true)} {_className}{spec.GetGenericParametersString()}");
       writer.OpenBody();
 
       if (Spec.ActivitySpec is not null)
@@ -62,7 +62,7 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
       
       writer.WriteLine();
       
-      foreach (var instrument in Spec.InsrumentSpecs)
+      foreach (var instrument in Spec.InstrumentSpecs)
       {
          var (type, method) = GetInstrumentationNames(instrument);
          writer.WriteLineInterpolated($"private static readonly {type}<{instrument.TypeFullName}> {instrument.PropertyName} = {_className}Instrumentation.{instrument.PropertyName};");
@@ -91,7 +91,7 @@ public sealed class ObserveRenderer(SourceProductionContext ctx)
 
       writer.WriteLine();
 
-      foreach (var instrument in Spec.InsrumentSpecs)
+      foreach (var instrument in Spec.InstrumentSpecs)
       {
          var (type, method) = GetInstrumentationNames(instrument);
          

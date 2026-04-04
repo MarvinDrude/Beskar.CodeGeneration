@@ -16,7 +16,8 @@ public sealed partial class SimpleObserveClass
 [ObserveActivity]
 [ObserveMeter(name: "Meter.Name2", version: "2.2.2")]
 [ObserveInstrument("Histo", InstrumentKind.Histogram, typeof(double), unit: "m/s", description: "This is a description")]
-public static partial class SecondClass
+public static partial class SecondClass<T, T2>
+   where T : class
 {
    
 }

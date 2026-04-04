@@ -8,7 +8,7 @@ public sealed partial class ObserveGenerator
    private static readonly DiagnosticDescriptor InvalidTargetRule = new (
       id: "OBG001",
       title: "Invalid ObserveGenerator Target usage",
-      messageFormat: "Invalid target or congifuration for ObserveGenerator. Must be a class.",
+      messageFormat: "Invalid configuration for ObserveGenerator. At least one of ObserveActivity or ObserveMeter must be specified.",
       category: "ObserveGenerator",
       defaultSeverity: DiagnosticSeverity.Error,
       isEnabledByDefault: true);

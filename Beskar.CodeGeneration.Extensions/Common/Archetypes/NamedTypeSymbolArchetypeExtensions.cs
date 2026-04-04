@@ -12,7 +12,25 @@ public static class NamedTypeSymbolArchetypeExtensions
    {
       public bool IsGuid => archetype.Symbol.IsGuid;
 
-      public string GetClassStructModifiers(bool addPartial = false)
+      public string GetGenericParametersString()
+      {
+         var writer = new CodeTextWriter(stackalloc char[256], stackalloc char[12]);
+
+         try
+         {
+            var typeParameters = archetype.NamedType.TypeParameters.Array;
+            if (typeParameters.Length is 0) return string.Empty;
+            
+            writer.WriteInterpolated($"<{string.Join(", ", typeParameters.Select(p => p.Symbol.Name))}>");
+            return writer.ToString();
+         }
+         finally
+         {
+            writer.Dispose();
+         }
+      }
+      
+      public string GetClassStructModifiersString(bool addPartial = false)
       {
          var writer = new CodeTextWriter(stackalloc char[256], stackalloc char[12]);
 

@@ -1,6 +1,7 @@
 ﻿using Beskar.CodeGeneration.Extensions.Common.Symbols;
 using Beskar.CodeGeneration.Extensions.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Diagnostics;
+using Beskar.CodeGeneration.Extensions.Models.Symbols;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
 using Beskar.CodeGeneration.ObserveGenerator.Models;
 using Me.Memory.Collections;
@@ -45,6 +46,13 @@ public sealed partial class ObserveGenerator
    {
       var options = new ArchetypeTransformOptions
       {
+         NamedTypes =
+         {
+            Load = new NamedTypeSymbolLoadFlags()
+            {
+               TypeParameters = true
+            }
+         }
       };
 
       return options;

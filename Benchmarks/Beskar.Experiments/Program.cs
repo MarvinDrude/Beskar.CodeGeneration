@@ -31,7 +31,7 @@ Console.WriteLine(translation.RegisterGroup.Description);
 Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedMeterNames));
 Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedSourceNames));
 
-var test = new Test();
+var test = new Test<object, object>();
 test.TestMethod();
 
 return;
@@ -61,7 +61,8 @@ public enum RegisterGroup
 [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
 [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
 [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class Test
+public partial class Test<T1, T2>
+   where T1 : class
 {
    public void TestMethod()
    {
@@ -79,7 +80,7 @@ public partial class Test
 [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
 [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
 [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class TestTwo
+public partial class TestTwo<T>
 {
    public void TestMethod()
    {
