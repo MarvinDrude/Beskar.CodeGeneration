@@ -1,8 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
    <PropertyGroup>
-      <Title>Beskar.CodeGeneration.TypeIdGenerator</Title>
-      <PackageId>Beskar.CodeGeneration.TypeIdGenerator</PackageId>
-      <Description>Generates implementation of record struct type safe ids.</Description>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
+
+   <PropertyGroup>
+      <Title>Beskar.CodeGeneration.ObserveGenerator</Title>
+      <PackageId>Beskar.CodeGeneration.ObserveGenerator</PackageId>
+      <Description>Generates ActivitySources and Meters automatically for ease of use.</Description>
       <Authors>Marvin Drude</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -15,17 +22,17 @@
       <IncludeSource>true</IncludeSource>
       <EmbedUntrackedSources>true</EmbedUntrackedSources>
       <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-      
+
       <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
       <IncludeBuildOutput>true</IncludeBuildOutput>
       <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
    </PropertyGroup>
    <ItemGroup>
-      <ProjectReference 
-         Include="..\..\Markers\Beskar.CodeGeneration.TypeIdGenerator.Marker\Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj"
+      <ProjectReference
+         Include="..\..\Markers\Beskar.CodeGeneration.ObserveGenerator.Marker\Beskar.CodeGeneration.ObserveGenerator.Marker.csproj"
          Pack="true" />
-      <ProjectReference 
-         Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\Beskar.CodeGeneration.TypeIdGenerator.csproj"
+      <ProjectReference
+         Include="..\..\Generators\Beskar.CodeGeneration.ObserveGenerator\Beskar.CodeGeneration.ObserveGenerator.csproj"
          OutputItemType="Analyzer"
          ReferenceOutputAssembly="false"
          Pack="true"
@@ -35,7 +42,8 @@
       <PackageReference Include="Me.Memory" />
    </ItemGroup>
    <ItemGroup>
-      <None Include="..\..\Generators\Beskar.CodeGeneration.TypeIdGenerator\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.TypeIdGenerator.dll"
+      <None Include="README.md" Pack="true" PackagePath="\"/>
+      <None Include="..\..\Generators\Beskar.CodeGeneration.ObserveGenerator\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.ObserveGenerator.dll"
             Pack="true"
             PackagePath="analyzers/dotnet/cs"
             Visible="true" />
@@ -44,7 +52,5 @@
             PackagePath="analyzers/dotnet/cs"
             Visible="true" />
    </ItemGroup>
-   <ItemGroup>
-      <None Include="README.md" Pack="true" PackagePath="\"/>
-   </ItemGroup>
+
 </Project>

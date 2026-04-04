@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Beskar.CodeGeneration.TypeIdGenerator;
+namespace Beskar.CodeGeneration.ObserveGenerator;
 
 [Generator]
-public sealed partial class TypeIdGenerator : IIncrementalGenerator
+public sealed partial class ObserveGenerator : IIncrementalGenerator
 {
-   public const string GeneratorName = "TypeIdGenerator";
+   public const string GeneratorName = "ObserveGenerator";
    public const string GeneratorVersion = "1.1.4";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -15,18 +15,28 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
             .Replace(" ", string.Empty)
             .Replace(".", string.Empty)
             .Trim() ?? "UnknownAssembly");
-
+      
       var maybeSpecProvider = context.SyntaxProvider
          .ForAttributeWithMetadataName(
-            AttributeTypeIdFullName,
+            ObserveAttributeFullName,
             predicate: static (_, _) => true,
             transform: Transform);
-      
+
       var combined = maybeSpecProvider
          .Combine(assemblyNameProvider);
       
+      var collected = assemblyNameProvider
+         .Combine(maybeSpecProvider
+            .Where(static x => x.HasValue)
+            .Select(static (x, _) => x.Value)
+            .Collect()
+         );
+      
       context.RegisterSourceOutput(combined, static (ctx, source) 
          => Render(ctx, source.Right, source.Left));
+      
+      context.RegisterSourceOutput(collected, static (ctx, source) 
+         => RenderExtensions(ctx, source.Left, source.Right));
       
       context.RegisterPostInitializationOutput(static ctx =>
       {
