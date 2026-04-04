@@ -28,6 +28,7 @@
   <Folder Name="/Markers/">
     <Project Path="Markers/Beskar.CodeGeneration.LanguageGenerator.Marker/Beskar.CodeGeneration.LanguageGenerator.Marker.csproj" />
     <Project Path="Markers/Beskar.CodeGeneration.ObserveGenerator.Marker/Beskar.CodeGeneration.ObserveGenerator.Marker.csproj" />
+    <Project Path="Markers/Beskar.CodeGeneration.PacketGenerator.Marker/Beskar.CodeGeneration.PacketGenerator.Marker.csproj" />
     <Project Path="Markers/Beskar.CodeGeneration.TypeIdGenerator.Marker/Beskar.CodeGeneration.TypeIdGenerator.Marker.csproj" />
   </Folder>
   <Folder Name="/Tests/">

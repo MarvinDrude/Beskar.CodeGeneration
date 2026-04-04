@@ -21,4 +21,8 @@
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </None>
    </ItemGroup>
+
+   <ItemGroup>
+     <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.PacketGenerator.Marker\Beskar.CodeGeneration.PacketGenerator.Marker.csproj" />
+   </ItemGroup>
 </Project>
