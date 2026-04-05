@@ -14,7 +14,8 @@ public sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
 {
    private readonly IPacketHandlerCollection[] _handlers;
 
-   public ExamplePacketRegistry()
+   public ExamplePacketRegistry(PacketRegistryOptions? options = null)
+      : base(registryOptions: options)
    {
       _handlers =
       [

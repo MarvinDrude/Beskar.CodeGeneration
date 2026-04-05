@@ -8,3 +8,11 @@ public enum RoutePacketResult : byte
    UnknownPacket = 3,
    InvalidPacket = 4
 }
+
+public static class RoutePacketResultExtensions
+{
+   extension(RoutePacketResult result)
+   {
+      public bool IsSuccess => result is RoutePacketResult.Success or RoutePacketResult.SuccessNoHandlers;
+   }
+}

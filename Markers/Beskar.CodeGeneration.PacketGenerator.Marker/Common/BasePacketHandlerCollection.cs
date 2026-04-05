@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Enums;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
+using Me.Memory.Buffers;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
@@ -30,7 +31,9 @@ public abstract class BasePacketHandlerCollection<TPacket>(
       }
 
       if (_handlers.Count != 1 || !_handlers.TryPeek(out var handler))
-         return InvokeIterateAsync(packet, cancellationToken);
+         return _registry.Options.RunHandlersInParallel 
+            ? InvokeParallelAsync(packet, cancellationToken)
+            : InvokeIterateAsync(packet, cancellationToken);
       
       var singleTask = handler.Invoke(ref packet, cancellationToken);
       return singleTask.IsCompletedSuccessfully
@@ -54,6 +57,25 @@ public abstract class BasePacketHandlerCollection<TPacket>(
          await enumerator.Current.Invoke(ref packet, cancellationToken);
       }
       
+      return RoutePacketResult.Success;
+   }
+
+   private async ValueTask<RoutePacketResult> InvokeParallelAsync(
+      TPacket packet, CancellationToken cancellationToken)
+   {
+      using var builder = new ArrayBuilder<Task>(_handlers.Count);
+      
+      using var enumerator = _handlers.GetEnumerator();
+      while (enumerator.MoveNext())
+      {
+         var valueTask = enumerator.Current.Invoke(ref packet, cancellationToken);
+         if (!valueTask.IsCompletedSuccessfully)
+         {
+            builder.Add(valueTask.AsTask());
+         }
+      }
+      
+      await Task.WhenAll(builder.WrittenSpan);
       return RoutePacketResult.Success;
    }
 }

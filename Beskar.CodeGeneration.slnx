@@ -18,11 +18,13 @@
   <Folder Name="/Bundles/">
     <Project Path="Bundles/Beskar.CodeGeneration.LanguageGenerator.Bundle/Beskar.CodeGeneration.LanguageGenerator.Bundle.csproj" />
     <Project Path="Bundles/Beskar.CodeGeneration.ObserveGenerator.Bundle/Beskar.CodeGeneration.ObserveGenerator.Bundle.csproj" />
+    <Project Path="Bundles/Beskar.CodeGeneration.PacketGenerator.Bundle/Beskar.CodeGeneration.PacketGenerator.Bundle.csproj" />
     <Project Path="Bundles/Beskar.CodeGeneration.TypeIdGenerator.Bundle/Beskar.CodeGeneration.TypeIdGenerator.Bundle.csproj" />
   </Folder>
   <Folder Name="/Generators/">
     <Project Path="Generators/Beskar.CodeGeneration.LanguageGenerator/Beskar.CodeGeneration.LanguageGenerator.csproj" />
     <Project Path="Generators/Beskar.CodeGeneration.ObserveGenerator/Beskar.CodeGeneration.ObserveGenerator.csproj" />
+    <Project Path="Generators/Beskar.CodeGeneration.PacketGenerator/Beskar.CodeGeneration.PacketGenerator.csproj" />
     <Project Path="Generators/Beskar.CodeGeneration.TypeIdGenerator/Beskar.CodeGeneration.TypeIdGenerator.csproj" />
   </Folder>
   <Folder Name="/Markers/">
@@ -35,6 +37,7 @@
     <Project Path="Tests/Beskar.CodeGeneration.Extensions.Tests/Beskar.CodeGeneration.Extensions.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.LanguageGenerator.Tests/Beskar.CodeGeneration.LanguageGenerator.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.ObserveGenerator.Tests/Beskar.CodeGeneration.ObserveGenerator.Tests.csproj" />
+    <Project Path="Tests/Beskar.CodeGeneration.PacketGenerator.Tests/Beskar.CodeGeneration.PacketGenerator.Tests.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.Tests.Utils/Beskar.CodeGeneration.Tests.Utils.csproj" />
     <Project Path="Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests/Beskar.CodeGeneration.TypeIdGenerator.Tests.csproj" />
   </Folder>

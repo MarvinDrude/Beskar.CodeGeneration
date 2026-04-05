@@ -9,8 +9,9 @@ namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
 public abstract class BaseJsonPacketRegistry(
    JsonSerializerContext? context = null,
-   JsonSerializerOptions? options = null) 
-   : BasePacketRegistry
+   JsonSerializerOptions? options = null,
+   PacketRegistryOptions? registryOptions = null) 
+   : BasePacketRegistry(registryOptions)
 {
    private readonly JsonSerializerContext? _context = context;
    private readonly JsonSerializerOptions _options = options ?? _defaultOptions;

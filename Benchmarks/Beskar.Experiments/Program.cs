@@ -6,6 +6,7 @@ using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Providers;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Enums;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Internal;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Beskar.Languages;
@@ -36,16 +37,59 @@ Console.WriteLine("Hello World!");
 // var test = new Test<object, object>();
 // test.TestMethod();
 
-var exampleRegistry = new ExamplePacketRegistry();
+var start = Stopwatch.GetTimestamp();
+
+var exampleRegistry = new ExamplePacketRegistry(new PacketRegistryOptions()
+{
+   RunHandlersInParallel = false
+});
 exampleRegistry.RegisterHandler<PingPacket>((ref packet, ct) =>
 {
-   Console.WriteLine("Ping: " + packet.Name);
-   return ValueTask.CompletedTask;
+   var copy = packet;
+   
+   return WaitCallback();
+
+   async ValueTask WaitCallback()
+   {
+      await Task.Delay(1400, ct);
+      Console.WriteLine("Ping: " + copy.Name);
+   }
+});
+exampleRegistry.RegisterHandler<PingPacket>((ref packet, ct) =>
+{
+   var copy = packet;
+   
+   return WaitCallback();
+
+   async ValueTask WaitCallback()
+   {
+      await Task.Delay(1400, ct);
+      Console.WriteLine("Ping: " + copy.Name);
+   }
+});
+exampleRegistry.RegisterHandler<PingPacket>((ref packet, ct) =>
+{
+   var copy = packet;
+   
+   return WaitCallback();
+
+   ValueTask WaitCallback()
+   {
+      Console.WriteLine("Ping: " + copy.Name);
+      return ValueTask.CompletedTask;
+   }
 });
 exampleRegistry.RegisterHandler<PongPacket>((ref packet, ct) =>
 {
-   Console.WriteLine("Pong: " + packet.Number);
-   return ValueTask.CompletedTask;
+   var copy = packet;
+   
+   return WaitCallback();
+   
+   async ValueTask WaitCallback()
+   {
+      await Task.Delay(2400, ct);
+      Console.WriteLine("Pong: " + copy.Number);
+   }
 });
 
 PacketMetadata<PingPacket>.Identifier = 0;
@@ -56,7 +100,19 @@ var data = exampleRegistry.SerializeWithHeader(new PingPacket()
    Name = "Test"
 });
 
+
 await exampleRegistry.RoutePacket(data);
+await exampleRegistry.RoutePacket(data);
+
+// var t1 = exampleRegistry.RoutePacket(data);
+// var t2 = exampleRegistry.RoutePacket(data);
+//
+// await t1;
+// await t2;
+
+//await Task.WhenAll(t1.AsTask(), t2.AsTask());
+
+Console.WriteLine("Done: " + new TimeSpan(Stopwatch.GetTimestamp() - start));
 
 return;
 

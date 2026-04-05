@@ -9,8 +9,10 @@ using Me.Memory.Extensions;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
-public abstract class BasePacketRegistry
+public abstract class BasePacketRegistry(PacketRegistryOptions? options = null)
 {
+   public PacketRegistryOptions Options { get; } = options ?? new PacketRegistryOptions();
+   
    public abstract ValueTask<RoutePacketResult> RoutePacket(
       scoped in ReadOnlySequence<byte> sequence,
       CancellationToken cancellationToken = default);
