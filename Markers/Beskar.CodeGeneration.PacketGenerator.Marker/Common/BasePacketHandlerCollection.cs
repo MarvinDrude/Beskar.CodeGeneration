@@ -12,7 +12,7 @@ public abstract class BasePacketHandlerCollection<TPacket>(
    : IPacketHandlerCollection<TPacket>
    where TPacket : IPacket
 {
-   public int HandlerCount => _handlers.Count;
+   public int HandlerCount { get; private set; }
 
    private readonly BasePacketRegistry _registry = registry;
    private readonly ConcurrentStack<PacketHandler<TPacket>> _handlers = [];
@@ -20,6 +20,7 @@ public abstract class BasePacketHandlerCollection<TPacket>(
    public void RegisterHandler(PacketHandler<TPacket> handler)
    {
       _handlers.Push(handler);
+      HandlerCount++;
    }
 
    public ValueTask<RoutePacketResult> Handle(
@@ -30,7 +31,7 @@ public abstract class BasePacketHandlerCollection<TPacket>(
          return ValueTask.FromResult(RoutePacketResult.InvalidPacket);
       }
 
-      if (_handlers.Count != 1 || !_handlers.TryPeek(out var handler))
+      if (HandlerCount != 1 || !_handlers.TryPeek(out var handler))
          return _registry.Options.RunHandlersInParallel 
             ? InvokeParallelAsync(packet, cancellationToken)
             : InvokeIterateAsync(packet, cancellationToken);

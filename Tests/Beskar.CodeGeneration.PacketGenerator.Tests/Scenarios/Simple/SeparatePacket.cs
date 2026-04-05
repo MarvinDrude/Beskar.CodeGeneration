@@ -6,14 +6,14 @@ using Beskar.CodeGeneration.PacketGenerator.Tests.Scenarios.Simple;
 namespace Beskar.Test
 {
    [Packet(typeof(ExampleRegistry), typeof(ExampleTwoRegistry))]
-   public struct SeperatePacket : IPacket
+   public struct SeparatePacket : IPacket
    {
       
    }
 }
 
 [Packet(typeof(ExampleTwoRegistry))]
-public struct SeperateGlobalPacket : IPacket
+public struct SeparateGlobalPacket : IPacket
 {
-      
+   
 }

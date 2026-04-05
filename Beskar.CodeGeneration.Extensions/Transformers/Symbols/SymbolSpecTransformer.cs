@@ -13,7 +13,6 @@ public static class SymbolSpecTransformer
       where TSymbol : ISymbol
    {
       options ??= new ArchetypeTransformOptions();
-      options.ClearCache();
       
       var nameSpace = symbol.ContainingNamespace?.ToDisplayString();
       if (nameSpace == "<global namespace>")
