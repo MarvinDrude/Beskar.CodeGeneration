@@ -6,12 +6,15 @@ using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Providers;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Enums;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Common;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Internal;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Beskar.Languages;
 using BeskarExperiments.ObserveExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Test;
 
 Console.WriteLine("Hello World!");
 
@@ -41,9 +44,42 @@ var start = Stopwatch.GetTimestamp();
 
 Console.WriteLine("Done: " + new TimeSpan(Stopwatch.GetTimestamp() - start));
 
+var registry = new ExampleRegistry();
+registry.RegisterHandler<TestPacket>((ref packet, ct) =>
+{
+   Console.WriteLine("Test");
+   return ValueTask.CompletedTask;
+});
+
+var packet = new TestPacket();
+packet.Number = 2;
+
+var bytes = registry.SerializeWithHeader(packet);
+
+await registry.RoutePacket(bytes);
+
 return;
 
+[PacketRegistry]
+public sealed partial class ExampleRegistry : BaseJsonPacketRegistry;
 
+namespace Test
+{
+   [PacketRegistry]
+   public sealed partial class Example2Registry : BaseJsonPacketRegistry;
+   
+   [Packet(typeof(ExampleRegistry), typeof(Example2Registry))]
+   public class TestPacket : IPacket
+   {
+      public int Number { get; set; }
+   }
+
+   [Packet(typeof(ExampleRegistry))]
+   public struct StructPacket : IPacket
+   {
+      
+   }
+}
 
 // [TranslationGroup]
 // public enum TestGroup

@@ -12,6 +12,7 @@
    <ItemGroup>
      <PackageReference Include="Beskar.CodeGeneration.LanguageGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.ObserveGenerator" />
+     <PackageReference Include="Beskar.CodeGeneration.PacketGenerator" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
    </ItemGroup>
@@ -20,9 +21,5 @@
      <None Update="Translations\Translation.en.json">
        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
      </None>
-   </ItemGroup>
-
-   <ItemGroup>
-     <ProjectReference Include="..\..\Markers\Beskar.CodeGeneration.PacketGenerator.Marker\Beskar.CodeGeneration.PacketGenerator.Marker.csproj" />
    </ItemGroup>
 </Project>
