@@ -44,13 +44,18 @@ public sealed partial class PacketGenerator : IIncrementalGenerator
                .ToArray();
 
             var registryValue = registry.Value;
-            var relevantPackets = packets
-               .Where(x => x.RegistryFullTypeNames.Array.Contains(
-                  registryValue.NamedTypeArchetype.Symbol.FullName))
+            var registryFullName = registryValue.NamedTypeArchetype.Symbol.FullName;
+            
+            var relevantIndices = packets
+               .Select((packet, index) => new { packet, index })
+               .Where(x => x.packet.RegistryFullTypeNames.Array.Contains(registryFullName))
+               .Select(x => x.index)
                .ToArray();
 
-            var specs = new SequenceArray<PacketSpec>(relevantPackets);
-            return (registry, specs);
+            var specs = new SequenceArray<int>(relevantIndices);
+            var packetSpecs = new SequenceArray<PacketSpec>(packets);
+            
+            return (registry, packetSpecs, specs);
          });
       var registryCombined = registryProvider.Combine(assemblyNameProvider);
       
@@ -58,7 +63,7 @@ public sealed partial class PacketGenerator : IIncrementalGenerator
          => RenderPackets(ctx, source.Right, source.Left));
       
       context.RegisterSourceOutput(registryCombined, static (ctx, source) 
-         => RenderRegistry(ctx, source.Right, source.Left.registry, source.Left.specs));
+         => RenderRegistry(ctx, source.Right, source.Left.registry, source.Left.packetSpecs, source.Left.specs));
       
       context.RegisterPostInitializationOutput(static ctx =>
       {

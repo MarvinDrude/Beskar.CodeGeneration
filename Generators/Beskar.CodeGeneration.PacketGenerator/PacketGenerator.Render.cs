@@ -16,7 +16,8 @@ public sealed partial class PacketGenerator
       SourceProductionContext context,
       string assemblyName,
       MaybeSpec<PacketRegistrySpec> registrySpec,
-      SequenceArray<PacketSpec> packetSpecs)
+      SequenceArray<PacketSpec> packetSpecs,
+      SequenceArray<int> packetIndices)
    {
       context.DispatchDiagnostics(Diagnostics, registrySpec);
       if (!registrySpec.HasValue)
@@ -30,7 +31,8 @@ public sealed partial class PacketGenerator
       var renderer = new PacketRegistryRenderer(context)
       {
          PacketSpecs = packetSpecs,
-         RegistrySpec = registrySpec.Value
+         PacketIndices = packetIndices,
+         RegistrySpec = registrySpec.Value,
       };
 
       renderer.Render(registrySpec.Value.NamedTypeArchetype.Symbol.GeneratedFilePath);

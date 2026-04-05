@@ -17,13 +17,13 @@ public abstract class BasePacketHandlerCollection<TPacket>(
    private readonly BasePacketRegistry _registry = registry;
    private readonly ConcurrentStack<PacketHandler<TPacket>> _handlers = [];
 
-   public void RegisterHandler(PacketHandler<TPacket> handler)
+   public virtual void RegisterHandler(PacketHandler<TPacket> handler)
    {
       _handlers.Push(handler);
       HandlerCount++;
    }
 
-   public ValueTask<RoutePacketResult> Handle(
+   public virtual ValueTask<RoutePacketResult> Handle(
       ref SequenceReader<byte> reader, CancellationToken cancellationToken)
    {
       if (!_registry.TryDeserialize<TPacket>(ref reader, out var packet))

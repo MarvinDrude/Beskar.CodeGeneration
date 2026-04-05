@@ -68,7 +68,7 @@ namespace Test
    [PacketRegistry]
    public sealed partial class Example2Registry : BaseJsonPacketRegistry;
    
-   [Packet(typeof(ExampleRegistry), typeof(Example2Registry))]
+   [Packet(typeof(Example2Registry))]
    public class TestPacket : IPacket
    {
       public int Number { get; set; }

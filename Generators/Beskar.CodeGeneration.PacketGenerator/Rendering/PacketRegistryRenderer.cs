@@ -12,9 +12,14 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
 {
    public required PacketRegistrySpec RegistrySpec { get; init; }
    public required SequenceArray<PacketSpec> PacketSpecs { get; init; }
+   public required SequenceArray<int> PacketIndices { get; init; }
+   
+   private HashSet<int> _indexLookup = [];
    
    protected override string Render()
    {
+      _indexLookup = new HashSet<int>(PacketIndices.Array);
+      
       var writer = new CodeTextWriter(
          stackalloc char[512], stackalloc char[128]);
 
@@ -131,10 +136,17 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       
       writer.WriteLine("_handlers = [");
       writer.UpIndent();
-
+      
       foreach (var spec in SortPackets(PacketSpecs.Array))
       {
-         writer.WriteLineInterpolated($"new {spec.NamedTypeArchetype.Symbol.Name}HandlerCollection(this),");
+         if (_indexLookup.Contains(spec.OriginalIndex))
+         {
+            writer.WriteLineInterpolated($"new {spec.Spec.NamedTypeArchetype.Symbol.Name}HandlerCollection(this),");
+         }
+         else
+         {
+            writer.WriteLineInterpolated($"new PlaceholderPacketHandlerCollection<{spec.Spec.NamedTypeArchetype.Symbol.FullName}>(this),");
+         }
       }
       
       writer.DownIndent();
@@ -158,17 +170,24 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
    private void WriteCollections(ref CodeTextWriter writer)
    {
       var registry = RegistrySpec.NamedTypeArchetype;
-      
-      foreach (var spec in PacketSpecs)
+
+      for (var index = 0; index < PacketSpecs.Array.Length; index++)
       {
+         var spec = PacketSpecs.Array[index];
          var arch = spec.NamedTypeArchetype;
-         
-         writer.WriteLineInterpolated($"file sealed class {arch.Symbol.Name}HandlerCollection({registry.Symbol.Name} registry)");
+
+         if (!_indexLookup.Contains(index))
+         {
+            continue;
+         }
+
+         writer.WriteLineInterpolated(
+            $"file sealed class {arch.Symbol.Name}HandlerCollection({registry.Symbol.Name} registry)");
          writer.UpIndent();
-         
+
          writer.WriteLineInterpolated($": BasePacketHandlerCollection<{arch.Symbol.FullName}>(registry);");
          writer.DownIndent();
-         
+
          writer.WriteLine();
       }
    }
@@ -189,8 +208,9 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       writer.WriteLine();
    }
    
-   private static IEnumerable<PacketSpec> SortPackets(IEnumerable<PacketSpec> packets)
+   private static IEnumerable<(PacketSpec Spec, int OriginalIndex)> SortPackets(IEnumerable<PacketSpec> packets)
    {
-      return packets.OrderBy(x => x.NamedTypeArchetype.Symbol.FullName);
+      return packets.Select((spec, index) => (spec, index))
+         .OrderBy(x => x.spec.NamedTypeArchetype.Symbol.FullName);
    }
 }
