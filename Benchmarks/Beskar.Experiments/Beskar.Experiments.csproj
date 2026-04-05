@@ -12,6 +12,7 @@
    <ItemGroup>
      <PackageReference Include="Beskar.CodeGeneration.LanguageGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.ObserveGenerator" />
+     <PackageReference Include="Beskar.CodeGeneration.PacketGenerator" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
    </ItemGroup>

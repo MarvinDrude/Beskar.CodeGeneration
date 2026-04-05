@@ -28,7 +28,7 @@ public sealed partial class LanguageGenerator
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<LanguageEnumSpec>.Create(8);
 
-      var archetype = symbol.CreateNamedArchetype(_transformOptions);
+      var archetype = symbol.CreateNamedArchetype(CreateTransformOptions());
       var groupName = attribute.DetermineStringValue("GroupName", 0) ?? symbol.Name;
 
       if (archetype.Type.Kind is not TypeKind.Enum)
@@ -53,7 +53,6 @@ public sealed partial class LanguageGenerator
       };
    }
 
-   private static readonly ArchetypeTransformOptions _transformOptions = CreateTransformOptions();
    private static ArchetypeTransformOptions CreateTransformOptions()
    {
       var options = new ArchetypeTransformOptions()

@@ -13,6 +13,8 @@ public static class MethodSymbolExtensions
       public MethodSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return MethodSymbolArchetypeTransformer.Transform(symbol, options: options);
       }
    }

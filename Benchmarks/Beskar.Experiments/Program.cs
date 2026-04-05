@@ -6,87 +6,132 @@ using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Providers;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.ObserveGenerator.Marker.Enums;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Attributes;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Common;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Internal;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Beskar.Languages;
 using BeskarExperiments.ObserveExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using Test;
 
 Console.WriteLine("Hello World!");
 
-var serviceCollection = new ServiceCollection()
-   .AddSingleton<ILanguageDetector, SystemCultureDetector>() // can add multiple detectors of varying priority
-   .AddSingleton<ITranslationProvider, JsonTranslationProvider>() // example implementation of json files as base (can be DB too)
-   .AddSingleton<TranslationFacade>();
-   
-var serviceProvider = serviceCollection.BuildServiceProvider();
-   
-// Json Provider example - can create own providers like DB or Third party api
-var provider = (JsonTranslationProvider)serviceProvider.GetRequiredService<ITranslationProvider>();
-provider.Initialize("Translations"); // folder path
-await provider.PopulateCache(CancellationToken.None); // can be called again if file changed at runtime
+// var serviceCollection = new ServiceCollection()
+//    .AddSingleton<ILanguageDetector, SystemCultureDetector>() // can add multiple detectors of varying priority
+//    .AddSingleton<ITranslationProvider, JsonTranslationProvider>() // example implementation of json files as base (can be DB too)
+//    .AddSingleton<TranslationFacade>();
+//    
+// var serviceProvider = serviceCollection.BuildServiceProvider();
+//    
+// // Json Provider example - can create own providers like DB or Third party api
+// var provider = (JsonTranslationProvider)serviceProvider.GetRequiredService<ITranslationProvider>();
+// provider.Initialize("Translations"); // folder path
+// await provider.PopulateCache(CancellationToken.None); // can be called again if file changed at runtime
+//
+// var translation = serviceProvider.GetRequiredService<TranslationFacade>();
+// Console.WriteLine(translation.TestGroup.Test); // calls the translation provider in the background
+// Console.WriteLine(translation.RegisterGroup.Description);
+//
+// Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedMeterNames));
+// Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedSourceNames));
+//
+// var test = new Test<object, object>();
+// test.TestMethod();
 
-var translation = serviceProvider.GetRequiredService<TranslationFacade>();
-Console.WriteLine(translation.TestGroup.Test); // calls the translation provider in the background
-Console.WriteLine(translation.RegisterGroup.Description);
+var start = Stopwatch.GetTimestamp();
 
-Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedMeterNames));
-Console.WriteLine(string.Join(",", ObserveRegistry.GeneratedSourceNames));
+Console.WriteLine("Done: " + new TimeSpan(Stopwatch.GetTimestamp() - start));
 
-var test = new Test<object, object>();
-test.TestMethod();
+var registry = new ExampleRegistry();
+registry.RegisterHandler<TestPacket>((ref packet, ct) =>
+{
+   Console.WriteLine("Test");
+   return ValueTask.CompletedTask;
+});
+
+var packet = new TestPacket();
+packet.Number = 2;
+
+var bytes = registry.SerializeWithHeader(packet);
+
+await registry.RoutePacket(bytes);
 
 return;
 
-[TranslationGroup]
-public enum TestGroup
-{
-   [TranslationKey]
-   Test = 1,
-   [TranslationKey(defaultValue: "Test2-Default")]
-   Test2 = 2,
-}
+[PacketRegistry]
+public sealed partial class ExampleRegistry : BaseJsonPacketRegistry;
 
-[TranslationGroup]
-public enum RegisterGroup
+namespace Test
 {
-   [TranslationKey]
-   Title = 1,
-   [TranslationKey]
-   Description = 2,
-}
-
-[Observe]
-[ObserveActivity("Test.Activities", "1.0.0")]
-[ObserveMeter("Test.Meters", "1.0.0")]
-[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class Test<T1, T2>
-   where T1 : class
-{
-   public void TestMethod()
+   [PacketRegistry]
+   public sealed partial class Example2Registry : BaseJsonPacketRegistry;
+   
+   [Packet(typeof(Example2Registry))]
+   public class TestPacket : IPacket
    {
-      using var activity = ActivitySource.StartActivity();
+      public int Number { get; set; }
+   }
+
+   [Packet(typeof(ExampleRegistry))]
+   public struct StructPacket : IPacket
+   {
       
-      Counter.Add(1);
-      Histogram.Record(20d);
    }
 }
 
-[Observe]
-[ObserveActivity]
-[ObserveMeter]
-[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class TestTwo<T>
-{
-   public void TestMethod()
-   {
-      using var activity = ActivitySource.StartActivity();
-      
-      Counter.Add(1);
-      Histogram.Record(20d);
-   }
-}
+// [TranslationGroup]
+// public enum TestGroup
+// {
+//    [TranslationKey]
+//    Test = 1,
+//    [TranslationKey(defaultValue: "Test2-Default")]
+//    Test2 = 2,
+// }
+//
+// [TranslationGroup]
+// public enum RegisterGroup
+// {
+//    [TranslationKey]
+//    Title = 1,
+//    [TranslationKey]
+//    Description = 2,
+// }
+//
+// [Observe]
+// [ObserveActivity("Test.Activities", "1.0.0")]
+// [ObserveMeter("Test.Meters", "1.0.0")]
+// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+// public partial class Test<T1, T2>
+//    where T1 : class
+// {
+//    public void TestMethod()
+//    {
+//       using var activity = ActivitySource.StartActivity();
+//       
+//       Counter.Add(1);
+//       Histogram.Record(20d);
+//    }
+// }
+//
+// [Observe]
+// [ObserveActivity]
+// [ObserveMeter]
+// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+// public partial class TestTwo<T>
+// {
+//    public void TestMethod()
+//    {
+//       using var activity = ActivitySource.StartActivity();
+//       
+//       Counter.Add(1);
+//       Histogram.Record(20d);
+//    }
+// }

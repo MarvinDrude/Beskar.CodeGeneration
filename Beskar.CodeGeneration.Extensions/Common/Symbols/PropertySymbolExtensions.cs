@@ -13,6 +13,8 @@ public static class PropertySymbolExtensions
       public PropertySymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return PropertySymbolArchetypeTransformer.Transform(symbol, options: options);
       }
    }

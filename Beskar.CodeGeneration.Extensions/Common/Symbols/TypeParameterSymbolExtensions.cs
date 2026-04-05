@@ -13,6 +13,8 @@ public static class TypeParameterSymbolExtensions
       public TypeParameterArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return TypeParameterSymbolArchetypeTransformer.Transform(symbol, options: options);
       }
    }

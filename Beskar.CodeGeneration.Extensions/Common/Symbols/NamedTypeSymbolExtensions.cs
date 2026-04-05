@@ -13,6 +13,8 @@ public static class NamedTypeSymbolExtensions
       public NamedTypeSymbolArchetype CreateNamedArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return NamedTypeSymbolArchetypeTransformer.Transform(named, options: options);
       }
    }
