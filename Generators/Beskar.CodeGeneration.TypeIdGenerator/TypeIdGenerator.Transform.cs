@@ -31,7 +31,7 @@ public sealed partial class TypeIdGenerator
       using var builder = DiagnosticBuilder<TypeSafeIdSpec>.Create(8);
       var attributeSpec = GetAttributeSpec(attribute);
 
-      var namedInfo = symbol.CreateNamedArchetype(_transformOptions);
+      var namedInfo = symbol.CreateNamedArchetype(CreateTransformOptions());
       ct.ThrowIfCancellationRequested();
 
       if (namedInfo.NamedType.Methods.Array is not [var constructor])
@@ -62,7 +62,6 @@ public sealed partial class TypeIdGenerator
          data.DetermineBoolValue("AddJsonConverter", 4));
    }
 
-   private static readonly ArchetypeTransformOptions _transformOptions = CreateTransformOptions();
    private static ArchetypeTransformOptions CreateTransformOptions()
    {
       var options = new ArchetypeTransformOptions

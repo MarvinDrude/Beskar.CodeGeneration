@@ -32,7 +32,7 @@ public sealed partial class ObserveGenerator
       }
 
       using var builder = DiagnosticBuilder<ObserveSpec>.Create(8);
-      var namedInfo = symbol.CreateNamedArchetype(_transformOptions);
+      var namedInfo = symbol.CreateNamedArchetype(CreateTransformOptions());
       
       return builder.Build(new ObserveSpec(
          namedInfo,
@@ -41,7 +41,6 @@ public sealed partial class ObserveGenerator
          new SequenceArray<ObserveInstrumentSpec>(instrumentSpecs)));
    }
    
-   private static readonly ArchetypeTransformOptions _transformOptions = CreateTransformOptions();
    private static ArchetypeTransformOptions CreateTransformOptions()
    {
       var options = new ArchetypeTransformOptions

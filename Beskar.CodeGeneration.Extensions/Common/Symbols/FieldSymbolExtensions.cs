@@ -13,6 +13,8 @@ public static class FieldSymbolExtensions
       public FieldSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return FieldSymbolArchetypeTransformer.Transform(symbol, options: options);
       }
    }

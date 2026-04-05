@@ -13,6 +13,8 @@ public static class ParameterSymbolExtensions
       public ParameterSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return ParameterSymbolArchetypeTransformer.Transform(symbol, options: options);
       }
    }

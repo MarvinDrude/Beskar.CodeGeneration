@@ -10,7 +10,7 @@ using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Internal;
 
 [PacketRegistry]
-public sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
+internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
 {
    private readonly IPacketHandlerCollection[] _handlers;
 

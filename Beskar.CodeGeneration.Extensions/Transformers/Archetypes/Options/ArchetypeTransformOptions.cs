@@ -67,6 +67,11 @@ public sealed class ArchetypeTransformOptions
       GetSymbolCache<T>()[symbol] = archetype;
    }
 
+   internal void ClearCache()
+   {
+      _symbolCaches.Clear();
+   }
+
    private Dictionary<ISymbol, T> GetSymbolCache<T>()
    {
       var type = typeof(T);

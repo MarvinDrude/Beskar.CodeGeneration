@@ -13,6 +13,8 @@ public static class TypeSymbolExtensions
       public TypeSymbolArchetype CreateArchetype(ArchetypeTransformOptions? options = null)
       {
          options ??= new ArchetypeTransformOptions();
+         options.ClearCache();
+         
          return TypeSymbolArchetypeTransformer.Transform(type, options: options);
       }
 

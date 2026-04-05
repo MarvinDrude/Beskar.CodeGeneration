@@ -27,7 +27,7 @@ public sealed partial class PacketGenerator
       
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<PacketSpec>.Create(8);
-      var namedType = symbol.CreateNamedArchetype(_transformOptions);
+      var namedType = symbol.CreateNamedArchetype(CreateTransformOptions());
 
       if (namedType.Type.AllInterfaces.Array.FirstOrDefault(
             x => x.Symbol is
@@ -63,7 +63,7 @@ public sealed partial class PacketGenerator
       
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<PacketRegistrySpec>.Create(8);
-      var namedType = symbol.CreateNamedArchetype(_transformRegistryOptions);
+      var namedType = symbol.CreateNamedArchetype(CreateTransformRegistryOptions());
 
       if (!HasRegistryBaseType(symbol))
       {
@@ -91,7 +91,6 @@ public sealed partial class PacketGenerator
       }
    }
 
-   private static readonly ArchetypeTransformOptions _transformOptions = CreateTransformOptions();
    private static ArchetypeTransformOptions CreateTransformOptions()
    {
       var options = new ArchetypeTransformOptions
@@ -108,14 +107,14 @@ public sealed partial class PacketGenerator
       return options;
    }
    
-   private static readonly ArchetypeTransformOptions _transformRegistryOptions = CreateTransformRegistryOptions();
    private static ArchetypeTransformOptions CreateTransformRegistryOptions()
    {
       var options = new ArchetypeTransformOptions
       {
          NamedTypes =
          {
-            MethodFilter = static (method) => method.MethodKind is MethodKind.Constructor,
+            Depth = 3,
+            MethodFilter = static (method) => method.MethodKind is MethodKind.Constructor && method.Parameters.Length > 0,
             Load = new NamedTypeSymbolLoadFlags()
             {
                Methods = true
@@ -123,6 +122,7 @@ public sealed partial class PacketGenerator
          },
          Types =
          {
+            Depth = 3,
             Load = new TypeSymbolLoadFlags()
             {
                BaseType = true
@@ -134,6 +134,14 @@ public sealed partial class PacketGenerator
             Load = new MethodSymbolLoadFlags()
             {
                Parameters = true
+            }
+         },
+         Parameters =
+         {
+            Depth = 12,
+            Load = new ParameterSymbolLoadFlags()
+            {
+               Type = true
             }
          }
       };
