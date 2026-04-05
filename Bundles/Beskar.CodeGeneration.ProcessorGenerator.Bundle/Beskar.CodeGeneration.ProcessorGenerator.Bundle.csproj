@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <TargetFramework>net10.0</TargetFramework>
+      <ImplicitUsings>enable</ImplicitUsings>
+      <Nullable>enable</Nullable>
+   </PropertyGroup>
+
+   <PropertyGroup>
+      <Title>Beskar.CodeGeneration.ProcessorGenerator</Title>
+      <PackageId>Beskar.CodeGeneration.ProcessorGenerator</PackageId>
+      <Description>Source generated pipelines with many steps of inputs - outputs.</Description>
+      <Authors>Marvin Drude</Authors>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
+      <PublishRepositoryUrl>true</PublishRepositoryUrl>
+      <RepositoryUrl>https://github.com/MarvinDrude/Beskar.CodeGeneration</RepositoryUrl>
+      <AssemblyVersion>1.1.6</AssemblyVersion>
+      <FileVersion>1.1.6</FileVersion>
+      <Version>1.1.6</Version>
+      <IncludeSymbols>true</IncludeSymbols>
+      <IncludeSource>true</IncludeSource>
+      <EmbedUntrackedSources>true</EmbedUntrackedSources>
+      <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <IncludeBuildOutput>true</IncludeBuildOutput>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+   </PropertyGroup>
+   <ItemGroup>
+      <ProjectReference
+         Include="..\..\Markers\Beskar.CodeGeneration.ProcessorGenerator.Marker\Beskar.CodeGeneration.ProcessorGenerator.Marker.csproj"
+         Pack="true" />
+      <ProjectReference
+         Include="..\..\Generators\Beskar.CodeGeneration.ProcessorGenerator\Beskar.CodeGeneration.ProcessorGenerator.csproj"
+         OutputItemType="Analyzer"
+         ReferenceOutputAssembly="false"
+         Pack="true"
+         PackagePath="analyzers/dotnet/cs" />
+   </ItemGroup>
+   <ItemGroup>
+      <PackageReference Include="Me.Memory" />
+   </ItemGroup>
+   <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\"/>
+      <None Include="..\..\Generators\Beskar.CodeGeneration.ProcessorGenerator\bin\$(Configuration)\$(TargetFramework)\Beskar.CodeGeneration.ProcessorGenerator.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="true" />
+      <None Include="$(OutputPath)\Me.Memory.dll"
+            Pack="true"
+            PackagePath="analyzers/dotnet/cs"
+            Visible="true" />
+   </ItemGroup>
+</Project>
