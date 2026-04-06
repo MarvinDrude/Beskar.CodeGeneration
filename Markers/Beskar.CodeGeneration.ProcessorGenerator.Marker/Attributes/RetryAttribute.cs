@@ -1,6 +1,6 @@
 ﻿namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
 public sealed class RetryAttribute(int retries)
    : Attribute
 {

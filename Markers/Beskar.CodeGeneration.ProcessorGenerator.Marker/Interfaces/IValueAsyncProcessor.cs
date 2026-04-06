@@ -5,7 +5,7 @@ namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Interfaces;
 
 public interface IValueAsyncProcessor<in TIn, TOut>
 {
-   public ValueTask<Result<TOut, ProcessorError>> ExecuteValueAsync(
+   public ValueTask<Result<TOut, ProcessorError>> Execute(
       ProcessorContext context, TIn input, CancellationToken cancellationToken);
 }
 

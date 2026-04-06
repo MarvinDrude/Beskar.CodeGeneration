@@ -5,11 +5,11 @@ namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Interfaces;
 
 public interface IAsyncProcessor<in TIn, TOut>
 {
-   public Task<Result<TOut, ProcessorError>> ExecuteAsync(
+   public Task<Result<TOut, ProcessorError>> Execute(
       ProcessorContext context, TIn input, CancellationToken cancellationToken);
 }
 
 public interface IAsyncPostProcessor
 {
-   public Task PostAsync(ProcessorContext context, CancellationToken cancellationToken);
+   public Task Post(ProcessorContext context, CancellationToken cancellationToken);
 }
