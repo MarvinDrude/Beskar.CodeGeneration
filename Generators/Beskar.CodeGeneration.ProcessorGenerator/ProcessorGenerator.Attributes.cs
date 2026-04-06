@@ -1,0 +1,169 @@
+﻿using System.Collections.Immutable;
+using Beskar.CodeGeneration.Extensions.Common;
+using Beskar.CodeGeneration.ProcessorGenerator.Models;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace Beskar.CodeGeneration.ProcessorGenerator;
+
+public sealed partial class ProcessorGenerator
+{
+   private const string AttributeNameSpace = "Beskar.CodeGeneration.ProcessorGenerator.Marker.Attributes";
+   
+   private const string ProcessorAttributeName = "ProcessorAttribute";
+   private const string ProcessorAttributeFullName = $"{AttributeNameSpace}.{ProcessorAttributeName}";
+   
+   private const string ProcessorPipelineAttributeName = "ProcessorPipelineAttribute";
+   private const string ProcessorPipelineAttributeFullName = $"{AttributeNameSpace}.{ProcessorPipelineAttributeName}";
+   
+   private const string TimeoutAttributeName = "TimeoutAttribute";
+   private const string TimeoutAttributeFullName = $"{AttributeNameSpace}.{TimeoutAttributeName}";
+   
+   private const string ContextVariableAttributeName = "ContextVariableAttribute";
+   private const string ContextVariableAttributeFullName = $"{AttributeNameSpace}.{ContextVariableAttributeName}";
+   
+   private const string SettingAttributeName = "SettingAttribute";
+   private const string SettingAttributeFullName = $"{AttributeNameSpace}.{SettingAttributeName}";
+   
+   private const string StepAttributeName = "StepAttribute";
+   private const string StepAttributeFullName = $"{AttributeNameSpace}.{StepAttributeName}";
+
+   private static SettingSpec GetSettingAttribute(ISymbol symbol, AttributeData attribute)
+   {
+      return new SettingSpec()
+      {
+         Name = attribute.DetermineStringValue("Name", 0) ?? "Unknown",
+         ValueFullExpression = attribute.ConstructorArguments[1].ToCSharpString()
+      };
+   }
+   
+   private static StepSpec GetStepAttribute(ISymbol symbol, AttributeData attribute)
+   {
+      return new StepSpec()
+      {
+         Order = attribute.DetermineIntValue("Order", 0)
+      };
+   }
+   
+   private static TimeoutSpec GetTimeoutAttribute(ISymbol symbol, AttributeData attribute)
+   {
+      return new TimeoutSpec()
+      {
+         Milliseconds = attribute.DetermineIntValue("Milliseconds", 0)
+      };
+   }
+   
+   private static ContextVariableSpec GetContextVariableAttribute(ISymbol symbol, AttributeData attribute)
+   {
+      var attributeClass = attribute.AttributeClass;
+      var typeArgument = attributeClass?.TypeArguments.FirstOrDefault();
+      
+      return new ContextVariableSpec()
+      {
+         Name = attribute.DetermineStringValue("Name", 0) ?? "Unknown",
+         TypeFullName = typeArgument?.ToDisplayString() ?? "object"
+      };
+   }
+   
+   private static AttributeData? GetProcessorPipelineAttribute(ImmutableArray<AttributeData> attributes)
+   {
+      return attributes.FirstOrDefault(IsProcessorPipelineAttribute);
+   }
+   
+   private static AttributeData? GetProcessorAttribute(ImmutableArray<AttributeData> attributes)
+   {
+      return attributes.FirstOrDefault(IsProcessorAttribute);
+   }
+   
+   private static bool IsStepAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == StepAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsSettingAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == SettingAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsContextVariableAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == ContextVariableAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsTimeoutAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == TimeoutAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsProcessorPipelineAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == ProcessorPipelineAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsProcessorAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass?.Name == ProcessorAttributeName 
+         && IsRelevantAttribute(attribute);
+   }
+   
+   private static bool IsRelevantAttribute(AttributeData attribute)
+   {
+      return attribute.AttributeClass is
+      {
+         ContainingNamespace:
+         {
+            Name: "Attributes",
+            ContainingNamespace:
+            {
+               Name: "Marker",
+               ContainingNamespace:
+               {
+                  Name: "ProcessorGenerator",
+                  ContainingNamespace:
+                  {
+                     Name: "CodeGeneration",
+                     ContainingNamespace:
+                     {
+                        Name: "Beskar",
+                        ContainingNamespace.IsGlobalNamespace: true
+                     }
+                  }
+               }
+            }
+         },
+      };
+   }
+   
+   private static bool IsInInterfaceNamespace(INamedTypeSymbol symbol)
+   {
+      return symbol is
+      {
+         ContainingNamespace:
+         {
+            Name: "Interfaces",
+            ContainingNamespace:
+            {
+               Name: "Marker",
+               ContainingNamespace:
+               {
+                  Name: "ProcessorGenerator",
+                  ContainingNamespace:
+                  {
+                     Name: "CodeGeneration",
+                     ContainingNamespace:
+                     {
+                        Name: "Beskar",
+                        ContainingNamespace.IsGlobalNamespace: true
+                     }
+                  }
+               }
+            }
+         },
+      };
+   }
+}
