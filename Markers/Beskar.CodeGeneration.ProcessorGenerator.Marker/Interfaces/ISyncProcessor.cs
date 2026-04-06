@@ -5,5 +5,11 @@ namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Interfaces;
 
 public interface ISyncProcessor<in TIn, TOut>
 {
-   public Result<TOut, ProcessorError> Execute(TIn input, CancellationToken cancellationToken);
+   public Result<TOut, ProcessorError> Execute(
+      ProcessorContext context, TIn input, CancellationToken cancellationToken);
+}
+
+public interface ISyncPostProcessor
+{
+   public void Post(ProcessorContext context, CancellationToken cancellationToken);
 }

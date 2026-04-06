@@ -1,9 +1,8 @@
 ﻿namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
-public sealed class ProcessorPipelineAttribute(
-   string name) 
+public sealed class RetryAttribute(int retries)
    : Attribute
 {
-   public string Name { get; } = name;
+   public int Retries { get; } = retries;
 }

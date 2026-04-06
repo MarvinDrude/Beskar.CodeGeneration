@@ -9,7 +9,7 @@ namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Internal;
 internal sealed class MainProcessor : ISyncProcessor<string, int>
 {
    public Result<int, ProcessorError> Execute(
-      string input, CancellationToken cancellationToken)
+      ProcessorContext context, string input, CancellationToken cancellationToken)
    {
       return int.TryParse(input, out var result)
          ? result
@@ -24,7 +24,7 @@ internal sealed class AsyncProcessor : IAsyncProcessor<string, string>
    public required int Delay { get; set; }
    
    public async Task<Result<string, ProcessorError>> ExecuteAsync(
-      string input, CancellationToken cancellationToken)
+      ProcessorContext context, string input, CancellationToken cancellationToken)
    {
       await Task.Delay(Delay, cancellationToken);
       return input.ToUpper();
@@ -35,29 +35,46 @@ internal sealed class AsyncProcessor : IAsyncProcessor<string, string>
 internal sealed class ValueProcessor : IValueAsyncProcessor<int, string>
 {
    public ValueTask<Result<string, ProcessorError>> ExecuteValueAsync(
-      int input, CancellationToken cancellationToken)
+      ProcessorContext context, int input, CancellationToken cancellationToken)
    {
       return new ValueTask<Result<string, ProcessorError>>(input.ToString());
    }
 }
 
-internal class LoggablePipeline
+[Processor]
+internal sealed class LogProcessor<TIn> : IValueAsyncProcessor<TIn, TIn>
 {
+   public async ValueTask<Result<TIn, ProcessorError>> ExecuteValueAsync(
+      ProcessorContext context, TIn input, CancellationToken cancellationToken)
+   {
+      Console.WriteLine($"Starting Pipeline: {context.PipelineName}");
+      return input;
+   }
+   
    
 }
 
-[ProcessorPipeline]
-internal class BasePipeline
+internal class LoggablePipeline
+{
+   [Step(0)]
+   public required LogProcessor<int> Log { get; set; }
+}
+
+[Timeout(500)]
+internal class BasePipeline<TValueProcessor>
 {
    [Step(1)]
-   public required ValueProcessor First { get; set; }
+   public required TValueProcessor First { get; set; }
    
    [Step(2)]
    [Setting(nameof(AsyncProcessor.Delay), 1_000)]
    public required AsyncProcessor Second { get; set; }
 }
 
-internal sealed class MainPipeline : BasePipeline
+[ProcessorPipeline("Main")]
+[Timeout(1000), Retry(3)]
+internal sealed class MainPipeline : BasePipeline<ValueProcessor>
 {
-   
+   [Step(3)]
+   public required MainProcessor Third { get; set; }
 }
