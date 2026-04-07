@@ -28,7 +28,49 @@ public sealed partial class ProcessorGenerator
    private const string StepAttributeName = "StepAttribute";
    private const string StepAttributeFullName = $"{AttributeNameSpace}.{StepAttributeName}";
 
-   private static SettingSpec GetSettingAttribute(ISymbol symbol, AttributeData attribute)
+   private static TimeoutSpec? GetTimeoutAttribute(ISymbol symbol, ImmutableArray<AttributeData> attributes)
+   {
+      return attributes.Where(IsTimeoutAttribute)
+         .Select(x => GetTimeoutAttribute(symbol, x))
+         .FirstOrDefault();
+   }
+   
+   private static IEnumerable<ContextVariableSpec> GetContextVariableAttributes(ISymbol symbol, ImmutableArray<AttributeData> attributes)
+   {
+      return attributes.Where(IsContextVariableAttribute)
+         .Select(x => GetContextVariableAttributes(symbol, x));
+   }
+
+   private static StepSpec? GetStepAttribute(ISymbol symbol, ImmutableArray<AttributeData> attributes)
+   {
+      return attributes.Where(IsStepAttribute)
+         .Select(x => GetStepAttribute(symbol, x))
+         .FirstOrDefault();
+   }
+   
+   private static List<SettingSpec> GetSettingAttributes(INamedTypeSymbol symbol, ImmutableArray<AttributeData> attributes)
+   {
+      HashSet<string> found = [];
+      var properties = symbol.GetMembers().OfType<IPropertySymbol>()
+         .Where(p => p is { IsStatic: false, IsReadOnly: false });
+
+      foreach (var property in properties)
+      {
+         var propAttributes = property.GetAttributes();
+         var setting = propAttributes.Where(IsSettingAttribute)
+            .Select(x => GetSettingAttributes(symbol, x))
+            .FirstOrDefault();
+         
+         found.Add(setting?.Name ?? string.Empty);
+      }
+      
+      return attributes.Where(IsSettingAttribute)
+         .Select(x => GetSettingAttributes(symbol, x))
+         .Where(x => found.Contains(x.Name))
+         .ToList();
+   }
+   
+   private static SettingSpec GetSettingAttributes(ISymbol symbol, AttributeData attribute)
    {
       return new SettingSpec()
       {
@@ -53,7 +95,7 @@ public sealed partial class ProcessorGenerator
       };
    }
    
-   private static ContextVariableSpec GetContextVariableAttribute(ISymbol symbol, AttributeData attribute)
+   private static ContextVariableSpec GetContextVariableAttributes(ISymbol symbol, AttributeData attribute)
    {
       var attributeClass = attribute.AttributeClass;
       var typeArgument = attributeClass?.TypeArguments.FirstOrDefault();

@@ -51,12 +51,5 @@
                Exclude="..\..\Beskar.CodeGeneration.Extensions\**\obj\**;..\..\Beskar.CodeGeneration.Extensions\**\bin\**"
                Link="Utilities\%(RecursiveDir)%(Filename)%(Extension)" />
    </ItemGroup>
-   <ItemGroup>
-     <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-     <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
-   </ItemGroup>
-   <ItemGroup>
-     <Folder Include="Rendering\" />
-   </ItemGroup>
 
 </Project>

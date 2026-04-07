@@ -1,9 +1,11 @@
-﻿using Beskar.CodeGeneration.Extensions.Common.Symbols;
+﻿using Beskar.CodeGeneration.Extensions.Common;
+using Beskar.CodeGeneration.Extensions.Common.Symbols;
 using Beskar.CodeGeneration.Extensions.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Diagnostics;
 using Beskar.CodeGeneration.Extensions.Models.Symbols;
 using Beskar.CodeGeneration.Extensions.Transformers.Archetypes.Options;
 using Beskar.CodeGeneration.Extensions.Transformers.Symbols.Options;
+using Beskar.CodeGeneration.ProcessorGenerator.Enums;
 using Beskar.CodeGeneration.ProcessorGenerator.Models;
 using Microsoft.CodeAnalysis;
 
@@ -27,11 +29,69 @@ public sealed partial class ProcessorGenerator
       
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<ProcessorPipelineSpec>.Create(8);
-      var namedType = symbol.CreateNamedArchetype(CreateTransformOptions());
-      
-      
+
+      var pipelineName = attribute.DetermineStringValue("Name", 0) ?? symbol.Name;
+      var pBuilder = new ProcessorPipelineBuilder()
+      {
+         PipelineName = pipelineName
+      };
+
+      TransformPipeline(symbol, pBuilder);
+      return builder.Build(pBuilder.Build(symbol));
    }
-   
+
+   private static void TransformPipeline(INamedTypeSymbol symbol, ProcessorPipelineBuilder builder)
+   {
+      while (true)
+      {
+         var attributes = symbol.GetAttributes();
+         if (builder.TimeoutSpec is null)
+         {
+            var timeoutAttr = GetTimeoutAttribute(symbol, attributes);
+            if (timeoutAttr is not null)
+            {
+               builder.TimeoutSpec = timeoutAttr;
+            }
+         }
+         
+         var variables = GetContextVariableAttributes(symbol, attributes);
+         builder.ContextVariables.AddRange(variables);
+
+         foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>()
+            .Where(p => p is { IsStatic: false, IsReadOnly: false }))
+         {
+            var propAttributes = property.GetAttributes();
+            if (GetStepAttribute(property, propAttributes) is not { } step
+                || property.Type is not INamedTypeSymbol stepType)
+            {
+               continue;
+            }
+
+            if (GetProcessorKind(stepType) is not { } kind)
+            {
+               continue;
+            }
+
+            var settings = GetSettingAttributes(stepType, propAttributes);
+            
+            builder.ProcessorRegisters.Add(new ProcessorRegisterSpec(
+               stepType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+               kind,
+               GetProcessorPostKind(stepType),
+               step,
+               [.. settings]));
+         }
+         
+         if (symbol.BaseType is not null && symbol.BaseType.SpecialType is not SpecialType.System_Object)
+         {
+            symbol = symbol.BaseType;
+            continue;
+         }
+
+         break;
+      }
+   }
+
    private static MaybeSpec<ProcessorSpec> TransformProcessor(
       GeneratorAttributeSyntaxContext context,
       CancellationToken ct)
@@ -67,11 +127,51 @@ public sealed partial class ProcessorGenerator
             && IsInInterfaceNamespace(i));
    }
 
+   private static ProcessorKind? GetProcessorKind(INamedTypeSymbol symbol)
+   {
+      (bool isAsync, bool isSync, bool isValueAsync) flags = (false, false, false);
+
+      foreach (var i in symbol.AllInterfaces)
+      {
+         if (i.Name is "IAsyncProcessor") flags.isAsync = true;
+         if (i.Name is "ISyncProcessor") flags.isSync = true;
+         if (i.Name is "IValueAsyncProcessor") flags.isValueAsync = true;
+      }
+
+      return flags switch
+      {
+         { isValueAsync: true } => ProcessorKind.ValueAsync,
+         { isAsync: true } => ProcessorKind.Async,
+         { isSync: true } => ProcessorKind.Sync,
+         _ => null
+      };
+   }
+
    private static bool HasPostProcessorInterface(INamedTypeSymbol symbol)
    {
       return symbol.AllInterfaces.Any(
-         i => i.Name is "IAsyncPostProcessor" or "ISyncPostProcessor"
+         i => i.Name is "IAsyncPostProcessor" or "ISyncPostProcessor" or "IValueAsyncPostProcessor"
             && IsInInterfaceNamespace(i));
+   }
+   
+   private static ProcessorKind? GetProcessorPostKind(INamedTypeSymbol symbol)
+   {
+      (bool isAsync, bool isSync, bool isValueAsync) flags = (false, false, false);
+
+      foreach (var i in symbol.AllInterfaces)
+      {
+         if (i.Name is "IAsyncPostProcessor") flags.isAsync = true;
+         if (i.Name is "ISyncPostProcessor") flags.isSync = true;
+         if (i.Name is "IValueAsyncPostProcessor") flags.isValueAsync = true;
+      }
+
+      return flags switch
+      {
+         { isValueAsync: true } => ProcessorKind.ValueAsync,
+         { isAsync: true } => ProcessorKind.Async,
+         { isSync: true } => ProcessorKind.Sync,
+         _ => null
+      };
    }
    
    private static ArchetypeTransformOptions CreateTransformOptions()
@@ -88,17 +188,18 @@ public sealed partial class ProcessorGenerator
          },
          Types = new TypeTransformOptions()
          {
-            Depth = 4,
+            Depth = 6,
             Load = new TypeSymbolLoadFlags()
             {
-               BaseType = true
+               BaseType = true,
+               AllInterfaces = true,
             }
          }
       };
       
       options.RegisterAttribute($"global::{TimeoutAttributeFullName}", GetTimeoutAttribute);
-      options.RegisterAttribute($"global::{ContextVariableAttributeFullName}", GetContextVariableAttribute);
-      options.RegisterAttribute($"global::{SettingAttributeFullName}", GetSettingAttribute);
+      options.RegisterAttribute($"global::{ContextVariableAttributeFullName}", GetContextVariableAttributes);
+      options.RegisterAttribute($"global::{SettingAttributeFullName}", GetSettingAttributes);
       options.RegisterAttribute($"global::{StepAttributeFullName}", GetStepAttribute);
       
       return options;

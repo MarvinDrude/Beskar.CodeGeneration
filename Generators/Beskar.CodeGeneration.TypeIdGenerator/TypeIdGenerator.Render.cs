@@ -9,7 +9,7 @@ namespace Beskar.CodeGeneration.TypeIdGenerator;
 
 public sealed partial class TypeIdGenerator
 {
-   public static void Render(
+   private static void Render(
       SourceProductionContext context,
       string assemblyName,
       MaybeSpec<TypeSafeIdSpec> maybeSpec)
