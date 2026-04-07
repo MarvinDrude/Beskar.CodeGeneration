@@ -37,6 +37,12 @@ public sealed partial class ProcessorGenerator
       };
 
       TransformPipeline(symbol, pBuilder);
+      if (pBuilder.ProcessorRegisters.Count == 0
+          || symbol.IsAbstract)
+      {
+         return builder.Add(InvalidPipelineTargetDiagnosticId).Build();
+      }
+      
       return builder.Build(pBuilder.Build(symbol));
    }
 
@@ -114,7 +120,8 @@ public sealed partial class ProcessorGenerator
       using var builder = DiagnosticBuilder<ProcessorSpec>.Create(8);
       var namedType = symbol.CreateNamedArchetype();
 
-      if (!HasProcessorInterface(symbol))
+      if (!HasProcessorInterface(symbol)
+          || symbol.IsAbstract)
       {
          return builder.Add(InvalidTargetDiagnosticId).Build();
       }
