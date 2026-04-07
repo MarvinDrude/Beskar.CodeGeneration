@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Beskar.CodeGeneration.Extensions.Common;
 
@@ -28,6 +29,24 @@ public static class AttributeDataConstructorExtensions
          return attribute.ConstructorArguments.Length > index
             ? attribute.ConstructorArguments[index].GetTypeValue()
             : null;
+      }
+
+      public string? GetCSharpString(int index)
+      {
+         if (attribute.ConstructorArguments.Length <= index)
+         {
+            return null;
+         }
+         
+         var arg = attribute.ConstructorArguments[index];
+         if (arg.IsArray)
+         {
+            return $"[{string.Join(", ", arg.Values.Select(v => v.ToCSharpString()))}]";
+         }
+         else
+         {
+            return arg.ToCSharpString();
+         }
       }
 
       public byte GetParameterByteValue(int index, byte defaultValue = 0)

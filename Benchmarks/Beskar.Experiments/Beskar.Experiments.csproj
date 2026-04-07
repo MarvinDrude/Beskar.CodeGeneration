@@ -7,12 +7,14 @@
       <OutputType>Exe</OutputType>
       <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
       <CompilerGeneratedFilesOutputPath>obj/generated</CompilerGeneratedFilesOutputPath>
+      <IsPackable>false</IsPackable>
    </PropertyGroup>
 
    <ItemGroup>
      <PackageReference Include="Beskar.CodeGeneration.LanguageGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.ObserveGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.PacketGenerator" />
+     <PackageReference Include="Beskar.CodeGeneration.ProcessorGenerator" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
    </ItemGroup>
