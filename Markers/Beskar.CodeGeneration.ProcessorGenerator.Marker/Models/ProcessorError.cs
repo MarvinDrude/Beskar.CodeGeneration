@@ -20,4 +20,12 @@ public class ProcessorError(int code, string? message = null)
    {
       
    }
+   
+   public static NoneProcessorError None => NoneProcessorError.Instance;
+}
+
+public class NoneProcessorError()
+   : ProcessorError(200, "No error occurred")
+{
+   public static readonly NoneProcessorError Instance = new();
 }

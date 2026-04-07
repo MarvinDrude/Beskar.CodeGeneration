@@ -73,9 +73,12 @@ public sealed partial class ProcessorGenerator
             }
 
             var settings = GetSettingAttributes(stepType, propAttributes);
+            var (input, output) = GetInputOutputTypes(stepType, kind);
             
             builder.ProcessorRegisters.Add(new ProcessorRegisterSpec(
                stepType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+               property.Name,
+               input, output,
                kind,
                GetProcessorPostKind(stepType),
                step,
@@ -127,6 +130,22 @@ public sealed partial class ProcessorGenerator
             && IsInInterfaceNamespace(i));
    }
 
+   private static (string InputFullTypeName, string OutputFullTypeName) GetInputOutputTypes(
+      INamedTypeSymbol symbol, ProcessorKind kind)
+   {
+      var interfaceName = kind switch
+      {
+         ProcessorKind.Async => "IAsyncProcessor",
+         ProcessorKind.Sync => "ISyncProcessor",
+         ProcessorKind.ValueAsync => "IValueAsyncProcessor",
+         _ => throw new InvalidOperationException()
+      };
+      var interfaceType = symbol.AllInterfaces.First(i => i.Name == interfaceName);
+      
+      return (interfaceType.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+         interfaceType.TypeArguments[1].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+   }
+
    private static ProcessorKind? GetProcessorKind(INamedTypeSymbol symbol)
    {
       (bool isAsync, bool isSync, bool isValueAsync) flags = (false, false, false);
@@ -145,13 +164,6 @@ public sealed partial class ProcessorGenerator
          { isSync: true } => ProcessorKind.Sync,
          _ => null
       };
-   }
-
-   private static bool HasPostProcessorInterface(INamedTypeSymbol symbol)
-   {
-      return symbol.AllInterfaces.Any(
-         i => i.Name is "IAsyncPostProcessor" or "ISyncPostProcessor" or "IValueAsyncPostProcessor"
-            && IsInInterfaceNamespace(i));
    }
    
    private static ProcessorKind? GetProcessorPostKind(INamedTypeSymbol symbol)
@@ -199,7 +211,6 @@ public sealed partial class ProcessorGenerator
       
       options.RegisterAttribute($"global::{TimeoutAttributeFullName}", GetTimeoutAttribute);
       options.RegisterAttribute($"global::{ContextVariableAttributeFullName}", GetContextVariableAttributes);
-      options.RegisterAttribute($"global::{SettingAttributeFullName}", GetSettingAttributes);
       options.RegisterAttribute($"global::{StepAttributeFullName}", GetStepAttribute);
       
       return options;

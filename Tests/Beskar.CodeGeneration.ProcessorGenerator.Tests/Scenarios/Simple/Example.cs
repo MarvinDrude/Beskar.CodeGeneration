@@ -1,9 +1,12 @@
-﻿using Beskar.CodeGeneration.ProcessorGenerator.Marker.Attributes;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Beskar.CodeGeneration.ProcessorGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.ProcessorGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.ProcessorGenerator.Marker.Models;
 using Me.Memory.Results;
 
-namespace Beskar.CodeGeneration.ProcessorGenerator.Marker.Internal;
+namespace Beskar.CodeGeneration.ProcessorGenerator.Tests.Scenarios.Simple;
 
 [Processor]
 internal sealed class MainProcessor : ISyncProcessor<string, int>
@@ -80,7 +83,7 @@ internal class LoggablePipeline
    public required LogProcessor<int> Log { get; set; }
 }
 
-[Timeout(500)]
+[Marker.Attributes.Timeout(500)]
 [ContextVariable<string>("MyString")]
 [ContextVariable<int>("MyInt")]
 [ContextVariable<object>("MyObject")]
@@ -97,75 +100,10 @@ internal class BasePipeline<TValueProcessor> : LoggablePipeline
 }
 
 [ProcessorPipeline("Main")]
-[Timeout(1000)]
+[Marker.Attributes.Timeout(1000)]
 [ContextVariable<bool>("MyBool")]
 internal sealed partial class MainPipeline : BasePipeline<ValueProcessor>
 {
    [Step(3)]
    public required MainProcessor Third { get; set; }
-
-   public static MainPipeline GetFactory(IServiceProvider provider)
-   {
-      var pipeline = new MainPipeline()
-      {
-         Log = provider.GetService(typeof(LogProcessor<int>)) as LogProcessor<int>
-            ?? throw new InvalidOperationException("Can't find processor in DI."),
-         First = provider.GetService(typeof(ValueProcessor)) as ValueProcessor 
-            ?? throw new InvalidOperationException("Can't find processor in DI."),
-         Second = provider.GetService(typeof(AsyncProcessor)) as AsyncProcessor 
-            ?? throw new InvalidOperationException("Can't find processor in DI."),
-         Third = provider.GetService(typeof(MainProcessor)) as MainProcessor
-            ?? throw new InvalidOperationException("Can't find processor in DI."),
-      };
-
-      pipeline.Second.Delay = 1_000;
-      pipeline.Second.PostMessage = "Setting Post Message";
-      
-      pipeline.First.ArraySetting = ["Test1", "Test2"];
-      
-      return pipeline;
-   }
-
-   public async Task<Result<int, ProcessorError>> Execute(int input, CancellationToken ct)
-   {
-      ProcessorContext context = new MainPipelineContext()
-      {
-         PipelineName = "Main"
-      };
-      
-      using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-      cts.CancelAfter(1000);
-      ct = cts.Token;
-
-      var r1 = await Log.Execute(context, input, ct);
-      if (!r1.HasValue) return r1.Error;
-
-      var r2 = await First.Execute(context, r1.Success, ct);
-      if (!r2.HasValue) return r2.Error;
-      
-      var r3 = await Second.Execute(context, r2.Success, ct);
-      if (!r3.HasValue) return r3.Error;
-      
-      var r4 = Third.Execute(context, r3.Success, ct);
-      if (!r4.HasValue) return r4.Error;
-      
-      var error1 = await Second.Post(context, ct);
-      if (error1 is not null) return error1;
-      
-      var error2 = await Log.Post(context, ct);
-      if (error2 is not null) return error2;
-      
-      return r4.Success;
-   }
-   
-   public sealed class MainPipelineContext : ProcessorContext
-   {
-      public string? MyString { get; set; }
-      
-      public int MyInt { get; set; }
-      
-      public object? MyObject { get; set; }
-      
-      public bool MyBool { get; set; }
-   }
 }

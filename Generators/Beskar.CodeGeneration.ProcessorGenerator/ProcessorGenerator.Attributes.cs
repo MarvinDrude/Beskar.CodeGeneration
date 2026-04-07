@@ -50,7 +50,7 @@ public sealed partial class ProcessorGenerator
    
    private static List<SettingSpec> GetSettingAttributes(INamedTypeSymbol symbol, ImmutableArray<AttributeData> attributes)
    {
-      HashSet<string> found = [];
+      Dictionary<string, string> found = [];
       var properties = symbol.GetMembers().OfType<IPropertySymbol>()
          .Where(p => p is { IsStatic: false, IsReadOnly: false });
 
@@ -58,24 +58,27 @@ public sealed partial class ProcessorGenerator
       {
          var propAttributes = property.GetAttributes();
          var setting = propAttributes.Where(IsSettingAttribute)
-            .Select(x => GetSettingAttributes(symbol, x))
+            .Select(x => GetSettingAttributes(symbol, x, found))
             .FirstOrDefault();
          
-         found.Add(setting?.Name ?? string.Empty);
+         found[setting?.Name ?? string.Empty] = property.Name;
       }
       
       return attributes.Where(IsSettingAttribute)
-         .Select(x => GetSettingAttributes(symbol, x))
-         .Where(x => found.Contains(x.Name))
+         .Select(x => GetSettingAttributes(symbol, x, found))
+         .Where(x => found.ContainsKey(x.Name))
          .ToList();
    }
    
-   private static SettingSpec GetSettingAttributes(ISymbol symbol, AttributeData attribute)
+   private static SettingSpec GetSettingAttributes(ISymbol symbol, AttributeData attribute, Dictionary<string, string> found)
    {
+      var name = attribute.DetermineStringValue("Name", 0) ?? "Unknown";
+      
       return new SettingSpec()
       {
-         Name = attribute.DetermineStringValue("Name", 0) ?? "Unknown",
-         ValueFullExpression = attribute.ConstructorArguments[1].ToCSharpString()
+         Name = name,
+         ValueFullExpression = attribute.GetCSharpString(1) ?? "default",
+         PropertyName = found.GetValueOrDefault(name) ?? "Unknown"
       };
    }
    
@@ -103,7 +106,8 @@ public sealed partial class ProcessorGenerator
       return new ContextVariableSpec()
       {
          Name = attribute.DetermineStringValue("Name", 0) ?? "Unknown",
-         TypeFullName = typeArgument?.ToDisplayString() ?? "object"
+         TypeFullName = typeArgument?.ToDisplayString() ?? "object",
+         IsReferenceType = typeArgument?.IsReferenceType ?? true
       };
    }
    

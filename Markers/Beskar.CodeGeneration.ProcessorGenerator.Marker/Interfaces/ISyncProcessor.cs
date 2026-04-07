@@ -11,5 +11,5 @@ public interface ISyncProcessor<in TIn, TOut>
 
 public interface ISyncPostProcessor
 {
-   public void Post(ProcessorContext context, CancellationToken cancellationToken);
+   public ProcessorError? Post(ProcessorContext context, CancellationToken cancellationToken);
 }

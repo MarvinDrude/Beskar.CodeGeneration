@@ -11,5 +11,5 @@ public interface IAsyncProcessor<in TIn, TOut>
 
 public interface IAsyncPostProcessor
 {
-   public Task Post(ProcessorContext context, CancellationToken cancellationToken);
+   public Task<ProcessorError?> Post(ProcessorContext context, CancellationToken cancellationToken);
 }

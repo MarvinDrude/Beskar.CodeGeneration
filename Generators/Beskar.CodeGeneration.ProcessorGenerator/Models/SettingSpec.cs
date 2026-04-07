@@ -8,6 +8,8 @@ public sealed record SettingSpec : IAttributeSpec
    
    public required string ValueFullExpression { get; init; }
    
+   public required string PropertyName { get; init; }
+   
    public bool Equals(IAttributeSpec? other)
    {
       return other is SettingSpec spec && Equals(spec);

@@ -11,5 +11,5 @@ public interface IValueAsyncProcessor<in TIn, TOut>
 
 public interface IValueAsyncPostProcessor
 {
-   public ValueTask Post(ProcessorContext context, CancellationToken cancellationToken);
+   public ValueTask<ProcessorError?> Post(ProcessorContext context, CancellationToken cancellationToken);
 }

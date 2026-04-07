@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Beskar.CodeGeneration.Extensions.Common;
 
@@ -41,6 +42,18 @@ public static class AttributeDataExtensions
          return attribute.TryGetNamedArgument(name, out var constant)
             ? constant.GetTypeValue()
             : null;
+      }
+      
+      public string? GetCSharpString(string name)
+      {
+         if (!attribute.TryGetNamedArgument(name, out var constant))
+         {
+            return null;
+         }
+
+         return constant.IsArray 
+            ? $"[{string.Join(", ", constant.Values.Select(v => v.ToCSharpString()))}]" 
+            : constant.ToCSharpString();
       }
       
       [return: NotNullIfNotNull(nameof(defaultValue))]

@@ -8,6 +8,8 @@ public sealed record ContextVariableSpec : IAttributeSpec
    
    public required string TypeFullName { get; init; }
    
+   public required bool IsReferenceType { get; init; }
+   
    public bool Equals(IAttributeSpec? other)
    {
       return other is ContextVariableSpec spec && Equals(spec);
