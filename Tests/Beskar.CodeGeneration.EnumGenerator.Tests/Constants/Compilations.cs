@@ -1,7 +1,7 @@
 ﻿using Basic.Reference.Assemblies;
 using Beskar.CodeGeneration.Tests.Utils.Compilations;
 
-namespace Beskar.CodeGeneration.PacketGenerator.Tests.Constants;
+namespace Beskar.CodeGeneration.EnumGenerator.Tests.Constants;
 
 public static class Compilations
 {
