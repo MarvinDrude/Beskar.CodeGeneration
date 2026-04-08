@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
+    <PackageVersion Include="Beskar.CodeGeneration.EnumGenerator" Version="1.1.8" />
     <PackageVersion Include="Beskar.CodeGeneration.LanguageGenerator" Version="1.1.7" />
     <PackageVersion Include="Beskar.CodeGeneration.ObserveGenerator" Version="1.1.7" />
     <PackageVersion Include="Beskar.CodeGeneration.PacketGenerator" Version="1.1.7" />

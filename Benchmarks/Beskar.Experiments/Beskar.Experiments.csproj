@@ -11,6 +11,7 @@
    </PropertyGroup>
 
    <ItemGroup>
+     <PackageReference Include="Beskar.CodeGeneration.EnumGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.LanguageGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.ObserveGenerator" />
      <PackageReference Include="Beskar.CodeGeneration.PacketGenerator" />

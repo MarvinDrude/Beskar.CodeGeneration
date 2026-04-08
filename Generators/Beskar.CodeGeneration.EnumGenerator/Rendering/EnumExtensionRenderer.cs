@@ -91,7 +91,7 @@ public sealed class EnumExtensionRenderer(SourceProductionContext ctx)
    
    private void WriteTryFastParseCase(ref CodeTextWriter writer, FieldSymbolArchetype[] fields)
    {
-      writer.WriteLineInterpolated($"public bool TryFastParseCase(string? name, out {Spec.NamedType.Symbol.FullName} result, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)");
+      writer.WriteLineInterpolated($"public static bool TryFastParseCase(string? name, out {Spec.NamedType.Symbol.FullName} result, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)");
       writer.OpenBody();
       
       writer.WriteLine("switch (name)");
@@ -119,7 +119,7 @@ public sealed class EnumExtensionRenderer(SourceProductionContext ctx)
    
    private void WriteTryFastParseExact(ref CodeTextWriter writer, FieldSymbolArchetype[] fields)
    {
-      writer.WriteLineInterpolated($"public bool TryFastParseExact(string? name, out {Spec.NamedType.Symbol.FullName} result)");
+      writer.WriteLineInterpolated($"public static bool TryFastParseExact(string? name, out {Spec.NamedType.Symbol.FullName} result)");
       writer.OpenBody();
       
       writer.WriteLine("switch (name)");

@@ -89,7 +89,7 @@ public static partial class UserRoleExtensions
          };
       }
 
-      public bool TryFastParseExact(string? name, out global::MyProject.UserRole result)
+      public static bool TryFastParseExact(string? name, out global::MyProject.UserRole result)
       {
          switch (name)
          {
@@ -111,7 +111,7 @@ public static partial class UserRoleExtensions
          };
       }
 
-      public bool TryFastParseCase(string? name, out global::MyProject.UserRole result, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+      public static bool TryFastParseCase(string? name, out global::MyProject.UserRole result, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
       {
          switch (name)
          {
