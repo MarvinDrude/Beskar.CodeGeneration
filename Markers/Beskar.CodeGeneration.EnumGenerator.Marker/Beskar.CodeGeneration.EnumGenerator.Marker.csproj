@@ -7,9 +7,9 @@
    </PropertyGroup>
 
    <PropertyGroup>
-      <Title>Beskar.CodeGeneration.LanguageGenerator.Marker</Title>
-      <PackageId>Beskar.CodeGeneration.LanguageGenerator.Marker</PackageId>
-      <Description>Generate easy to use language group / key interaction for code.</Description>
+      <Title>Beskar.CodeGeneration.EnumGenerator.Marker</Title>
+      <PackageId>Beskar.CodeGeneration.EnumGenerator.Marker</PackageId>
+      <Description>Generate nice-to-have performance extensions to enums.</Description>
       <Authors>Marvin Drude</Authors>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <PackageReadmeFile>README.md</PackageReadmeFile>

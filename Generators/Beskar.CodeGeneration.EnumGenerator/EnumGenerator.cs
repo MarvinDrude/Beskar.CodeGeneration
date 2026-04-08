@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Beskar.CodeGeneration.TypeIdGenerator;
+namespace Beskar.CodeGeneration.EnumGenerator;
 
 [Generator]
-public sealed partial class TypeIdGenerator : IIncrementalGenerator
+public sealed partial class EnumGenerator : IIncrementalGenerator
 {
-   public const string GeneratorName = "TypeIdGenerator";
+   public const string GeneratorName = "EnumGenerator";
    public const string GeneratorVersion = "1.1.8";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -18,7 +18,7 @@ public sealed partial class TypeIdGenerator : IIncrementalGenerator
 
       var maybeSpecProvider = context.SyntaxProvider
          .ForAttributeWithMetadataName(
-            AttributeTypeIdFullName,
+            FastEnumAttributeFullName,
             predicate: static (_, _) => true,
             transform: Transform);
       

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using Beskar.CodeGeneration.EnumGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Detectors;
 using Beskar.CodeGeneration.LanguageGenerator.Marker.Interfaces;
@@ -76,7 +77,24 @@ var pipeline = provider.GetRequiredService<MainPipeline>();
 
 var result = await pipeline.Execute(123, CancellationToken.None);
 
+var count = Test.ValueCount;
+var names = Test.GetAllNames();
+var vals = Test.GetAllValues();
+
+var res = Test.TryFastParseExact("Test2", out var testExact);
+var tes1 = Test.TryFastParseCase("test2", out var testCase);
+
+var a = testCase.ToFastString();
+var b = Test.Test.ToFastString();
+
 return;
+
+[FastEnum]
+public enum Test
+{
+   Test,
+   Test2,
+}
 
 [Processor]
 internal sealed class MainProcessor : ISyncProcessor<string, int>
