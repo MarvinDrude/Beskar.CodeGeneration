@@ -1,0 +1,3 @@
+# Beskar.CodeGeneration.EnumGenerator
+
+Todo
