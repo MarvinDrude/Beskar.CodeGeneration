@@ -1,0 +1,3 @@
+﻿# Beskar.CodeGeneration.ContentGenerator
+
+Todo
