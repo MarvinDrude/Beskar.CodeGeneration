@@ -1,6 +1,8 @@
-﻿namespace Beskar.CodeGeneration.ContentGenerator.Marker.Models;
+﻿using Beskar.CodeGeneration.ContentGenerator.Marker.Interfaces;
 
-public sealed class ComponentReference<TComponent>
+namespace Beskar.CodeGeneration.ContentGenerator.Marker.Models;
+
+public sealed class ComponentReference<TComponent> : IContentField
     where TComponent : ComponentBase
 {
    public required TComponent Component { get; set; }
