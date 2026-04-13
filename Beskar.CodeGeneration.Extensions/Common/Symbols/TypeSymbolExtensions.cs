@@ -17,6 +17,20 @@ public static class TypeSymbolExtensions
          
          return TypeSymbolArchetypeTransformer.Transform(type, options: options);
       }
+      
+      public IEnumerable<ISymbol> GetAllMembers()
+      {
+         ITypeSymbol? currentType = type;
+         while (currentType is not null)
+         {
+            foreach (var member in currentType.GetMembers())
+            {
+               yield return member;
+            }
+            
+            currentType = currentType.BaseType;
+         }
+      }
 
       public bool IsVoidTask => type.IsInSystemTasksNamespace 
          && type is INamedTypeSymbol { Arity: 0, Name: "Task" };

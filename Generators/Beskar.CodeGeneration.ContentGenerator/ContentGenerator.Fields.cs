@@ -57,4 +57,60 @@ public sealed partial class ContentGenerator
          },
       };
    }
+   
+   private static bool IsRelevantModel(INamedTypeSymbol symbol)
+   {
+      return symbol is
+      {
+         ContainingNamespace:
+         {
+            Name: "Models",
+            ContainingNamespace:
+            {
+               Name: "Marker",
+               ContainingNamespace:
+               {
+                  Name: "ContentGenerator",
+                  ContainingNamespace:
+                  {
+                     Name: "CodeGeneration",
+                     ContainingNamespace:
+                     {
+                        Name: "Beskar",
+                        ContainingNamespace.IsGlobalNamespace: true
+                     }
+                  }
+               }
+            }
+         },
+      };
+   }
+   
+   private static bool IsRelevantInterface(INamedTypeSymbol symbol)
+   {
+      return symbol is
+      {
+         ContainingNamespace:
+         {
+            Name: "Interfaces",
+            ContainingNamespace:
+            {
+               Name: "Marker",
+               ContainingNamespace:
+               {
+                  Name: "ContentGenerator",
+                  ContainingNamespace:
+                  {
+                     Name: "CodeGeneration",
+                     ContainingNamespace:
+                     {
+                        Name: "Beskar",
+                        ContainingNamespace.IsGlobalNamespace: true
+                     }
+                  }
+               }
+            }
+         },
+      };
+   }
 }
