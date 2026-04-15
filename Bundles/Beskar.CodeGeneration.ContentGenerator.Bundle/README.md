@@ -1,3 +1,3 @@
 ﻿# Beskar.CodeGeneration.ContentGenerator
 
-Todo
+Internal use for now. Docs will follow.

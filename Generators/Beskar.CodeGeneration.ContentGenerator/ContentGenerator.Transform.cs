@@ -46,7 +46,13 @@ public sealed partial class ContentGenerator
 
       foreach (var property in properties)
       {
-         
+         var fieldSpec = TransformField(property);
+         if (fieldSpec is null)
+         {
+            continue;
+         }
+
+         fields.Add(fieldSpec);
       }
       
       return builder.Build(new ContentTypeSpec(
