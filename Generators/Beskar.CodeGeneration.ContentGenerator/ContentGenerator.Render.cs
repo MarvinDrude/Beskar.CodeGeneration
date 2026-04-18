@@ -1,4 +1,5 @@
-﻿using Beskar.CodeGeneration.ContentGenerator.Models;
+﻿using System.Collections.Immutable;
+using Beskar.CodeGeneration.ContentGenerator.Models;
 using Beskar.CodeGeneration.ContentGenerator.Rendering;
 using Beskar.CodeGeneration.Extensions.Common;
 using Beskar.CodeGeneration.Extensions.Common.Specs;
@@ -12,22 +13,30 @@ public sealed partial class ContentGenerator
    private static void Render(
       SourceProductionContext context,
       string assemblyName,
-      MaybeSpec<ContentTypeSpec> maybeSpec)
+      ImmutableArray<MaybeSpec<ContentTypeSpec>> maybeSpecs)
    {
-      context.DispatchDiagnostics(Diagnostics, maybeSpec);
-      if (!maybeSpec.HasValue)
+      Dictionary<string, ContentTypeSpec> contentTypes = [];
+      foreach (var maybeSpec in maybeSpecs)
       {
-         return;
+         context.DispatchDiagnostics(Diagnostics, maybeSpec);
+         if (maybeSpec.HasValue)
+         {
+            contentTypes[maybeSpec.Value.NamedType.Symbol.FullName] = maybeSpec.Value;
+         }
       }
       
       var ct = context.CancellationToken;
       ct.ThrowIfCancellationRequested();
-      
-      var renderer = new ContentTypeRenderer(context)
+
+      foreach (var (_, spec) in contentTypes)
       {
-         Spec = maybeSpec.Value
-      };
+         var renderer = new ContentTypeRenderer(context)
+         {
+            ContentTypes = contentTypes,
+            Spec = spec,
+         };
       
-      renderer.Render(maybeSpec.Value.NamedType.Symbol.GeneratedFilePath);
+         renderer.Render(spec.NamedType.Symbol.GeneratedFilePath);
+      }
    }
 }

@@ -20,6 +20,7 @@ public sealed class ExampleType : ContentTypeBase
    
    public required LocalizedField<ComponentCollection<AllLangComponent>> AllLangComponents { get; set; }
    
+   [ComponentsOptions]
    public ComponentCollection<TestComponent>? TestComponents { get; set; }
    
    public required BooleanField IsActive { get; set; }

@@ -8,6 +8,8 @@ namespace Beskar.CodeGeneration.ContentGenerator.Rendering;
 public sealed class ContentTypeRenderer(SourceProductionContext ctx) 
    : CodeRenderer(ctx)
 {
+   public required Dictionary<string, ContentTypeSpec> ContentTypes { get; init; }
+   
    public required ContentTypeSpec Spec { get; init; }
    
    protected override string Render()

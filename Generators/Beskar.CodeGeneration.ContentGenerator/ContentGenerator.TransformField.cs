@@ -1,7 +1,9 @@
 ﻿using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Beskar.CodeGeneration.ContentGenerator.Models;
+using Beskar.CodeGeneration.ContentGenerator.Models.Attributes;
 using Beskar.CodeGeneration.ContentGenerator.Models.Fields;
+using Beskar.CodeGeneration.Extensions.Common;
 using Microsoft.CodeAnalysis;
 
 namespace Beskar.CodeGeneration.ContentGenerator;
@@ -30,13 +32,13 @@ public sealed partial class ContentGenerator
       var attributes = fieldSymbol.GetAttributes();
       FieldSpec? field = type switch
       {
-         { Name: "BooleanField" } => CreateBoolean(isLocalized, type, fieldSymbol, attributes),
-         { Name: "DateOnlyField" } => CreateDateOnly(isLocalized, type, fieldSymbol, attributes),
-         { Name: "DateTimeField" } => CreateDateTime(isLocalized, type, fieldSymbol, attributes),
-         { Name: "MediaField" } => CreateMedia(isLocalized, type, fieldSymbol, attributes),
-         { Name: "NumberField" } => CreateNumber(isLocalized, type, fieldSymbol, attributes),
-         { Name: "StringField" } => CreateString(isLocalized, type, fieldSymbol, attributes),
-         { Name: "TimeOnlyField" } => CreateTimeOnly(isLocalized, type, fieldSymbol, attributes),
+         { Name: BooleanFieldName } => CreateBoolean(isLocalized, type, fieldSymbol, attributes),
+         { Name: DateOnlyFieldName } => CreateDateOnly(isLocalized, type, fieldSymbol, attributes),
+         { Name: DateTimeFieldName } => CreateDateTime(isLocalized, type, fieldSymbol, attributes),
+         { Name: MediaFieldName } => CreateMedia(isLocalized, type, fieldSymbol, attributes),
+         { Name: NumberFieldName } => CreateNumber(isLocalized, type, fieldSymbol, attributes),
+         { Name: StringFieldName } => CreateString(isLocalized, type, fieldSymbol, attributes),
+         { Name: TimeOnlyFieldName } => CreateTimeOnly(isLocalized, type, fieldSymbol, attributes),
          { Name: "ComponentCollection" } => CreateComponentCollection(isLocalized, type, fieldSymbol, attributes),
          { Name: "ComponentReference" } => CreateComponentReference(isLocalized, type, fieldSymbol, attributes),
          { Name: "ContentTypeId" } => new IdFieldSpec()
@@ -102,10 +104,23 @@ public sealed partial class ContentGenerator
    private static MediaFieldSpec CreateMedia(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
       ImmutableArray<AttributeData> attributes = default)
    {
+      var attribute = attributes.FirstOrDefault(IsMediaOptionsAttribute);
+      MediaOptionsSpec? options = null;
+      if (attribute is not null)
+      {
+         options = new MediaOptionsSpec()
+         {
+            AllowedExtensions = attribute.DetermineStringArrayValues("AllowedExtensions", 0),
+            MinCount = attribute.DetermineIntValue("MinCount", 1),
+            MaxCount = attribute.DetermineIntValue("MaxCount", 2),
+         };
+      }
+      
       return new MediaFieldSpec()
       {
          IsLocalized = isLocalized,
-         PropertyName = property.Name
+         PropertyName = property.Name,
+         Options = options
       };
    }
    
@@ -122,10 +137,22 @@ public sealed partial class ContentGenerator
    private static StringFieldSpec CreateString(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
       ImmutableArray<AttributeData> attributes = default)
    {
+      var attribute = attributes.FirstOrDefault(IsStringOptionsAttribute);
+      StringOptionsSpec? options = null;
+      if (attribute is not null)
+      {
+         options = new StringOptionsSpec()
+         {
+            Kind = StringOptionsSpec.GetKind(attribute.DetermineEnumFullName("Kind", 0) ?? string.Empty),
+            MaxLength = attribute.DetermineIntValue("MaxLength", 1),
+         };
+      }
+      
       return new StringFieldSpec()
       {
          IsLocalized = isLocalized,
-         PropertyName = property.Name
+         PropertyName = property.Name,
+         Options = options
       };
    }
    
@@ -143,11 +170,17 @@ public sealed partial class ContentGenerator
       ImmutableArray<AttributeData> attributes = default)
    {
       var attribute = attributes.FirstOrDefault(IsComponentsOptionsAttribute);
+      ComponentsOptionsSpec? options = null;
+      if (attribute is not null)
+      {
+         options = new ComponentsOptionsSpec();
+      }
       
       return new ComponentCollectionSpec()
       {
          IsLocalized = isLocalized,
-         PropertyName = property.Name
+         PropertyName = property.Name,
+         Options = options
       };
    }
    
@@ -155,12 +188,17 @@ public sealed partial class ContentGenerator
       ImmutableArray<AttributeData> attributes = default)
    {
       var attribute = attributes.FirstOrDefault(IsComponentOptionsAttribute);
-      
+      ComponentOptionsSpec? options = null;
+      if (attribute is not null)
+      {
+         options = new ComponentOptionsSpec();
+      }
       
       return new ComponentReferenceSpec()
       {
          IsLocalized = isLocalized,
-         PropertyName = property.Name
+         PropertyName = property.Name,
+         Options = options
       };
    }
 }

@@ -6,5 +6,6 @@ namespace Beskar.CodeGeneration.ContentGenerator.Models;
 
 public readonly record struct ContentTypeSpec(
    NamedTypeSymbolArchetype NamedType,
+   string? BaseTypeFullName,
    ContentTypeKind Kind,
    SequenceArray<FieldSpec> Fields);

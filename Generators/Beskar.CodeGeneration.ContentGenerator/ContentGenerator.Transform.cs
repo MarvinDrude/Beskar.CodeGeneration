@@ -54,9 +54,15 @@ public sealed partial class ContentGenerator
 
          fields.Add(fieldSpec);
       }
+
+      string? baseTypeName = null;
+      if (symbol.BaseType is not { SpecialType: SpecialType.System_Object } and not null)
+      {
+         baseTypeName = symbol.BaseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+      }
       
       return builder.Build(new ContentTypeSpec(
-         archetype, kind, [.. fields.WrittenSpan]));
+         archetype, baseTypeName, kind, [.. fields.WrittenSpan]));
    }
 
    private static bool IsContentTypeCorrectDerivedType(INamedTypeSymbol symbol, string search)

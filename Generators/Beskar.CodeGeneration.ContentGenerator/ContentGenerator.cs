@@ -10,6 +10,27 @@ public sealed partial class ContentGenerator : IIncrementalGenerator
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
-      throw new NotImplementedException();
+      var assemblyNameProvider = context.CompilationProvider
+         .Select(static (c, _) => c.AssemblyName?
+            .Replace(" ", string.Empty)
+            .Replace(".", string.Empty)
+            .Trim() ?? "UnknownAssembly");
+      
+      var contentTypeProvider = context.SyntaxProvider
+         .ForAttributeWithMetadataName(
+            ContentTypeAttributeName,
+            predicate: static (_, _) => true,
+            transform: Transform);
+      
+      var combined = contentTypeProvider.Collect()
+         .Combine(assemblyNameProvider);
+      
+      context.RegisterSourceOutput(combined, static (ctx, source) 
+         => Render(ctx, source.Right, source.Left));
+      
+      context.RegisterPostInitializationOutput(static ctx =>
+      {
+         ctx.AddSource($"{GeneratorName}.g.cs", $"// Version {GeneratorVersion}");
+      });
    }
 }
