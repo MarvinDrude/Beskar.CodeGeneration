@@ -2,6 +2,7 @@
 using Beskar.CodeGeneration.ContentGenerator.Marker.Enums;
 using Beskar.CodeGeneration.ContentGenerator.Marker.Fields;
 using Beskar.CodeGeneration.ContentGenerator.Marker.Models;
+using ContentTypeId = Beskar.CodeGeneration.ContentGenerator.Marker.Fields.ContentTypeId;
 
 namespace Beskar.CodeGeneration.ContentGenerator.Marker.Internal;
 
