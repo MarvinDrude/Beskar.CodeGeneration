@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Beskar.CodeGeneration.ContentGenerator.Models;
 using Beskar.CodeGeneration.ContentGenerator.Models.Fields;
 using Microsoft.CodeAnalysis;
@@ -26,17 +27,23 @@ public sealed partial class ContentGenerator
          return null;
       }
       
+      var attributes = fieldSymbol.GetAttributes();
       FieldSpec? field = type switch
       {
-         { Name: "BooleanField" } => CreateBoolean(isLocalized, type, fieldSymbol),
-         { Name: "DateOnlyField" } => CreateDateOnly(isLocalized, type, fieldSymbol),
-         { Name: "DateTimeField" } => CreateDateTime(isLocalized, type, fieldSymbol),
-         { Name: "MediaField" } => CreateMedia(isLocalized, type, fieldSymbol),
-         { Name: "NumberField" } => CreateNumber(isLocalized, type, fieldSymbol),
-         { Name: "StringField" } => CreateString(isLocalized, type, fieldSymbol),
-         { Name: "TimeOnlyField" } => CreateTimeOnly(isLocalized, type, fieldSymbol),
-         { Name: "ComponentCollection" } => CreateComponentCollection(isLocalized, type, fieldSymbol),
-         { Name: "ComponentReference" } => CreateComponentReference(isLocalized, type, fieldSymbol),
+         { Name: "BooleanField" } => CreateBoolean(isLocalized, type, fieldSymbol, attributes),
+         { Name: "DateOnlyField" } => CreateDateOnly(isLocalized, type, fieldSymbol, attributes),
+         { Name: "DateTimeField" } => CreateDateTime(isLocalized, type, fieldSymbol, attributes),
+         { Name: "MediaField" } => CreateMedia(isLocalized, type, fieldSymbol, attributes),
+         { Name: "NumberField" } => CreateNumber(isLocalized, type, fieldSymbol, attributes),
+         { Name: "StringField" } => CreateString(isLocalized, type, fieldSymbol, attributes),
+         { Name: "TimeOnlyField" } => CreateTimeOnly(isLocalized, type, fieldSymbol, attributes),
+         { Name: "ComponentCollection" } => CreateComponentCollection(isLocalized, type, fieldSymbol, attributes),
+         { Name: "ComponentReference" } => CreateComponentReference(isLocalized, type, fieldSymbol, attributes),
+         { Name: "ContentTypeId" } => new IdFieldSpec()
+         {
+            IsLocalized = isLocalized,
+            PropertyName = fieldSymbol.Name
+         },
          _ => null
       };
 
@@ -62,7 +69,8 @@ public sealed partial class ContentGenerator
       return false;
    }
 
-   private static BooleanFieldSpec CreateBoolean(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static BooleanFieldSpec CreateBoolean(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property,
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new BooleanFieldSpec()
       {
@@ -71,7 +79,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static DateOnlyFieldSpec CreateDateOnly(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static DateOnlyFieldSpec CreateDateOnly(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property,
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new DateOnlyFieldSpec()
       {
@@ -80,7 +89,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static DateTimeFieldSpec CreateDateTime(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static DateTimeFieldSpec CreateDateTime(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new DateTimeFieldSpec()
       {
@@ -89,7 +99,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static MediaFieldSpec CreateMedia(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static MediaFieldSpec CreateMedia(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new MediaFieldSpec()
       {
@@ -98,7 +109,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static NumberFieldSpec CreateNumber(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static NumberFieldSpec CreateNumber(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new NumberFieldSpec()
       {
@@ -107,7 +119,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static StringFieldSpec CreateString(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static StringFieldSpec CreateString(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new StringFieldSpec()
       {
@@ -116,7 +129,8 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static TimeOnlyFieldSpec CreateTimeOnly(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static TimeOnlyFieldSpec CreateTimeOnly(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
       return new TimeOnlyFieldSpec()
       {
@@ -125,8 +139,11 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static ComponentCollectionSpec CreateComponentCollection(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static ComponentCollectionSpec CreateComponentCollection(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
+      var attribute = attributes.FirstOrDefault(IsComponentsOptionsAttribute);
+      
       return new ComponentCollectionSpec()
       {
          IsLocalized = isLocalized,
@@ -134,8 +151,12 @@ public sealed partial class ContentGenerator
       };
    }
    
-   private static ComponentReferenceSpec CreateComponentReference(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property)
+   private static ComponentReferenceSpec CreateComponentReference(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
+      ImmutableArray<AttributeData> attributes = default)
    {
+      var attribute = attributes.FirstOrDefault(IsComponentOptionsAttribute);
+      
+      
       return new ComponentReferenceSpec()
       {
          IsLocalized = isLocalized,

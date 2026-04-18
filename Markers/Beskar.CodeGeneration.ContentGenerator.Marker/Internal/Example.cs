@@ -64,10 +64,10 @@ public sealed class AllLangComponent : ComponentBase
    
    public ComponentReference<AllLangComponent>? Parent { get; set; }
    
-   [ComponentOptions(baseType: typeof(SuperComponent))]
+   [ComponentOptions]
    public required ComponentReference<SmallComponent> Super { get; set; }
    
-   [ComponentOptions(baseType: typeof(SuperComponent))]
+   [ComponentOptions]
    public required ComponentReference<SuperComponent> SuperSuper { get; set; }
 }
 

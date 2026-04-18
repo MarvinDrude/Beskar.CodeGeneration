@@ -1,9 +1,7 @@
 ﻿namespace Beskar.CodeGeneration.ContentGenerator.Marker.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class ComponentOptionsAttribute(
-   Type? baseType = null)
+public sealed class ComponentOptionsAttribute
    : Attribute
 {
-   public Type? BaseType { get; init; } = baseType;
 }
