@@ -43,6 +43,7 @@ public sealed partial class ContentGenerator
          { Name: "ComponentReference" } => CreateComponentReference(isLocalized, type, fieldSymbol, attributes),
          { Name: "ContentTypeId" } => new IdFieldSpec()
          {
+            IsRequired = fieldSymbol.IsRequired,
             IsLocalized = isLocalized,
             PropertyName = fieldSymbol.Name
          },
@@ -77,6 +78,7 @@ public sealed partial class ContentGenerator
       return new BooleanFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name
       };
    }
@@ -87,6 +89,7 @@ public sealed partial class ContentGenerator
       return new DateOnlyFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name
       };
    }
@@ -97,6 +100,7 @@ public sealed partial class ContentGenerator
       return new DateTimeFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name
       };
    }
@@ -119,6 +123,7 @@ public sealed partial class ContentGenerator
       return new MediaFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name,
          Options = options
       };
@@ -127,10 +132,14 @@ public sealed partial class ContentGenerator
    private static NumberFieldSpec CreateNumber(bool isLocalized, INamedTypeSymbol type, IPropertySymbol property, 
       ImmutableArray<AttributeData> attributes = default)
    {
+      var numberType = type.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+      
       return new NumberFieldSpec()
       {
          IsLocalized = isLocalized,
-         PropertyName = property.Name
+         IsRequired = property.IsRequired,
+         PropertyName = property.Name,
+         NumberTypeName = numberType
       };
    }
    
@@ -151,6 +160,7 @@ public sealed partial class ContentGenerator
       return new StringFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name,
          Options = options
       };
@@ -162,6 +172,7 @@ public sealed partial class ContentGenerator
       return new TimeOnlyFieldSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name
       };
    }
@@ -179,8 +190,10 @@ public sealed partial class ContentGenerator
       return new ComponentCollectionSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name,
-         Options = options
+         Options = options,
+         FullName = type.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
       };
    }
    
@@ -197,8 +210,10 @@ public sealed partial class ContentGenerator
       return new ComponentReferenceSpec()
       {
          IsLocalized = isLocalized,
+         IsRequired = property.IsRequired,
          PropertyName = property.Name,
-         Options = options
+         Options = options,
+         FullName = type.TypeArguments[0].ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
       };
    }
 }

@@ -18,7 +18,7 @@ public sealed partial class ContentGenerator : IIncrementalGenerator
       
       var contentTypeProvider = context.SyntaxProvider
          .ForAttributeWithMetadataName(
-            ContentTypeAttributeName,
+            ContentTypeAttributeFullName,
             predicate: static (_, _) => true,
             transform: Transform);
       

@@ -1,4 +1,6 @@
-﻿namespace Beskar.CodeGeneration.Extensions.Common.System;
+﻿using Me.Memory.Buffers;
+
+namespace Beskar.CodeGeneration.Extensions.Common.System;
 
 public static class StringExtensions
 {
@@ -18,6 +20,32 @@ public static class StringExtensions
             return str;
          
          return char.ToUpperInvariant(str[0]) + str[1..];
+      }
+
+      public string SnakeCase()
+      {
+         if (string.IsNullOrEmpty(str)) return str;
+
+         var position = 0;
+         var maxLength = str.Length * 2;
+         
+         using var spanOwner = maxLength < 512
+            ? new SpanOwner<char>(stackalloc char[maxLength])
+            : new SpanOwner<char>(maxLength);
+
+         for (var e = 0; e < str.Length; e++)
+         {
+            var cha = str[e];
+
+            if (e > 0 && char.IsUpper(cha))
+            {
+               spanOwner.Span[position++] = '_';
+            }
+            
+            spanOwner.Span[position++] = char.ToLowerInvariant(cha);
+         }
+
+         return new string(spanOwner.Span[..position]);
       }
    }
 }

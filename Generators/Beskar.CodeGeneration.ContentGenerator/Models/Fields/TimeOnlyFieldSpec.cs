@@ -2,5 +2,5 @@
 
 public sealed record TimeOnlyFieldSpec : FieldSpec
 {
-   
+   public override string NativePropertyType => "TimeOnly";
 }

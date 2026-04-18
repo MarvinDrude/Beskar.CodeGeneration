@@ -2,5 +2,5 @@
 
 public sealed record DateTimeFieldSpec : FieldSpec
 {
-   
+   public override string NativePropertyType => "DateTimeOffset";
 }

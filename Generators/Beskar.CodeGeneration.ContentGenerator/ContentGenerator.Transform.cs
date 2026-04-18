@@ -40,7 +40,7 @@ public sealed partial class ContentGenerator
       }
 
       using var fields = new ArrayBuilder<FieldSpec>(12);
-      var properties = symbol.GetAllMembers()
+      var properties = symbol.GetMembers()
          .OfType<IPropertySymbol>()
          .Where(p => p is { IsStatic: false, IsReadOnly: false });
 
