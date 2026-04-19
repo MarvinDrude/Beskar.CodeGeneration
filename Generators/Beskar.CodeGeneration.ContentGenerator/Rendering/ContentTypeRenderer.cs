@@ -53,6 +53,8 @@ public sealed class ContentTypeRenderer(SourceProductionContext ctx)
       writer.WriteLineInterpolated($"public void Configure(EntityTypeBuilder<{namedType.Symbol.Name}Entity> builder)");
       writer.OpenBody();
 
+      var snakeCase = $"{namedType.Symbol.Name}".SnakeCase();
+      
       writer.CloseBody();
       
       writer.CloseBody();
