@@ -20,6 +20,12 @@ public readonly struct RoutePacketResult
       ConsumedBytes = consumedBytes
    };
 
+   public static RoutePacketResult InvalidPacket(long consumedBytes) => new()
+   {
+      State = RoutePacketState.InvalidPacket,
+      ConsumedBytes = 0
+   };
+
    public static readonly RoutePacketResult UnknownPacket = new ()
    {
       State = RoutePacketState.InvalidPacket,
@@ -29,12 +35,6 @@ public readonly struct RoutePacketResult
    public static readonly RoutePacketResult NotEnoughData = new()
    {
       State = RoutePacketState.NotEnoughData,
-      ConsumedBytes = 0
-   };
-
-   public static readonly RoutePacketResult InvalidPacket = new()
-   {
-      State = RoutePacketState.InvalidPacket,
       ConsumedBytes = 0
    };
 }

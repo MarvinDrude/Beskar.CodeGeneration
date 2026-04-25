@@ -28,7 +28,7 @@ public abstract class BasePacketHandlerCollection<TPacket>(
    {
       if (!_registry.TryDeserialize<TPacket>(ref reader, out var packet))
       {
-         return ValueTask.FromResult(RoutePacketResult.InvalidPacket);
+         return ValueTask.FromResult(RoutePacketResult.InvalidPacket(reader.Consumed));
       }
 
       if (HandlerCount == 0)
