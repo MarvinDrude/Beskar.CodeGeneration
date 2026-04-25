@@ -1,6 +1,6 @@
 ﻿namespace Beskar.CodeGeneration.PacketGenerator.Marker.Enums;
 
-public enum RoutePacketResult : byte
+public enum RoutePacketState : byte
 {
    Success = 0,
    SuccessNoHandlers = 1,
@@ -11,8 +11,8 @@ public enum RoutePacketResult : byte
 
 public static class RoutePacketResultExtensions
 {
-   extension(RoutePacketResult result)
+   extension(RoutePacketState state)
    {
-      public bool IsSuccess => result is RoutePacketResult.Success or RoutePacketResult.SuccessNoHandlers;
+      public bool IsSuccess => state is RoutePacketState.Success or RoutePacketState.SuccessNoHandlers;
    }
 }

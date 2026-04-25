@@ -55,9 +55,7 @@ internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
       ref var arrayPointer = ref MemoryMarshal.GetArrayDataReference(_handlers);
       var handlerCollection = Unsafe.Add(ref arrayPointer, (nint)packetId);
       
-      return handlerCollection.HandlerCount == 0 
-         ? ValueTask.FromResult(RoutePacketResult.SuccessNoHandlers) 
-         : handlerCollection.Handle(ref reader, cancellationToken);
+      return handlerCollection.Handle(ref reader, cancellationToken);
    }
 }
 

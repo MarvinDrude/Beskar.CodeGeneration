@@ -75,12 +75,7 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       writer.WriteLine("ref var arrayPointer = ref MemoryMarshal.GetArrayDataReference(_handlers);");
       writer.WriteLine("var handlerCollection = Unsafe.Add(ref arrayPointer, (nint)packetId);");
 
-      writer.WriteLine("return handlerCollection.HandlerCount == 0 ");
-      writer.UpIndent();
-      writer.WriteLine("? ValueTask.FromResult(RoutePacketResult.SuccessNoHandlers) ");
-      writer.WriteLine(": handlerCollection.Handle(ref reader, cancellationToken);");
-      
-      writer.DownIndent();
+      writer.WriteLine("return handlerCollection.Handle(ref reader, cancellationToken);");
       writer.CloseBody();
    }
     
@@ -201,7 +196,6 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       writer.WriteUsing("System.Runtime.InteropServices");
       
       writer.WriteUsing("Beskar.CodeGeneration.PacketGenerator.Marker.Common");
-      writer.WriteUsing("Beskar.CodeGeneration.PacketGenerator.Marker.Enums");
       writer.WriteUsing("Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces");
       writer.WriteUsing("Beskar.CodeGeneration.PacketGenerator.Marker.Models");
       

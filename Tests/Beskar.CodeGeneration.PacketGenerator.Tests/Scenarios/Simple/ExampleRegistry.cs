@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Attributes;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Common;
-using Beskar.CodeGeneration.PacketGenerator.Marker.Enums;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
+using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Me.Memory.Buffers;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Tests.Scenarios.Simple;
