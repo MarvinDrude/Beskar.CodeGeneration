@@ -6,7 +6,7 @@ namespace Beskar.CodeGeneration.ProcessorGenerator;
 public sealed partial class ProcessorGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "ProcessorGenerator";
-   public const string GeneratorVersion = "1.1.8";
+   public const string GeneratorVersion = "1.1.9";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {

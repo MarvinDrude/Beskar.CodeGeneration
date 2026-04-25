@@ -31,25 +31,30 @@ public abstract class BasePacketHandlerCollection<TPacket>(
          return ValueTask.FromResult(RoutePacketResult.InvalidPacket);
       }
 
+      if (HandlerCount == 0)
+      {
+         return ValueTask.FromResult(RoutePacketResult.SuccessNoHandlers(reader.Consumed));
+      }
+
       if (HandlerCount != 1 || !_handlers.TryPeek(out var handler))
          return _registry.Options.RunHandlersInParallel 
-            ? InvokeParallelAsync(packet, cancellationToken)
-            : InvokeIterateAsync(packet, cancellationToken);
+            ? InvokeParallelAsync(packet, reader.Consumed, cancellationToken)
+            : InvokeIterateAsync(packet, reader.Consumed, cancellationToken);
       
       var singleTask = handler.Invoke(ref packet, cancellationToken);
       return singleTask.IsCompletedSuccessfully
-         ? ValueTask.FromResult(RoutePacketResult.Success)
-         : InvokeSingleAsync(singleTask);
+         ? ValueTask.FromResult(RoutePacketResult.Success(reader.Consumed))
+         : InvokeSingleAsync(singleTask, reader.Consumed);
    }
    
-   private async ValueTask<RoutePacketResult> InvokeSingleAsync(ValueTask task)
+   private async ValueTask<RoutePacketResult> InvokeSingleAsync(ValueTask task, long consumed)
    {
       await task;
-      return RoutePacketResult.Success;
+      return RoutePacketResult.Success(consumed);
    }
 
    private async ValueTask<RoutePacketResult> InvokeIterateAsync(
-      TPacket packet, CancellationToken cancellationToken)
+      TPacket packet, long consumed, CancellationToken cancellationToken)
    {
       using var enumerator = _handlers.GetEnumerator();
       while (enumerator.MoveNext())
@@ -58,11 +63,11 @@ public abstract class BasePacketHandlerCollection<TPacket>(
          await enumerator.Current.Invoke(ref packet, cancellationToken);
       }
       
-      return RoutePacketResult.Success;
+      return RoutePacketResult.Success(consumed);
    }
 
    private async ValueTask<RoutePacketResult> InvokeParallelAsync(
-      TPacket packet, CancellationToken cancellationToken)
+      TPacket packet, long consumed, CancellationToken cancellationToken)
    {
       using var builder = new ArrayBuilder<Task>(_handlers.Count);
       
@@ -77,6 +82,6 @@ public abstract class BasePacketHandlerCollection<TPacket>(
       }
       
       await Task.WhenAll(builder.WrittenSpan);
-      return RoutePacketResult.Success;
+      return RoutePacketResult.Success(consumed);
    }
 }

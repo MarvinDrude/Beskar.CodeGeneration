@@ -19,6 +19,7 @@ using Beskar.Languages;
 using BeskarExperiments.ObserveExtensions;
 using Me.Memory.Results;
 using Microsoft.Extensions.DependencyInjection;
+using TestTest;
 
 Console.WriteLine("Hello World!");
 
@@ -50,19 +51,20 @@ var start = Stopwatch.GetTimestamp();
 
 Console.WriteLine("Done: " + new TimeSpan(Stopwatch.GetTimestamp() - start));
 
-// var registry = new ExampleRegistry();
-// registry.RegisterHandler<TestPacket>((ref packet, ct) =>
-// {
-//    Console.WriteLine("Test");
-//    return ValueTask.CompletedTask;
-// });
-//
-// var packet = new TestPacket();
-// packet.Number = 2;
-//
-// var bytes = registry.SerializeWithHeader(packet);
-//
-// await registry.RoutePacket(bytes);
+var registry = new ExampleRegistry();
+registry.RegisterHandler<TestPacket>((ref packet, ct) =>
+{
+   Console.WriteLine("Test");
+   return ValueTask.CompletedTask;
+});
+
+var packet = new TestPacket();
+packet.Number = 2;
+
+var bytes = registry.SerializeWithHeader(packet);
+byte[] maxBytes = [..bytes, 2, 3];
+
+var resRes = await registry.RoutePacket(bytes);
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddScoped<MainProcessor>()
@@ -196,78 +198,78 @@ internal sealed partial class MainPipeline : BasePipeline<ValueProcessor>
    public required MainProcessor Third { get; set; }
 }
 
-// [PacketRegistry]
-// public sealed partial class ExampleRegistry : BaseJsonPacketRegistry;
-//
-// namespace Test
-// {
-//    [PacketRegistry]
-//    public sealed partial class Example2Registry : BaseJsonPacketRegistry;
-//    
-//    [Packet(typeof(Example2Registry))]
-//    public class TestPacket : IPacket
-//    {
-//       public int Number { get; set; }
-//    }
-//
-//    [Packet(typeof(ExampleRegistry))]
-//    public struct StructPacket : IPacket
-//    {
-//       
-//    }
-// }
+[PacketRegistry]
+public sealed partial class ExampleRegistry : BaseJsonPacketRegistry;
 
-// [TranslationGroup]
-// public enum TestGroup
-// {
-//    [TranslationKey]
-//    Test = 1,
-//    [TranslationKey(defaultValue: "Test2-Default")]
-//    Test2 = 2,
-// }
-//
-// [TranslationGroup]
-// public enum RegisterGroup
-// {
-//    [TranslationKey]
-//    Title = 1,
-//    [TranslationKey]
-//    Description = 2,
-// }
-//
-// [Observe]
-// [ObserveActivity("Test.Activities", "1.0.0")]
-// [ObserveMeter("Test.Meters", "1.0.0")]
-// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-// public partial class Test<T1, T2>
-//    where T1 : class
-// {
-//    public void TestMethod()
-//    {
-//       using var activity = ActivitySource.StartActivity();
-//       
-//       Counter.Add(1);
-//       Histogram.Record(20d);
-//    }
-// }
-//
-// [Observe]
-// [ObserveActivity]
-// [ObserveMeter]
-// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-// public partial class TestTwo<T>
-// {
-//    public void TestMethod()
-//    {
-//       using var activity = ActivitySource.StartActivity();
-//       
-//       Counter.Add(1);
-//       Histogram.Record(20d);
-//    }
-// }
+namespace TestTest
+{
+   [PacketRegistry]
+   public sealed partial class Example2Registry : BaseJsonPacketRegistry;
+   
+   [Packet(typeof(ExampleRegistry), typeof(Example2Registry))]
+   public class TestPacket : IPacket
+   {
+      public int Number { get; set; }
+   }
+
+   [Packet(typeof(ExampleRegistry), typeof(Example2Registry))]
+   public struct StructPacket : IPacket
+   {
+      
+   }
+}
+
+[TranslationGroup]
+public enum TestGroup
+{
+   [TranslationKey]
+   Test = 1,
+   [TranslationKey(defaultValue: "Test2-Default")]
+   Test2 = 2,
+}
+
+[TranslationGroup]
+public enum RegisterGroup
+{
+   [TranslationKey]
+   Title = 1,
+   [TranslationKey]
+   Description = 2,
+}
+
+[Observe]
+[ObserveActivity("Test.Activities", "1.0.0")]
+[ObserveMeter("Test.Meters", "1.0.0")]
+[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+public partial class TestObs<T1, T2>
+   where T1 : class
+{
+   public void TestMethod()
+   {
+      using var activity = ActivitySource.StartActivity();
+      
+      Counter.Add(1);
+      Histogram.Record(20d);
+   }
+}
+
+[Observe]
+[ObserveActivity]
+[ObserveMeter]
+[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+public partial class TestTwo<T>
+{
+   public void TestMethod()
+   {
+      using var activity = ActivitySource.StartActivity();
+      
+      Counter.Add(1);
+      Histogram.Record(20d);
+   }
+}
