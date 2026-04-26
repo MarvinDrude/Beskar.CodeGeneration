@@ -59,7 +59,7 @@ registry.RegisterHandler<TestPacket>((ref state, ref packet, ct) =>
 });
 
 var registryState = new Example2Registry();
-registryState.RegisterHandler<StructPacket>((ref state, ref packet, ct) =>
+registryState.RegisterHandler<TestPacket>((ref state, ref packet, ct) =>
 {
    Console.WriteLine("TestState: " + state.Number);
    return ValueTask.CompletedTask;
