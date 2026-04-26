@@ -5,16 +5,16 @@ using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
-public sealed class PlaceholderPacketHandlerCollection<TPacket>(BasePacketRegistry registry) 
-   : BasePacketHandlerCollection<TPacket>(registry) where TPacket : IPacket
+public sealed class PlaceholderPacketHandlerCollection<TState, TPacket>(BasePacketRegistry<TState> registry) 
+   : BasePacketHandlerCollection<TState, TPacket>(registry) where TPacket : IPacket
 {
-   public override void RegisterHandler(PacketHandler<TPacket> handler)
+   public override void RegisterHandler(PacketHandler<TState, TPacket> handler)
    {
       throw new InvalidOperationException("This packet is not registered in this registry.");
    }
 
    public override ValueTask<RoutePacketResult> Handle(
-      ref SequenceReader<byte> reader, CancellationToken cancellationToken)
+      ref TState state, ref SequenceReader<byte> reader, CancellationToken cancellationToken)
    {
       throw new InvalidOperationException("This packet is not registered in this registry.");
    }

@@ -7,24 +7,24 @@ using Me.Memory.Buffers;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
-public abstract class BasePacketHandlerCollection<TPacket>(
-   BasePacketRegistry registry)
-   : IPacketHandlerCollection<TPacket>
+public abstract class BasePacketHandlerCollection<TState, TPacket>(
+   BasePacketRegistry<TState> registry)
+   : IPacketHandlerCollection<TState, TPacket>
    where TPacket : IPacket
 {
    public int HandlerCount { get; private set; }
 
-   private readonly BasePacketRegistry _registry = registry;
-   private readonly ConcurrentStack<PacketHandler<TPacket>> _handlers = [];
+   private readonly BasePacketRegistry<TState> _registry = registry;
+   private readonly ConcurrentStack<PacketHandler<TState, TPacket>> _handlers = [];
 
-   public virtual void RegisterHandler(PacketHandler<TPacket> handler)
+   public virtual void RegisterHandler(PacketHandler<TState, TPacket> handler)
    {
       _handlers.Push(handler);
       HandlerCount++;
    }
 
    public virtual ValueTask<RoutePacketResult> Handle(
-      ref SequenceReader<byte> reader, CancellationToken cancellationToken)
+      ref TState state, ref SequenceReader<byte> reader, CancellationToken cancellationToken)
    {
       if (!_registry.TryDeserialize<TPacket>(ref reader, out var packet))
       {
@@ -38,10 +38,10 @@ public abstract class BasePacketHandlerCollection<TPacket>(
 
       if (HandlerCount != 1 || !_handlers.TryPeek(out var handler))
          return _registry.Options.RunHandlersInParallel 
-            ? InvokeParallelAsync(packet, reader.Consumed, cancellationToken)
-            : InvokeIterateAsync(packet, reader.Consumed, cancellationToken);
+            ? InvokeParallelAsync(state, packet, reader.Consumed, cancellationToken)
+            : InvokeIterateAsync(state, packet, reader.Consumed, cancellationToken);
       
-      var singleTask = handler.Invoke(ref packet, cancellationToken);
+      var singleTask = handler.Invoke(ref state, ref packet, cancellationToken);
       return singleTask.IsCompletedSuccessfully
          ? ValueTask.FromResult(RoutePacketResult.Success(reader.Consumed))
          : InvokeSingleAsync(singleTask, reader.Consumed);
@@ -54,27 +54,27 @@ public abstract class BasePacketHandlerCollection<TPacket>(
    }
 
    private async ValueTask<RoutePacketResult> InvokeIterateAsync(
-      TPacket packet, long consumed, CancellationToken cancellationToken)
+      TState state, TPacket packet, long consumed, CancellationToken cancellationToken)
    {
       using var enumerator = _handlers.GetEnumerator();
       while (enumerator.MoveNext())
       {
          // one after each other is fine here
-         await enumerator.Current.Invoke(ref packet, cancellationToken);
+         await enumerator.Current.Invoke(ref state, ref packet, cancellationToken);
       }
       
       return RoutePacketResult.Success(consumed);
    }
 
    private async ValueTask<RoutePacketResult> InvokeParallelAsync(
-      TPacket packet, long consumed, CancellationToken cancellationToken)
+      TState state, TPacket packet, long consumed, CancellationToken cancellationToken)
    {
       using var builder = new ArrayBuilder<Task>(_handlers.Count);
       
       using var enumerator = _handlers.GetEnumerator();
       while (enumerator.MoveNext())
       {
-         var valueTask = enumerator.Current.Invoke(ref packet, cancellationToken);
+         var valueTask = enumerator.Current.Invoke(ref state, ref packet, cancellationToken);
          if (!valueTask.IsCompletedSuccessfully)
          {
             builder.Add(valueTask.AsTask());

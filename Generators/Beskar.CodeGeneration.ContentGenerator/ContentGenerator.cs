@@ -6,7 +6,7 @@ namespace Beskar.CodeGeneration.ContentGenerator;
 public sealed partial class ContentGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "ContentGenerator";
-   public const string GeneratorVersion = "1.1.9";
+   public const string GeneratorVersion = "1.2.0";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {

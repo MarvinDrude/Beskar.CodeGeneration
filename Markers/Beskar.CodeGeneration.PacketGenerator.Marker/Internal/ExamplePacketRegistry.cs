@@ -10,9 +10,9 @@ using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Internal;
 
 [PacketRegistry]
-internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
+internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry<object>
 {
-   private readonly IPacketHandlerCollection[] _handlers;
+   private readonly IPacketHandlerCollection<object>[] _handlers;
 
    public ExamplePacketRegistry(PacketRegistryOptions? options = null)
       : base(registryOptions: options)
@@ -24,13 +24,13 @@ internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
       ];
    }
 
-   public bool RegisterHandler<TPacket>(PacketHandler<TPacket> handler)
+   public bool RegisterHandler<TPacket>(PacketHandler<object, TPacket> handler)
       where TPacket : IPacket
    {
       var packetId = PacketMetadata<TPacket>.Identifier;
       var handlerCollection = _handlers[packetId];
 
-      if (handlerCollection is not IPacketHandlerCollection<TPacket> handlerCollectionTyped) 
+      if (handlerCollection is not IPacketHandlerCollection<object, TPacket> handlerCollectionTyped) 
          return false;
       
       handlerCollectionTyped.RegisterHandler(handler);
@@ -38,6 +38,7 @@ internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
    }
 
    public override ValueTask<RoutePacketResult> RoutePacket(
+      ref object state,
       scoped in ReadOnlySequence<byte> sequence,
       CancellationToken cancellationToken = default)
    {
@@ -55,12 +56,12 @@ internal sealed class ExamplePacketRegistry : BaseJsonPacketRegistry
       ref var arrayPointer = ref MemoryMarshal.GetArrayDataReference(_handlers);
       var handlerCollection = Unsafe.Add(ref arrayPointer, (nint)packetId);
       
-      return handlerCollection.Handle(ref reader, cancellationToken);
+      return handlerCollection.Handle(ref state, ref reader, cancellationToken);
    }
 }
 
 file sealed class PingPacketHandlerCollection(ExamplePacketRegistry registry)
-   : BasePacketHandlerCollection<PingPacket>(registry);
+   : BasePacketHandlerCollection<object, PingPacket>(registry);
 
 file sealed class PongPacketHandlerCollection(ExamplePacketRegistry registry)
-   : BasePacketHandlerCollection<PongPacket>(registry);
+   : BasePacketHandlerCollection<object, PongPacket>(registry);

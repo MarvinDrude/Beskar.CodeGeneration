@@ -52,9 +52,16 @@ var start = Stopwatch.GetTimestamp();
 Console.WriteLine("Done: " + new TimeSpan(Stopwatch.GetTimestamp() - start));
 
 var registry = new ExampleRegistry();
-registry.RegisterHandler<TestPacket>((ref packet, ct) =>
+registry.RegisterHandler<TestPacket>((ref state, ref packet, ct) =>
 {
    Console.WriteLine("Test");
+   return ValueTask.CompletedTask;
+});
+
+var registryState = new Example2Registry();
+registryState.RegisterHandler<StructPacket>((ref state, ref packet, ct) =>
+{
+   Console.WriteLine("TestState: " + state.Number);
    return ValueTask.CompletedTask;
 });
 
@@ -62,9 +69,14 @@ var packet = new TestPacket();
 packet.Number = 2;
 
 var bytes = registry.SerializeWithHeader(packet);
-byte[] maxBytes = [..bytes, 2, 3];
+var ob = new object();
+await registry.RoutePacket(ref ob, bytes);
 
-var resRes = await registry.RoutePacket(bytes);
+var state = new ClientState()
+{
+   Number = 1337
+};
+await registryState.RoutePacket(ref state, bytes);
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddScoped<MainProcessor>()
@@ -199,14 +211,19 @@ internal sealed partial class MainPipeline : BasePipeline<ValueProcessor>
 }
 
 [PacketRegistry]
-public sealed partial class ExampleRegistry : BaseJsonPacketRegistry;
+public sealed partial class ExampleRegistry : BaseJsonPacketRegistry<object>;
 
 namespace TestTest
 {
-   [PacketRegistry]
-   public sealed partial class Example2Registry : BaseJsonPacketRegistry;
+   public sealed class ClientState
+   {
+      public int Number { get; set; }
+   }
    
-   [Packet(typeof(ExampleRegistry), typeof(Example2Registry))]
+   [PacketRegistry<ClientState>]
+   public sealed partial class Example2Registry : BaseJsonPacketRegistry<ClientState>;
+   
+   [Packet(typeof(Example2Registry), typeof(ExampleRegistry))]
    public class TestPacket : IPacket
    {
       public int Number { get; set; }
@@ -219,57 +236,57 @@ namespace TestTest
    }
 }
 
-[TranslationGroup]
-public enum TestGroup
-{
-   [TranslationKey]
-   Test = 1,
-   [TranslationKey(defaultValue: "Test2-Default")]
-   Test2 = 2,
-}
-
-[TranslationGroup]
-public enum RegisterGroup
-{
-   [TranslationKey]
-   Title = 1,
-   [TranslationKey]
-   Description = 2,
-}
-
-[Observe]
-[ObserveActivity("Test.Activities", "1.0.0")]
-[ObserveMeter("Test.Meters", "1.0.0")]
-[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class TestObs<T1, T2>
-   where T1 : class
-{
-   public void TestMethod()
-   {
-      using var activity = ActivitySource.StartActivity();
-      
-      Counter.Add(1);
-      Histogram.Record(20d);
-   }
-}
-
-[Observe]
-[ObserveActivity]
-[ObserveMeter]
-[ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
-[ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
-[ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
-[ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
-public partial class TestTwo<T>
-{
-   public void TestMethod()
-   {
-      using var activity = ActivitySource.StartActivity();
-      
-      Counter.Add(1);
-      Histogram.Record(20d);
-   }
-}
+// [TranslationGroup]
+// public enum TestGroup
+// {
+//    [TranslationKey]
+//    Test = 1,
+//    [TranslationKey(defaultValue: "Test2-Default")]
+//    Test2 = 2,
+// }
+//
+// [TranslationGroup]
+// public enum RegisterGroup
+// {
+//    [TranslationKey]
+//    Title = 1,
+//    [TranslationKey]
+//    Description = 2,
+// }
+//
+// [Observe]
+// [ObserveActivity("Test.Activities", "1.0.0")]
+// [ObserveMeter("Test.Meters", "1.0.0")]
+// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+// public partial class Test<T1, T2>
+//    where T1 : class
+// {
+//    public void TestMethod()
+//    {
+//       using var activity = ActivitySource.StartActivity();
+//       
+//       Counter.Add(1);
+//       Histogram.Record(20d);
+//    }
+// }
+//
+// [Observe]
+// [ObserveActivity]
+// [ObserveMeter]
+// [ObserveInstrument("Counter", InstrumentKind.Counter, typeof(int))]
+// [ObserveInstrument("Histogram", InstrumentKind.Histogram, typeof(double))]
+// [ObserveInstrument("Gauge", InstrumentKind.Gauge, typeof(int))]
+// [ObserveInstrument("TestTest", InstrumentKind.UpDownCounter, typeof(int))]
+// public partial class TestTwo<T>
+// {
+//    public void TestMethod()
+//    {
+//       using var activity = ActivitySource.StartActivity();
+//       
+//       Counter.Add(1);
+//       Histogram.Record(20d);
+//    }
+// }

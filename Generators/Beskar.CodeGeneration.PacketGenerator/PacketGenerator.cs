@@ -8,7 +8,7 @@ namespace Beskar.CodeGeneration.PacketGenerator;
 public sealed partial class PacketGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "PacketGenerator";
-   public const string GeneratorVersion = "1.1.9";
+   public const string GeneratorVersion = "1.2.0";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
@@ -29,11 +29,24 @@ public sealed partial class PacketGenerator : IIncrementalGenerator
             PacketRegistryAttributeFullName,
             predicate: static (_, _) => true,
             transform: TransformRegistry);
+      var maybePacketRegistryGenericSpecProvider = context.SyntaxProvider
+         .ForAttributeWithMetadataName(
+            PacketRegistryGenericAttributeFullName,
+            predicate: static (_, _) => true,
+            transform: TransformRegistry);
+      
+      var combinedProvider = maybePacketRegistrySpecProvider
+         .Collect()
+         .Combine(maybePacketRegistryGenericSpecProvider.Collect())
+         .SelectMany(static (pair, _) => {
+            var (nonGeneric, generic) = pair;
+            return nonGeneric.Concat(generic);
+         });
       
       var packetCombined = maybePacketSpecProvider
          .Collect().Combine(assemblyNameProvider);
 
-      var registryProvider = maybePacketRegistrySpecProvider
+      var registryProvider = combinedProvider
          .Combine(packetCombined)
          .Select(static (combined, _) =>
          {

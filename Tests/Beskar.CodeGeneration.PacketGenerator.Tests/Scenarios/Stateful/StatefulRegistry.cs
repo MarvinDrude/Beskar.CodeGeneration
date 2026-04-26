@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,24 +8,18 @@ using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Me.Memory.Buffers;
 
-namespace Beskar.CodeGeneration.PacketGenerator.Tests.Scenarios.Simple;
+namespace Beskar.CodeGeneration.PacketGenerator.Tests.Scenarios.Stateful;
 
-[PacketRegistry]
-public sealed partial class ExampleRegistry : BaseJsonPacketRegistry<object>
+public sealed class ClientState
 {
-   public override ValueTask<RoutePacketResult> RoutePacket(
-      ref object state,
-      scoped in ReadOnlySequence<byte> sequence, CancellationToken cancellationToken = default)
-   {
-      throw new System.NotImplementedException();
-   }
+    public int ClientId { get; set; }
 }
 
-[PacketRegistry]
-public sealed partial class ExampleTwoRegistry : BasePacketRegistry<object>
+[PacketRegistry<ClientState>]
+public sealed partial class StatefulRegistry : BasePacketRegistry<ClientState>
 {
    public override ValueTask<RoutePacketResult> RoutePacket(
-      ref object state,
+      ref ClientState state,
       scoped in ReadOnlySequence<byte> sequence, CancellationToken cancellationToken = default)
    {
       throw new System.NotImplementedException();
@@ -42,9 +36,8 @@ public sealed partial class ExampleTwoRegistry : BasePacketRegistry<object>
    }
 }
 
-
-[Packet(typeof(ExampleRegistry))]
-public sealed class PingPacket : IPacket
+[Packet(typeof(StatefulRegistry))]
+public sealed class StatefulPacket : IPacket
 {
-   public required string Name { get; set; }
+   public required string Data { get; set; }
 }

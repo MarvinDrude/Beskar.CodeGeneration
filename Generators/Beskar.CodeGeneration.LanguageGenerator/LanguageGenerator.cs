@@ -6,7 +6,7 @@ namespace Beskar.CodeGeneration.LanguageGenerator;
 public sealed partial class LanguageGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "LanguageGenerator";
-   public const string GeneratorVersion = "1.1.9";
+   public const string GeneratorVersion = "1.2.0";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
