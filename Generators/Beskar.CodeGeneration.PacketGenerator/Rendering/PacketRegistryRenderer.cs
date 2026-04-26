@@ -53,8 +53,10 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
 
    private void WriteRoutePacket(ref CodeTextWriter writer)
    {
+      var stateType = RegistrySpec.StateTypeFullName ?? "object";
       writer.WriteLine("public override ValueTask<RoutePacketResult> RoutePacket(");
       writer.UpIndent();
+      writer.WriteLineInterpolated($"ref {stateType} state,");
       writer.WriteLine("scoped in ReadOnlySequence<byte> sequence, CancellationToken cancellationToken = default)");
       writer.DownIndent();
       writer.OpenBody();
@@ -71,17 +73,18 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       writer.WriteLine("return ValueTask.FromResult(RoutePacketResult.UnknownPacket);");
       writer.CloseBody();
       writer.WriteLine();
-
+      
       writer.WriteLine("ref var arrayPointer = ref MemoryMarshal.GetArrayDataReference(_handlers);");
       writer.WriteLine("var handlerCollection = Unsafe.Add(ref arrayPointer, (nint)packetId);");
-
-      writer.WriteLine("return handlerCollection.Handle(ref reader, cancellationToken);");
+      
+      writer.WriteLine("return handlerCollection.Handle(ref state, ref reader, cancellationToken);");
       writer.CloseBody();
    }
     
     private void WriteRegisterHandler(ref CodeTextWriter writer)
     {
-      writer.WriteLine("public bool RegisterHandler<TPacket>(PacketHandler<TPacket> handler)");
+      var stateType = RegistrySpec.StateTypeFullName ?? "object";
+      writer.WriteLineInterpolated($"public bool RegisterHandler<TPacket>(PacketHandler<{stateType}, TPacket> handler)");
       writer.UpIndent();
       writer.WriteLine("where TPacket : IPacket");
       writer.DownIndent();
@@ -91,7 +94,7 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
       writer.WriteLine("var handlerCollection = _handlers[packetId];");
       writer.WriteLine();
       
-      writer.WriteLine("if (handlerCollection is not IPacketHandlerCollection<TPacket> handlerCollectionTyped)");
+      writer.WriteLineInterpolated($"if (handlerCollection is not IPacketHandlerCollection<{stateType}, TPacket> handlerCollectionTyped)");
       writer.UpIndent();
       writer.WriteLine("return false;");
       writer.DownIndent();
@@ -108,6 +111,7 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
    {
       var registry = RegistrySpec;
       var namedType = registry.NamedTypeArchetype;
+      var stateType = RegistrySpec.StateTypeFullName ?? "object";
       
       writer.WriteLineInterpolated($"public {namedType.Symbol.Name}(");
       writer.UpIndent();
@@ -140,7 +144,7 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
          }
          else
          {
-            writer.WriteLineInterpolated($"new PlaceholderPacketHandlerCollection<{spec.Spec.NamedTypeArchetype.Symbol.FullName}>(this),");
+            writer.WriteLineInterpolated($"new PlaceholderPacketHandlerCollection<{stateType}, {spec.Spec.NamedTypeArchetype.Symbol.FullName}>(this),");
          }
       }
       
@@ -154,17 +158,19 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
    {
       var registry = RegistrySpec;
       var namedType = registry.NamedTypeArchetype;
+      var stateType = RegistrySpec.StateTypeFullName ?? "object";
       
       writer.WriteLineInterpolated($"{namedType.GetClassStructModifiersString(true)} {namedType.Symbol.Name}");
       writer.OpenBody();
 
-      writer.WriteLine("private readonly IPacketHandlerCollection[] _handlers;");
+      writer.WriteLineInterpolated($"private readonly IPacketHandlerCollection<{stateType}>[] _handlers;");
       writer.WriteLine();
    }
 
    private void WriteCollections(ref CodeTextWriter writer)
    {
       var registry = RegistrySpec.NamedTypeArchetype;
+      var stateType = RegistrySpec.StateTypeFullName ?? "object";
 
       for (var index = 0; index < PacketSpecs.Array.Length; index++)
       {
@@ -180,7 +186,7 @@ public sealed class PacketRegistryRenderer(SourceProductionContext ctx)
             $"file sealed class {arch.Symbol.Name}HandlerCollection({registry.Symbol.Name} registry)");
          writer.UpIndent();
 
-         writer.WriteLineInterpolated($": BasePacketHandlerCollection<{arch.Symbol.FullName}>(registry);");
+         writer.WriteLineInterpolated($": BasePacketHandlerCollection<{stateType}, {arch.Symbol.FullName}>(registry);");
          writer.DownIndent();
 
          writer.WriteLine();

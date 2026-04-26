@@ -7,11 +7,11 @@ using Me.Memory.Buffers;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
-public abstract class BaseJsonPacketRegistry(
+public abstract class BaseJsonPacketRegistry<TState>(
    JsonSerializerContext? context = null,
    JsonSerializerOptions? options = null,
    PacketRegistryOptions? registryOptions = null) 
-   : BasePacketRegistry(registryOptions)
+   : BasePacketRegistry<TState>(registryOptions)
 {
    private readonly JsonSerializerContext? _context = context;
    private readonly JsonSerializerOptions _options = options ?? _defaultOptions;

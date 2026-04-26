@@ -60,6 +60,10 @@ public sealed partial class PacketGenerator
       {
          return DiagnosticBuilder<PacketRegistrySpec>.CreateEmpty();
       }
+
+      var stateType = attribute.AttributeClass is { IsGenericType: true, TypeArguments: [var typeArg] }
+         ? typeArg.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+         : null;
       
       ct.ThrowIfCancellationRequested();
       using var builder = DiagnosticBuilder<PacketRegistrySpec>.Create(8);
@@ -70,7 +74,7 @@ public sealed partial class PacketGenerator
          return builder.Add(InvalidRegistryTargetDiagnosticId).Build();
       }
       
-      return builder.Build(new PacketRegistrySpec(namedType));
+      return builder.Build(new PacketRegistrySpec(namedType, stateType));
    }
 
    private static bool HasRegistryBaseType(INamedTypeSymbol symbol)

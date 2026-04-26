@@ -12,7 +12,8 @@ public sealed partial class PacketGenerator
    
    private const string PacketRegistryAttributeName = "PacketRegistryAttribute";
    private const string PacketRegistryAttributeFullName = $"{AttributeNameSpace}.{PacketRegistryAttributeName}";
-
+   private const string PacketRegistryGenericAttributeFullName = $"{PacketRegistryAttributeFullName}`1";
+   
    private static AttributeData? GetPacketRegistryAttribute(ImmutableArray<AttributeData> attributes)
    {
       return attributes.FirstOrDefault(IsPacketRegistryAttribute);

@@ -3,4 +3,5 @@
 namespace Beskar.CodeGeneration.PacketGenerator.Models;
 
 public readonly record struct PacketRegistrySpec(
-   NamedTypeSymbolArchetype NamedTypeArchetype);
+   NamedTypeSymbolArchetype NamedTypeArchetype,
+   string? StateTypeFullName);

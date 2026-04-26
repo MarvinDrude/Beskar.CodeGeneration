@@ -1,7 +1,6 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using Beskar.CodeGeneration.PacketGenerator.Marker.Enums;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Interfaces;
 using Beskar.CodeGeneration.PacketGenerator.Marker.Models;
 using Me.Memory.Buffers;
@@ -9,11 +8,12 @@ using Me.Memory.Extensions;
 
 namespace Beskar.CodeGeneration.PacketGenerator.Marker.Common;
 
-public abstract class BasePacketRegistry(PacketRegistryOptions? options = null)
+public abstract class BasePacketRegistry<TState>(PacketRegistryOptions? options = null)
 {
    public PacketRegistryOptions Options { get; } = options ?? new PacketRegistryOptions();
    
    public abstract ValueTask<RoutePacketResult> RoutePacket(
+      ref TState state,
       scoped in ReadOnlySequence<byte> sequence,
       CancellationToken cancellationToken = default);
    
@@ -74,17 +74,17 @@ public abstract class BasePacketRegistry(PacketRegistryOptions? options = null)
 
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public ValueTask<RoutePacketResult> RoutePacket(
-      byte[] bytes, CancellationToken cancellationToken = default)
+      ref TState state, byte[] bytes, CancellationToken cancellationToken = default)
    {
       var sequence = new ReadOnlySequence<byte>(bytes);
-      return RoutePacket(sequence, cancellationToken);
+      return RoutePacket(ref state, sequence, cancellationToken);
    }
    
    [MethodImpl(MethodImplOptions.AggressiveInlining)]
    public ValueTask<RoutePacketResult> RoutePacket(
-      ReadOnlyMemory<byte> memory, CancellationToken cancellationToken = default)
+      ref TState state, ReadOnlyMemory<byte> memory, CancellationToken cancellationToken = default)
    {
       var sequence = new ReadOnlySequence<byte>(memory);
-      return RoutePacket(sequence, cancellationToken);
+      return RoutePacket(ref state, sequence, cancellationToken);
    }
 }
