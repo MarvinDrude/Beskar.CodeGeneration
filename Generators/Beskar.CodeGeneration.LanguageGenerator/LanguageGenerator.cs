@@ -6,14 +6,13 @@ namespace Beskar.CodeGeneration.LanguageGenerator;
 public sealed partial class LanguageGenerator : IIncrementalGenerator
 {
    public const string GeneratorName = "LanguageGenerator";
-   public const string GeneratorVersion = "1.2.0";
+   public const string GeneratorVersion = "1.2.1";
    
    public void Initialize(IncrementalGeneratorInitializationContext context)
    {
       var assemblyNameProvider = context.CompilationProvider
          .Select(static (c, _) => c.AssemblyName?
             .Replace(" ", string.Empty)
-            .Replace(".", string.Empty)
             .Trim() ?? "UnknownAssembly");
       
       var maybeLanguageEnumSpecProvider = context.SyntaxProvider
