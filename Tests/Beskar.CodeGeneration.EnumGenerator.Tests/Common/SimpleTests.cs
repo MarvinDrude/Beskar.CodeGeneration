@@ -20,7 +20,7 @@ public sealed class SimpleTests
       var debugReport = result.GetDebugReport();
       var compilation = result.Compilation;
 
-      await Assert.That(result.Diagnostics).Count().IsEqualTo(2);
+      await Assert.That(result.Diagnostics).IsEmpty();
       await Assert.That(result.GeneratedDiagnostics).IsEmpty();
    }
 }

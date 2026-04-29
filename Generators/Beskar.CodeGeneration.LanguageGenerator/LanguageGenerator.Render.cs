@@ -26,7 +26,8 @@ public sealed partial class LanguageGenerator
       
       var renderer = new LangGroupRenderer(context)
       {
-         Spec = maybeSpec.Value
+         Spec = maybeSpec.Value,
+         Namespace = assemblyName
       };
 
       renderer.Render(maybeSpec.Value.EnumTypeArchetype.Symbol.GeneratedFilePath);
@@ -42,6 +43,7 @@ public sealed partial class LanguageGenerator
 
       var renderer = new LangFacadeRenderer(context)
       {
+         Namespace = assemblyName,
          Specs = maybeSpecs
             .Where(x => x.HasValue)
             .Select(m => m.Value)
