@@ -1,5 +1,7 @@
 # Beskar.CodeGeneration
 
+Moved to: https://github.com/MarvinDrude/Beskar.Memory
+
 Beskar.CodeGeneration is a suite of tools designed to streamline the development of
 **C# Source Generators** for **.NET 10** and beyond. Leveraging the latest C# language
 features, it provides a robust infrastructure for symbol analysis, metadata extraction,
